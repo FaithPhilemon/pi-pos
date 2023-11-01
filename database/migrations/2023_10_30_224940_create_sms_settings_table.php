@@ -15,7 +15,14 @@ return new class extends Migration
     {
         Schema::create('sms_settings', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('store_id');
+            $table->string('twilio_from')->default('Discovery World Bookshop');
+            $table->string('twilio_sid')->nullable();
+            $table->string('twilio_token')->nullable();
+            $table->string('api_key')->nullable();
             $table->timestamps();
+
+            $table->foreign('store_id')->references('id')->on('stores');
         });
     }
 

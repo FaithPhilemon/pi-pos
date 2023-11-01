@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('customer_groups');
+        Schema::dropIfExists('contact_groups');
     }
 };

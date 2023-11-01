@@ -17,18 +17,17 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->integer('stock');
-            $table->integer('alert_quantity');
-            $table->integer('manage_stock');
+            $table->integer('stock')->nullable();
+            $table->integer('alert_quantity')->nullable();
+            $table->integer('manage_stock')->nullable();
             $table->decimal('price', 10, 2)->default(500);
-            $table->string('image');
-            $table->unsignedBigInteger('category_id');
-            $table->unsignedBigInteger('supplier_id');
+            $table->string('image')->nullable();
+            $table->unsignedBigInteger('category_id')->nullable();
+            $table->unsignedBigInteger('contact_id')->nullable();
             $table->unsignedBigInteger('store_id')->default(0);
-            $table->timestamps();
 
             $table->foreign('category_id')->references('id')->on('categories');
-            $table->foreign('supplier_id')->references('id')->on('suppliers');
+            $table->foreign('contact_id')->references('id')->on('contacts');
             $table->foreign('store_id')->references('id')->on('stores');
             $table->timestamps();
         });
