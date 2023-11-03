@@ -11,16 +11,22 @@ class Product extends Model
 
     protected $fillable = [
         'name',
+        'author',
+        'ISBN',
         'description',
         'stock',
         'alert_quantity',
         'manage_stock',
         'price',
         'image',
+        'qr_code',
+        'barcode',
         'category_id',
         'contact_id',
         'store_id',
+        'summary',
     ];
+    
 
     public function category()
     {
