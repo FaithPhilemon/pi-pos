@@ -15,12 +15,13 @@ class Sale extends Model
         'phone_number',
         'customer_name',
         'store',
-        'payment_status',
-        'payment_method',
+        'sale_status_id',
+        'payment_status_id',
+        'payment_method_id',
         'total_amount',
         'total_paid',
         'total_items',
-        'shipping_status',
+        'shipping_status_id',
         'shipping_details',
         'added_by',
         'staff_note',
@@ -30,5 +31,29 @@ class Sale extends Model
     public function addedBy()
     {
         return $this->belongsTo(User::class, 'added_by');
+    }
+
+
+    public function saleStatus()
+    {
+        return $this->belongsTo(SaleStatus::class, 'sale_status_id');
+    }
+
+
+    public function paymentStatus()
+    {
+        return $this->belongsTo(PaymentStatus::class, 'payment_status_id');
+    }
+
+
+    public function paymentMethod()
+    {
+        return $this->belongsTo(PaymentMethod::class, 'payment_method_id');
+    }
+
+    
+    public function shippingStatus()
+    {
+        return $this->belongsTo(ShippingStatus::class, 'shipping_status_id');
     }
 }

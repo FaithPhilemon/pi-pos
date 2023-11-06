@@ -24,7 +24,6 @@ class Product extends Model
         'category_id',
         'contact_id',
         'store_id',
-        'summary',
     ];
     
 
