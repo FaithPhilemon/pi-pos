@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Providers\BookProvider;
+use Faker\Generator as FakerGenerator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +15,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton(FakerGenerator::class, function () {
+            return \Faker\Factory::create();
+        });
+    
+        $this->app->extend(FakerGenerator::class, function (FakerGenerator $faker) {
+            $faker->addProvider(BookProvider::class);
+    
+            return $faker;
+        });
     }
 
     /**
