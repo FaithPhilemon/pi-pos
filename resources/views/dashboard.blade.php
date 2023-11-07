@@ -12,57 +12,69 @@
 
     <div class="container-fluid">
     	<div class="row">
-            <div class="col-xl-4 col-md-12">
-                <div class="card analytic-card card-green">
+            <div class="col-xl-3 col-md-6">
+                <div class="card prod-p-card card-red">
                     <div class="card-body">
-                        <div class="row align-items-center mb-30">
+                        
+                        <div class="row align-items-center mb-10">
                             <div class="col-auto">
-                                <i class="fas fa-shopping-cart text-green f-18 analytic-icon"></i>
+                                <i class="fa fa-shopping-cart text-red f-18"></i>
                             </div>
-                            <div class="col text-right">
-                                <h3 class="mb-5 text-white">15,678</h3>
-                                <h6 class="mb-0 text-white">Total Sales</h6>
+                            <div class="col">
+                                <h6 class="mb-5 fw-700 text-white text-uppercase">Gross Sales</h6>
+                                <h3 class="mb-0 fw-700 text-white">{{ $settings->currency_symbol }}{{ number_format($grossSales) }}</h3>
                             </div>
+
                         </div>
-                        <p class="mb-0  text-white d-inline-block">Total Income : </p>
-                        <h5 class=" text-white d-inline-block mb-0 ml-10">$2,451</h5>
-                        <h6 class="mb-0 d-inline-block  text-white float-right"><i class="fas fa-caret-up mr-10 f-18"></i>10%</h6>
+                        {{-- <p class="mb-0 text-white"><span class="label label-danger mr-10">+11%</span>From Previous Month</p> --}}
                     </div>
                 </div>
             </div>
-            <div class="col-xl-4 col-md-6">
-                <div class="card analytic-card card-blue">
+            <div class="col-xl-3 col-md-6">
+                <div class="card prod-p-card card-blue">
                     <div class="card-body">
-                        <div class="row align-items-center mb-30">
-                            <div class="col-auto">
-                                <i class="fas fa-users text-blue f-18 analytic-icon"></i>
+                        <div class="row align-items-center mb-10">
+                            <div class="col">
+                                <h6 class="mb-5 fw-700 text-white text-uppercase">Net Sales</h6>
+                                <h3 class="mb-0 fw-700 text-white">{{ $settings->currency_symbol }}{{ number_format($netSales) }}</h3>
                             </div>
-                            <div class="col text-right">
-                                <h3 class="mb-5 text-white">1,678</h3>
-                                <h6 class="mb-0 text-white">Total Users</h6>
+                            <div class="col-auto">
+                                <i class="fas fa-database text-blue f-18"></i>
                             </div>
                         </div>
-                        <p class="mb-0 text-white d-inline-block">Total Revenue : </p>
-                        <h5 class="text-white d-inline-block mb-0 ml-10">$2,451</h5>
-                        <h6 class="mb-0 d-inline-block text-white float-right"><i class="fas fa-caret-up mr-10 f-18"></i>30%</h6>
+                        {{-- <p class="mb-0 text-white"><span class="label label-primary mr-10">+12%</span>From Previous Month</p> --}}
                     </div>
                 </div>
             </div>
-            <div class="col-xl-4 col-md-6">
-                <div class="card analytic-card card-red">
+            <div class="col-xl-3 col-md-6">
+                <div class="card prod-p-card card-green">
                     <div class="card-body">
-                        <div class="row align-items-center mb-30">
-                            <div class="col-auto">
-                                <i class="fas fa-file-code text-red f-18 analytic-icon"></i>
+                        <div class="row align-items-center mb-10">
+                            <div class="col">
+                                <h6 class="mb-5 fw-700 text-white text-uppercase">Invoice Due</h6>
+                                <h3 class="mb-0 fw-700 text-white">{{$invoiceDue}}</h3>
                             </div>
-                            <div class="col text-right">
-                                <h3 class="mb-5 text-white">15,678</h3>
-                                <h6 class="mb-0 text-white">Total Project</h6>
+                            <div class="col-auto">
+                                <i class="fas fa-dollar-sign text-green f-18"></i>
                             </div>
                         </div>
-                        <p class="mb-0 d-inline-block text-white">Active Projects : </p>
-                        <h5 class="text-white d-inline-block mb-0 ml-10">$2,451</h5>
-                        <h6 class="mb-0 d-inline-block text-white float-right"><i class="fas fa-caret-down mr-10 f-18"></i>10%</h6>
+                        {{-- <p class="mb-0 text-white"><span class="label label-success mr-10">+52%</span>From Previous Month</p> --}}
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card prod-p-card card-yellow">
+                    <div class="card-body">
+                        <div class="row align-items-center mb-10">
+                            <div class="col">
+                                <h6 class="mb-5 fw-700 text-white text-uppercase">Sales Return</h6>
+                                <h3 class="mb-0 fw-700 text-white">{{$totalSellReturn}}</h3>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-tags text-warning f-18"></i>
+                            </div>
+                        </div>
+                        {{-- <p class="mb-0 text-white"><span class="label label-warning mr-10">+52%</span>From Previous Month</p> --}}
                     </div>
                 </div>
             </div>

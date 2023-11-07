@@ -9,6 +9,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,9 +42,11 @@ Route::group(['middleware' => 'auth'], function(){
 	Route::get('/clear-cache', [HomeController::class,'clearCache']);
 
 	// dashboard route  
-	Route::get('/dashboard', function () { 
-		return view('pages.dashboard'); 
-	})->name('dashboard');
+	// Route::get('/dashboard', function () { 
+	// 	return view('dashboard'); 
+	// })->name('dashboard');
+
+	Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 	//only those have manage_user permission will get access
 	Route::group(['middleware' => 'can:manage_user'], function(){
