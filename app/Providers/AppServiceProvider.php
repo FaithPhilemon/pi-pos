@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Providers\BookProvider;
+use App\Models\Setting;
 use Faker\Generator as FakerGenerator;
 
 class AppServiceProvider extends ServiceProvider
@@ -33,6 +34,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        // Fetch the settings from the database
+        $settings = Setting::first(); // Assuming you have a single row for settings
+
+        // Share the settings data with all views
+        view()->share('settings', $settings);
     }
 }
