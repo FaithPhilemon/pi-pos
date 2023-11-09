@@ -16,6 +16,19 @@ class CategoriesController extends Controller
         return view('categories.index', compact('categories'));
     }
 
+    public function subIndex(Request $request)
+    {
+        // Retrieve subcategories based on the provided category_id
+        $category_id = $request->input('category_id');
+        
+        if ($category_id) {
+            $category = Category::with('subcategories')->find($category_id);
+            return response()->json($category->subcategories);
+        }
+
+        return response()->json([]);
+    }
+
     public function create()
     {
         $this->authorize('create categories');
@@ -76,4 +89,6 @@ class CategoriesController extends Controller
         $category->delete();
         return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');
     }
+
+    
 }
