@@ -40,6 +40,8 @@ class ProductsController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
+            'author' => 'nullable',
+            'ISBN' => 'nullable',
             'description' => 'nullable',
             'stock' => 'nullable|integer',
             'alert_quantity' => 'nullable|integer',
@@ -57,6 +59,8 @@ class ProductsController extends Controller
 
         $product = new Product();
         $product->name = $request->input('name');
+        $product->author = $request->input('author');
+        $product->ISBN = $request->input('ISBN');
         $product->description = $request->input('description');
         $product->stock = $request->input('stock');
         $product->alert_quantity = $request->input('alert_quantity');
@@ -92,6 +96,8 @@ class ProductsController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
+            'author' => 'nullable',
+            'ISBN' => 'nullable',
             'description' => 'nullable',
             'stock' => 'nullable|integer',
             'alert_quantity' => 'nullable|integer',
@@ -108,6 +114,8 @@ class ProductsController extends Controller
         }
 
         $product->name = $request->input('name');
+        $product->author = $request->input('author');
+        $product->ISBN = $request->input('ISBN');
         $product->description = $request->input('description');
         $product->stock = $request->input('stock');
         $product->alert_quantity = $request->input('alert_quantity');
