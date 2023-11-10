@@ -40,9 +40,11 @@
     	        
 
 
-                    <div class="card-header d-flex justify-content-between">
-                            <h3>{{ __('Products')}}</h3>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addNewModal">{{ __('Add New Product')}}</button>
+                    <div class="card-header d-flex">
+                            <h3 class="mr-auto p-2">{{$pageTitle}}</h3>
+                            <a href="{{ route('products.index', ['type' => 1]) }}" class="btn btn-outline-warning p-2 mr-5">{{ __('Book Products')}}</a>
+                            <a href="{{ route('products.index', ['type' => 2]) }}" class="btn btn-outline-success p-2 mr-5">{{ __('Non-book Products')}}</a>
+                            <button type="button" class="btn btn-outline-primary p-2 mr-10" data-toggle="modal" data-target="#addNewModal">{{ __('Add New Product')}}</button>
                     </div>
                     <div class="card-body">
                         @if ($errors->any())
@@ -59,12 +61,13 @@
                             <thead>
                                 <tr>
                                     <th>{{ __('ID') }}</th>
+                                    <th>{{ __('Product') }}</th>
                                     <th>{{ __('Name') }}</th>
                                     <th>{{ __('Author') }}</th>
                                     <th>{{ __('ISBN') }}</th>
+                                    <th>{{ __('Price') }}</th>
                                     <th>{{ __('Description') }}</th>
                                     <th>{{ __('Stock') }}</th>
-                                    <th>{{ __('Price') }}</th>
                                     <th>{{ __('Actions') }}</th>
                                 </tr>
                             </thead>
@@ -72,9 +75,19 @@
                                 @foreach ($products as $product)
                                     <tr>
                                         <td>{{ $settings->product_prefix }}{{ $product->id }}</td>
+                                        <td>
+                                            <div class="d-inline-block align-middle">
+                                                <img src="https://cdn.pixabay.com/photo/2017/08/16/07/57/blogs-fashion-2646759_1280.png" alt="user image" class="rounded-circle img-40 align-top mr-15">
+                                                {{-- <div class="d-inline-block">
+                                                    <h6>{{ $settings->currency_symbol }}{{ number_format($product->price) }}</h6>
+                                                    <p class="text-muted mb-0">{{ $settings->currency_symbol }}{{ number_format($product->price) }}</p>
+                                                </div> --}}
+                                            </div>
+                                        </td>
                                         <td>{{ $product->name }}</td>
                                         <td>{{ $product->author }}</td>
                                         <td>{{ $product->ISBN }}</td>
+                                        <td>{{ $settings->currency_symbol }}{{ number_format($product->price) }}</td>
                                         <td>{{ $product->description }}</td>
                                         <td>
                                             @if ($product->stock > $product->alert_quantity)
@@ -83,7 +96,7 @@
                                                 <span class="badge badge-danger">{{ $product->stock }}</span>
                                             @endif
                                         </td>
-                                        <td>{{ $settings->currency_symbol }}{{ number_format($product->price) }}</td>
+                                        
                                         <td>
                                             <div class="table-actions row">
                                                 {{-- <a href="#"><i class="ik ik-eye text-blue"></i></a> --}}
