@@ -96,10 +96,10 @@ Route::group(['middleware' => 'auth'], function(){
 Route::middleware(['auth'])->group(function () {
     // List Products
     Route::get('products', [ProductsController::class, 'index'])->name('products.index');
-    Route::post('products', [ProductsController::class, 'store'])->name('products.store');
 
     // Add Products
     Route::get('products/create', [ProductsController::class, 'create'])->name('products.create');
+	Route::post('products', [ProductsController::class, 'store'])->name('products.store');
 	
 	// Edit Products
 	Route::get('/products/{product}/edit', [ProductsController::class, 'edit'])->name('products.edit');
@@ -117,10 +117,12 @@ Route::middleware(['auth'])->group(function () {
 
     // Import Products
     Route::get('products/import', [ProductsController::class, 'import'])->name('products.import');
+
+	Route::get('/subcategories', [CategoriesController::class, 'subIndex'])->name('subcategories.index');
 });
 
 
-Route::get('/subcategories', [CategoriesController::class, 'subIndex'])->name('subcategories.index');
+
 
 
 
