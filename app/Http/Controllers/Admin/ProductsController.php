@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Contact;
@@ -15,11 +16,23 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ProductsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('view products');
-        $products = Product::all();
-        return view('products.index', compact('products'));
+        $query = Product::query();
+        $categories = Category::all();
+        $stores = Store::all();
+        $pageTitle = 'All Products';
+
+
+        if ($request->has('type')) {
+            $query->where('category_id', $request->input('type'));
+            $pageTitle = Category::where('id', $request->input('type'))->first()->name;
+        }
+
+        $products = $query->get();
+
+        return view('products.index', compact('products', 'categories', 'stores', 'pageTitle'));
     }
 
     public function create()
@@ -37,6 +50,8 @@ class ProductsController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
+            'author' => 'nullable',
+            'ISBN' => 'nullable',
             'description' => 'nullable',
             'stock' => 'nullable|integer',
             'alert_quantity' => 'nullable|integer',
@@ -49,11 +64,13 @@ class ProductsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('products.create')->withErrors($validator)->withInput();
+            return redirect()->route('products.index')->withErrors($validator)->withInput();
         }
 
         $product = new Product();
         $product->name = $request->input('name');
+        $product->author = $request->input('author');
+        $product->ISBN = $request->input('ISBN');
         $product->description = $request->input('description');
         $product->stock = $request->input('stock');
         $product->alert_quantity = $request->input('alert_quantity');
@@ -89,6 +106,8 @@ class ProductsController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
+            'author' => 'nullable',
+            'ISBN' => 'nullable',
             'description' => 'nullable',
             'stock' => 'nullable|integer',
             'alert_quantity' => 'nullable|integer',
@@ -105,6 +124,8 @@ class ProductsController extends Controller
         }
 
         $product->name = $request->input('name');
+        $product->author = $request->input('author');
+        $product->ISBN = $request->input('ISBN');
         $product->description = $request->input('description');
         $product->stock = $request->input('stock');
         $product->alert_quantity = $request->input('alert_quantity');
@@ -128,15 +149,32 @@ class ProductsController extends Controller
         return redirect()->route('products.index')->with('success', 'Product updated successfully.');
     }
 
+
+
     public function destroy(Product $product)
     {
         $this->authorize('delete products');
-        // Delete the associated image
-        Storage::disk('public')->delete($product->image);
 
-        $product->delete();
-        return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
+        try {
+            // Check if the product has an image
+            if ($product->image) {
+                // Attempt to delete the image
+                Storage::disk('public')->delete($product->image);
+            }
+        
+            $product->delete();
+
+            // Redirect with success message
+            return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
+        } catch (\Exception $e) {
+            // Handle the exception
+            return redirect()->route('products.index')->with('error', 'Error deleting product: ' . $e->getMessage());
+        }
+
     }
+
+
+
 
     public function importCSV(Request $request)
     {

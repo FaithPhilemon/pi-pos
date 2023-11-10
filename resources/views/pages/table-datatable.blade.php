@@ -49,7 +49,7 @@
                                     <th class="nosort">{{ __('Avatar')}}</th>
                                     <th>{{ __('Name')}}</th>
                                     <th>{{ __('Email')}}</th>
-                                    <th class="nosort">{{ __('&nbsp;')}}</th>
+                                    <th class="nosort">{{ __('Action')}}</th>
                                 </tr>
                             </thead>
                             <tbody>

@@ -9,6 +9,9 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Admin\ProductsController;
+use App\Http\Controllers\Admin\CategoriesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,9 +44,11 @@ Route::group(['middleware' => 'auth'], function(){
 	Route::get('/clear-cache', [HomeController::class,'clearCache']);
 
 	// dashboard route  
-	Route::get('/dashboard', function () { 
-		return view('pages.dashboard'); 
-	})->name('dashboard');
+	// Route::get('/dashboard', function () { 
+	// 	return view('dashboard'); 
+	// })->name('dashboard');
+
+	Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 	//only those have manage_user permission will get access
 	Route::group(['middleware' => 'can:manage_user'], function(){
@@ -86,6 +91,40 @@ Route::group(['middleware' => 'auth'], function(){
 	// Accounting routes
 	include('modules/accounting.php');
 });
+
+
+Route::middleware(['auth'])->group(function () {
+    // List Products
+    Route::get('products', [ProductsController::class, 'index'])->name('products.index');
+
+    // Add Products
+    Route::get('products/create', [ProductsController::class, 'create'])->name('products.create');
+	Route::post('products', [ProductsController::class, 'store'])->name('products.store');
+	
+	// Edit Products
+	Route::get('/products/{product}/edit', [ProductsController::class, 'edit'])->name('products.edit');
+	Route::put('/products/{product}', [ProductsController::class, 'update'])->name('products.update');
+
+
+	// Delete Products
+	Route::delete('/products/{product}', [ProductsController::class, 'destroy'])->name('products.destroy');
+
+    // Product Categories
+    Route::get('products/categories', [ProductsController::class, 'categories'])->name('products.categories');
+
+    // Print Labels
+    Route::get('products/labels', [ProductsController::class, 'labels'])->name('products.labels');
+
+    // Import Products
+    Route::get('products/import', [ProductsController::class, 'import'])->name('products.import');
+
+	Route::get('/subcategories', [CategoriesController::class, 'subIndex'])->name('subcategories.index');
+});
+
+
+
+
+
 
 
 Route::get('/register', function () { return view('pages.register'); });
