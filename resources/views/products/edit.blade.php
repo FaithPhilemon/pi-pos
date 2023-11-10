@@ -13,7 +13,7 @@
                     <div class="page-header-title">
                         <i class="ik ik-layers bg-blue"></i>
                         <div class="d-inline">
-                            <h5>{{ __('Edit Products')}}</h5>
+                            <h5>{{ __('Edit a Product')}}</h5>
                             <span>{{ __('Edit')}} </span>
                         </div>
                     </div>
@@ -45,8 +45,8 @@
                     <div class="card-header d-flex justify-content-between">
                             <h3>{{ __('Edit')}} "{{ $product->name }}"</h3>
                             <div class="row">
-                                <a href="{{ route('products.index')}}"button" class="btn btn-success mr-5">{{ __('List All Products')}}</a>
-                                <button type="button" class="btn btn-primary mr-10" data-toggle="modal" data-target="#addNewModal">{{ __('Add New Product')}}</button>
+                                <a href="{{ route('products.index')}}" class="btn btn-outline-success mr-5">{{ __('List All Products')}}</a>
+                                <button type="button" class="btn btn-outline-primary p-2 mr-10" data-toggle="modal" data-target="#addNewModal">{{ __('Add New Product')}}</button>
                             </div>
                     </div>
                     <div class="card-body">
