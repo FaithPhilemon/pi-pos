@@ -44,7 +44,10 @@
     	        
                     <div class="card-header d-flex justify-content-between">
                             <h3>{{ __('Edit')}} "{{ $product->name }}"</h3>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addNewModal">{{ __('Add New Product')}}</button>
+                            <div class="row">
+                                <a href="{{ route('products.index')}}"button" class="btn btn-success mr-5">{{ __('List All Products')}}</a>
+                                <button type="button" class="btn btn-primary mr-10" data-toggle="modal" data-target="#addNewModal">{{ __('Add New Product')}}</button>
+                            </div>
                     </div>
                     <div class="card-body">
 
