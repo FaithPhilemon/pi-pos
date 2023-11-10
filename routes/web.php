@@ -10,6 +10,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Admin\ProductsController;
+use App\Http\Controllers\Admin\CategoriesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -89,6 +91,38 @@ Route::group(['middleware' => 'auth'], function(){
 	// Accounting routes
 	include('modules/accounting.php');
 });
+
+
+Route::middleware(['auth'])->group(function () {
+    // List Products
+    Route::get('products', [ProductsController::class, 'index'])->name('products.index');
+    Route::post('products', [ProductsController::class, 'store'])->name('products.store');
+
+    // Add Products
+    Route::get('products/create', [ProductsController::class, 'create'])->name('products.create');
+	
+	// Edit Products
+	Route::get('/products/{product}/edit', [ProductsController::class, 'edit'])->name('products.edit');
+	Route::put('/products/{product}', [ProductsController::class, 'update'])->name('products.update');
+
+
+	// Delete Products
+	Route::delete('/products/{product}', [ProductsController::class, 'destroy'])->name('products.destroy');
+
+    // Product Categories
+    Route::get('products/categories', [ProductsController::class, 'categories'])->name('products.categories');
+
+    // Print Labels
+    Route::get('products/labels', [ProductsController::class, 'labels'])->name('products.labels');
+
+    // Import Products
+    Route::get('products/import', [ProductsController::class, 'import'])->name('products.import');
+});
+
+
+Route::get('/subcategories', [CategoriesController::class, 'subIndex'])->name('subcategories.index');
+
+
 
 
 Route::get('/register', function () { return view('pages.register'); });

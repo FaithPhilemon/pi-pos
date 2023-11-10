@@ -19,7 +19,10 @@ class ProductsController extends Controller
     {
         $this->authorize('view products');
         $products = Product::all();
-        return view('products.index', compact('products'));
+        $categories = Category::all();
+        $stores = Store::all();
+
+        return view('products.index', compact('products', 'categories', 'stores'));
     }
 
     public function create()
@@ -49,7 +52,7 @@ class ProductsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('products.create')->withErrors($validator)->withInput();
+            return redirect()->route('products.index')->withErrors($validator)->withInput();
         }
 
         $product = new Product();
@@ -128,15 +131,32 @@ class ProductsController extends Controller
         return redirect()->route('products.index')->with('success', 'Product updated successfully.');
     }
 
+
+
     public function destroy(Product $product)
     {
         $this->authorize('delete products');
-        // Delete the associated image
-        Storage::disk('public')->delete($product->image);
 
-        $product->delete();
-        return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
+        try {
+            // Check if the product has an image
+            if ($product->image) {
+                // Attempt to delete the image
+                Storage::disk('public')->delete($product->image);
+            }
+        
+            $product->delete();
+
+            // Redirect with success message
+            return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
+        } catch (\Exception $e) {
+            // Handle the exception
+            return redirect()->route('products.index')->with('error', 'Error deleting product: ' . $e->getMessage());
+        }
+
     }
+
+
+
 
     public function importCSV(Request $request)
     {
