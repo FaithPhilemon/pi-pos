@@ -13,7 +13,7 @@ class CategoriesController extends Controller
     {
         $this->authorize('view categories');
         $categories = Category::all();
-        return view('categories.index', compact('categories'));
+        return view('products.categories', compact('categories'));
     }
 
     public function subIndex(Request $request)
@@ -74,7 +74,7 @@ class CategoriesController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('categories.edit', $category->id)->withErrors($validator)->withInput();
+            return redirect()->route('categories.index', $category->id)->withErrors($validator)->withInput();
         }
 
         // Update the category

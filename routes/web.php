@@ -110,7 +110,11 @@ Route::middleware(['auth'])->group(function () {
 	Route::delete('/products/{product}', [ProductsController::class, 'destroy'])->name('products.destroy');
 
     // Product Categories
-    Route::get('products/categories', [ProductsController::class, 'categories'])->name('products.categories');
+    Route::get('products/categories', [CategoriesController::class, 'index'])->name('products.categories');
+	Route::post('products/categories', [CategoriesController::class, 'store'])->name('categories.store');
+	Route::put('products/categories', [CategoriesController::class, 'update'])->name('categories.update');
+
+
 
     // Print Labels
     Route::get('products/labels', [ProductsController::class, 'labels'])->name('products.labels');
