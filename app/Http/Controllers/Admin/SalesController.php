@@ -6,6 +6,11 @@ use Illuminate\Http\Request;
 
 use App\Models\Sale;
 use App\Models\User;
+use App\Models\Store;
+use App\Models\PaymentStatus;
+use App\Models\PaymentMethod;
+use App\Models\ShippingStatus;
+
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -16,6 +21,12 @@ class SalesController extends Controller
     public function index(Request $request)
     {
         $this->authorize('view sales');
+        $stores = Store::all();
+        $paymentMethods = PaymentMethod::all();
+        $paymentStatuses = PaymentStatus::all();
+        $shippingStatuses = ShippingStatus::all();
+        $pageTitle = 'All Sales';
+
 
         $query = Sale::query();
 
@@ -38,7 +49,7 @@ class SalesController extends Controller
 
         $sales = $query->get();
 
-        return view('sales.index', compact('sales'));
+        return view('sales.index', compact('sales', 'pageTitle', 'stores', 'paymentMethods', 'paymentStatuses', 'shippingStatuses'));
     }
 
     public function create()
