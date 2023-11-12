@@ -12,6 +12,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\ProductsController;
 use App\Http\Controllers\Admin\CategoriesController;
+use App\Http\Controllers\Admin\SalesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -123,6 +124,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('products/import', [ProductsController::class, 'import'])->name('products.import');
 
 	Route::get('/subcategories', [CategoriesController::class, 'subIndex'])->name('subcategories.index');
+
+
+
+	Route::get('sales', [SalesController::class, 'index'])->name('sales.index');
+    Route::get('sale/create', [SalesController::class, 'create'])->name('sales.create');
+	Route::post('sales', [SalesController::class, 'store'])->name('sales.store');
+	Route::get('/sale/{sale}/edit', [SalesController::class, 'edit'])->name('sales.edit');
+	Route::put('/sale/{sale}', [SalesController::class, 'update'])->name('sales.update');
+	Route::delete('/sale/{sale}', [SalesController::class, 'destroy'])->name('sales.destroy');
+
 });
 
 

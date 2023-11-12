@@ -63,7 +63,7 @@
 
 
                 <div class="nav-lavel">{{ __('PRODUCTS & SALES')}} </div>
-                <div class="nav-item {{ ($segment1 == 'products' || $segment1 == 'roles'||$segment1 == 'permission' ||$segment1 == 'user') ? 'active open' : '' }} has-sub">
+                <div class="nav-item {{ ($segment1 == 'products') ? 'active open' : '' }} has-sub">
                     <a href="#"><i class="ik ik-shopping-bag"></i><span>{{ __('Products')}}</span></a>
                     <div class="submenu-content">
                         <!-- only those have manage_user permission will get access -->
@@ -81,22 +81,16 @@
                 </div>
 
 
-                <div class="nav-item {{ ($segment1 == 'users' || $segment1 == 'roles'||$segment1 == 'permission' ||$segment1 == 'user') ? 'active open' : '' }} has-sub">
+                <div class="nav-item {{ ($segment1 == 'sales' || $segment1 == 'roles'||$segment1 == 'permission' ||$segment1 == 'user') ? 'active open' : '' }} has-sub">
                     <a href="#"><i class="ik ik-package"></i><span>{{ __('Sell')}}</span></a>
                     <div class="submenu-content">
-                        <!-- only those have manage_user permission will get access -->
-                        @can('manage_user')
-                        <a href="{{url('users')}}" class="menu-item {{ ($segment1 == 'users') ? 'active' : '' }}">{{ __('Users')}}</a>
-                        <a href="{{url('user/create')}}" class="menu-item {{ ($segment1 == 'user' && $segment2 == 'create') ? 'active' : '' }}">{{ __('Add User')}}</a>
-                         @endcan
-                         <!-- only those have manage_role permission will get access -->
-                        @can('manage_roles')
-                        <a href="{{url('roles')}}" class="menu-item {{ ($segment1 == 'roles') ? 'active' : '' }}">{{ __('Roles')}}</a>
+                        @can('manage_sales')
+                            <a href="{{url('sales')}}" class="menu-item {{ ($segment1 == 'sales') ? 'active' : '' }}">{{ __('All Sales')}}</a>
+                            <a href="{{url('sale/create')}}" class="menu-item {{ ($segment1 == 'sales' && $segment2 == 'create') ? 'active' : '' }}">{{ __('Add Sale')}}</a>
+                            <a href="{{url('sale/create')}}" class="menu-item {{ ($segment1 == 'sales' && $segment2 == 'create') ? 'active' : '' }}">{{ __('Add Sale')}}</a>
+                            <a href="{{url('sale/create')}}" class="menu-item {{ ($segment1 == 'sales' && $segment2 == 'create') ? 'active' : '' }}">{{ __('Add Sale')}}</a>
                         @endcan
-                        <!-- only those have manage_permission permission will get access -->
-                        @can('manage_permission')
-                        <a href="{{url('permission')}}" class="menu-item {{ ($segment1 == 'permission') ? 'active' : '' }}">{{ __('Permission')}}</a>
-                        @endcan
+
                     </div>
                 </div>
 
