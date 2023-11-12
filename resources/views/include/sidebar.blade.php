@@ -70,9 +70,9 @@
                         @can('manage_user')
                             <a href="{{url('products')}}" class="menu-item {{ ($segment1 == 'products') ? 'active' : '' }}">{{ __('List Products')}}</a>
                             <a href="{{url('product/create')}}" class="menu-item {{ ($segment1 == 'product' && $segment2 == 'create') ? 'active' : '' }}">{{ __('Add Product')}}</a>
-                            <a href="{{url('products?type=1')}}" class="menu-item {{ ($segment1 == 'product' && $segment2 == 'create') ? 'active' : '' }}">{{ __('Book Products')}}</a>
-                            <a href="{{url('products?type=2')}}" class="menu-item {{ ($segment1 == 'product' && $segment2 == 'create') ? 'active' : '' }}">{{ __('Non-book Products')}}</a>
-                            <a href="{{url('products/categories')}}" class="menu-item {{ ($segment1 == 'product' && $segment2 == 'categories') ? 'active' : '' }}">{{ __('Categories/Groups')}}</a>
+                            <a href="{{url('products?type=1')}}" class="menu-item">{{ __('Book Products')}}</a>
+                            <a href="{{url('products?type=2')}}" class="menu-item">{{ __('Non-book Products')}}</a>
+                            <a href="{{url('categories')}}" class="menu-item {{ ($segment1 == 'categories') ? 'active' : '' }}">{{ __('Categories/Groups')}}</a>
                             {{-- <a href="{{url('products/labels')}}" class="menu-item {{ ($segment1 == 'user' && $segment2 == 'create') ? 'active' : '' }}">{{ __('Print Labels')}}</a> --}}
                             {{-- <a href="{{url('products/import')}}" class="menu-item {{ ($segment1 == 'user' && $segment2 == 'create') ? 'active' : '' }}">{{ __('Import Products')}}</a> --}}
                         @endcan
