@@ -43,6 +43,7 @@ class CategoriesController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'code' => 'nullable',
+            'parent_category_id' => 'nullable',
             'description' => 'nullable',
         ]);
 
@@ -53,7 +54,7 @@ class CategoriesController extends Controller
         // Create the category
         Category::create($request->all());
 
-        return redirect()->route('categories.index')->with('success', 'Category created successfully.');
+        return redirect()->route('products.categories')->with('success', 'Category created successfully.');
     }
 
     public function edit(Category $category)
@@ -70,24 +71,25 @@ class CategoriesController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'code' => 'nullable',
+            'parent_category_id' => 'nullable',
             'description' => 'nullable',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('categories.index', $category->id)->withErrors($validator)->withInput();
+            return redirect()->route('products.categories', $category->id)->withErrors($validator)->withInput();
         }
 
         // Update the category
         $category->update($request->all());
 
-        return redirect()->route('categories.index')->with('success', 'Category updated successfully.');
+        return redirect()->route('products.categories')->with('success', 'Category updated successfully.');
     }
 
     public function destroy(Category $category)
     {
         $this->authorize('delete categories');
         $category->delete();
-        return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');
+        return redirect()->route('products.categories')->with('success', 'Category deleted successfully.');
     }
 
     
