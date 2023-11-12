@@ -9,7 +9,7 @@ class Category extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'code', 'sub_category_id', 'description'];
+    protected $fillable = ['name', 'code', 'parent_category_id', 'description'];
 
     // public function subCategory()
     // {
@@ -19,7 +19,7 @@ class Category extends Model
      // Relationship to parent category
      public function parentCategory()
      {
-         return $this->belongsTo(Category::class, 'sub_category_id');
+         return $this->belongsTo(Category::class, 'parent_category_id');
      }
  
      // Relationship to subcategories
