@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Pagination\Paginator;
 use App\Providers\BookProvider;
 use App\Models\Setting;
 use Faker\Generator as FakerGenerator;
@@ -39,5 +40,9 @@ class AppServiceProvider extends ServiceProvider
 
         // Share the settings data with all views
         view()->share('settings', $settings);
+
+
+        Paginator::useBootstrapFive();
+        Paginator::useBootstrapFour();
     }
 }

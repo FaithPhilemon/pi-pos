@@ -47,7 +47,8 @@ class SalesController extends Controller
             $query->whereBetween('date', [$request->input('start_date'), $request->input('end_date')]);
         }
 
-        $sales = $query->get();
+        // $sales = $query->get();
+        $sales = $query->paginate(10); // 10 items per page,
 
         return view('sales.index', compact('sales', 'pageTitle', 'stores', 'paymentMethods', 'paymentStatuses', 'shippingStatuses'));
     }

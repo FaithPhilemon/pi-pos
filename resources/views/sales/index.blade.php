@@ -60,6 +60,7 @@
                         <table id="data_table" class="table table-responsive">
                             <thead>
                                 <tr>
+                                    <th>{{ __('Action') }}</th>
                                     <th>{{ __('Date') }}</th>
                                     <th>{{ __('Invoice Number') }}</th>
                                     <th>{{ __('Customer Name') }}</th>
@@ -71,13 +72,24 @@
                                     <th>{{ __('Total Amount') }}</th>
                                     <th>{{ __('Total Paid') }}</th>
                                     <th>{{ __('Total Items') }}</th>
-                                    {{-- <th>{{ __('Shipping Status') }}</th> --}}
                                     <th>{{ __('Added By') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($sales as $sale)
                                     <tr>
+                                        <td>
+                                            <button type="button" class="btn btn-dark btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ __('Actions')}} <i class="ik ik-chevron-down"></i></button>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" href="{{ url('sales') }}">{{ __('View')}}</a>
+                                                <a class="dropdown-item" href="{{ url('sales') }}">{{ __('Edit')}}</a>
+                                                <a class="dropdown-item" href="{{ url('sales') }}">{{ __('Delete')}}</a>
+                                                <div role="separator" class="dropdown-divider"></div>
+                                                <a class="dropdown-item" href="{{ url('sales') }}">{{ __('Ivoice')}}</a>
+                                                <a class="dropdown-item" href="{{ url('sales') }}">{{ __('Packing Slip')}}</a>
+                                                <a class="dropdown-item" href="{{ url('sales') }}">{{ __('Payments')}}</a>
+                                            </div>
+                                        </td>
                                         <td>{{ date('d/m/Y', strtotime($sale->date)) }}</td>
                                         <td>{{ $settings->invoice_prefix }}{{ $sale->invoice_number }}</td>
                                         <td>{{ $sale->customer_name }}</td>
@@ -130,13 +142,13 @@
                                         <td>{{ $settings->currency_symbol }}{{ number_format($sale->total_amount) }}</td>
                                         <td>{{ $settings->currency_symbol }}{{ number_format($sale->total_paid) }}</td>
                                         <td>{{ $sale->total_items }}</td>
-                                        {{-- <td>{{ $sale->shippingStatus->name }}</td> --}}
                                         <td>{{ $sale->addedBy->name }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
                         
+                        {{ $sales->links() }}
                         
                     </div>
                 </div>
