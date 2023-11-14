@@ -23,12 +23,13 @@ class SalesController extends Controller
     public function index(Request $request)
     {
         $this->authorize('view sales');
-        $stores = Store::all();
-        $paymentMethods = PaymentMethod::all();
-        $saleStatuses = SaleStatus::all();
-        $paymentStatuses = PaymentStatus::all();
-        $shippingStatuses = ShippingStatus::all();
-        $customers = Contact::where('contact_group', 1)->get();
+        $stores             = Store::all();
+        $paymentMethods     = PaymentMethod::all();
+        $saleStatuses       = SaleStatus::all();
+        $paymentStatuses    = PaymentStatus::all();
+        $shippingStatuses   = ShippingStatus::all();
+        $users              = User::all();
+        $customers          = Contact::where('contact_group', 1)->get();
         
         $pageTitle = 'All Sales';
 
@@ -62,7 +63,8 @@ class SalesController extends Controller
                                            'saleStatuses',
                                            'paymentStatuses',
                                            'shippingStatuses',
-                                           'customers'
+                                           'customers',
+                                           'users'
                                         ));
     }
 
@@ -106,7 +108,7 @@ class SalesController extends Controller
             $lastSale = Sale::latest()->first();
             $lastId = $lastSale ? $lastSale->id : 0;
             $randomNumber = rand(1000, 9999); 
-            $invoiceNumber = 'INV' . ($lastId + 1). $randomNumber;
+            $invoiceNumber = ($lastId + 1). $randomNumber;
 
             $sale = new Sale();
 
@@ -149,24 +151,45 @@ class SalesController extends Controller
 
         // Validation rules for the sale data
         $validator = Validator::make($request->all(), [
-            'invoice_number' => 'required',
-            'date' => 'required|date',
-            'customer_name' => 'required',
-            'payment_status' => 'required',
-            'payment_method' => 'required',
-            'total_amount' => 'numeric',
-            'total_paid' => 'numeric',
-            'total_items' => 'integer',
-            'shipping_status' => 'integer',
-            'shipping_details' => 'nullable',
-            'added_by' => 'exists:users,id',
-            'staff_note' => 'nullable',
-            'sale_note' => 'nullable',
+            'invoice_number'    => 'nullable',
+            'date'              => 'required|date',
+            'customer_name'     => 'required',
+            'payment_status'    => 'required',
+            'payment_method'    => 'required',
+            'total_amount'      => 'numeric',
+            'total_paid'        => 'numeric',
+            'total_items'       => 'integer',
+            'shipping_status'   => 'integer',
+            'shipping_details'  => 'nullable',
+            'added_by'          => 'exists:users,id',
+            'staff_note'        => 'nullable',
+            'sale_note'         => 'nullable',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('sales.edit', $sale->id)->withErrors($validator)->withInput();
+            return redirect()->route('sales.index', $sale->id)->withErrors($validator)->withInput();
         }
+        // exit($request->invoice_number);
+
+            $sale->invoice_number       = $request->invoice_number;
+            $sale->date                 = $request->date;
+            $sale->phone_number         = $request->phone_number;
+            $sale->customer_name        = $request->customer_name;
+            $sale->store                = $request->store;
+            $sale->sale_status_id       = $request->sale_status;
+            $sale->payment_status_id    = $request->payment_status;
+            $sale->payment_method_id    = $request->payment_method;  
+            $sale->total_amount         = $request->total_amount;
+            $sale->total_paid           = $request->total_paid;
+            $sale->total_items          = $request->total_items;
+            $sale->shipping_status_id   = $request->shipping_status;
+            $sale->shipping_details     = $request->shipping_details;
+            $sale->added_by             = $request->added_by;
+            $sale->staff_note           = $request->staff_note;
+            $sale->sale_note            = $request->sale_note;
+
+            $sale->save();
+
 
         // Update the sale
         $sale->update($request->all());
