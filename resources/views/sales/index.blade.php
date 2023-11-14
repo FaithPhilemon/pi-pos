@@ -81,13 +81,13 @@
                                         <td>
                                             <button type="button" class="btn btn-outline-dark btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ __('Actions')}} <i class="ik ik-chevron-down"></i></button>
                                             <div class="dropdown-menu">
-                                                <a class="dropdown-item" href="{{ url('sales') }}">{{ __('View')}}</a>
-                                                <a class="dropdown-item" href="{{ url('sales') }}">{{ __('Edit')}}</a>
-                                                <a class="dropdown-item" href="{{ url('sales') }}">{{ __('Delete')}}</a>
+                                                <a class="dropdown-item" href="#">{{ __('View')}}</a>
+                                                <a class="dropdown-item" data-toggle="modal" data-target="#editNewModal{{ $sale->id}}" href="#">{{ __('Edit')}}</a>
+                                                <a class="dropdown-item" data-toggle="modal" data-target="#deleteModal{{ $sale->id }}" href="#">{{ __('Delete')}}</a>
                                                 <div role="separator" class="dropdown-divider"></div>
-                                                <a class="dropdown-item" href="{{ url('sales') }}">{{ __('Ivoice')}}</a>
-                                                <a class="dropdown-item" href="{{ url('sales') }}">{{ __('Packing Slip')}}</a>
-                                                <a class="dropdown-item" href="{{ url('sales') }}">{{ __('Payments')}}</a>
+                                                <a class="dropdown-item" data-toggle="modal" data-target="#invoiceModal{{ $sale->id }}" href="#">{{ __('Ivoice')}}</a>
+                                                <a class="dropdown-item" data-toggle="modal" data-target="#packingSlipModal{{ $sale->id }}" href="#">{{ __('Packing Slip')}}</a>
+                                                {{-- <a class="dropdown-item" href="{{ url('sales') }}">{{ __('Payments')}}</a> --}}
                                             </div>
                                         </td>
                                         <td>{{ date('d/m/Y', strtotime($sale->date)) }}</td>
@@ -144,6 +144,207 @@
                                         <td>{{ $sale->total_items }}</td>
                                         <td>{{ $sale->addedBy->name }}</td>
                                     </tr>
+
+
+                                    <div class="modal fade" id="editNewModal{{ $sale->id }}" tabindex="-1" role="dialog" aria-labelledby="demoModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="demoModalLabel">{{ __('Add New Sale')}}</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                </div>
+                                                
+                                
+                                                <form class="forms-sample" action="{{ route('sales.update', $sale->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+
+                                                    <div class="modal-body">
+                                                        <div class="row">
+                                                            @if ($errors->any())
+                                                                <div class="alert alert-danger">
+                                                                    <ul>
+                                                                        @foreach ($errors->all() as $error)
+                                                                            <li>{{ $error }}</li>
+                                                                        @endforeach
+                                                                    </ul>
+                                                                </div>
+                                                            @endif
+
+                                                        </div>
+                                                        
+                                                        <div class="row">
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="invoice_number">{{ __('Invoice Number')}}</label>
+                                                                    <input value="{{ $sale->invoice_number }}" type="text" class="form-control" id="invoice_number" name="invoice_number">
+                                                                </div>
+                                                            </div>
+
+
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="date">{{ __('Date')}}</label>
+                                                                    <input value="{{ date('d/m/Y', strtotime($sale->date)) }}" type="date" class="form-control" id="date" name="date" required>
+                                                                </div>
+                                                            </div>
+
+
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="invoice_number">{{ __('Customer Name')}}</label>                                    
+                                                                    <select class="form-control" id="customer_name" name="customer_name" required>
+                                                                        @foreach($customers as $customer)
+                                                                            <option value="{{ $customer->contact_name }}">{{ $customer->contact_name }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="phone_number">{{ __('Contact Number')}}</label>
+                                                                    <input value="{{ $sale->phone_number }}" type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Phone Number" required>
+                                                                </div>
+                                                            </div>
+                                
+                                
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="store">{{ __('Store')}}</label>
+                                                                    <select class="form-control" id="store" name="store" required>
+                                                                        @foreach($stores as $store)
+                                                                            <option value="{{ $store->name }}">{{ $store->name }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="payment_status">{{ __('Payment Status')}}</label>
+                                                                    <select class="form-control" id="payment_status" name="payment_status" required>
+                                                                        @foreach($paymentStatuses as $status)
+                                                                            <option value="{{ $status->id }}">{{ $status->name }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="payment_method">{{ __('Payment Method')}}</label>
+                                                                    <select class="form-control" id="payment_method" name="payment_method" required>
+                                                                        @foreach($paymentMethods as $method)
+                                                                            <option value="{{ $method->id }}">{{ $method->name }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="sale_status">{{ __('Sale Status')}}</label>
+                                                                    <select class="form-control" id="sale_status" name="sale_status" required>
+                                                                        @foreach($saleStatuses as $saleStatus)
+                                                                            <option value="{{ $saleStatus->id }}">{{ $saleStatus->name }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="total_amount">{{ __('Total Amount')}}</label>
+                                                                    <input value="{{ $sale->total_amount }}" type="number" class="form-control" id="total_amount" name="total_amount" placeholder="Total Amount" required>
+                                                                </div>
+                                                            </div>
+                                
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="total_paid">{{ __('Total Paid')}}</label>
+                                                                    <input value="{{ $sale->total_paid }}" type="number" class="form-control" id="total_paid" name="total_paid" placeholder="Total Paid" required>
+                                                                </div>
+                                                            </div>
+                                
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="total_items">{{ __('Total Items')}}</label>
+                                                                    <input value="{{ $sale->total_items }}" type="number" class="form-control" id="total_items" name="total_items" placeholder="Total Items" required>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="added_by">{{ __('Added By')}}</label>
+                                                                    <select class="form-control" id="added_by" name="added_by" required>
+                                                                        @foreach($users as $user)
+                                                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                
+                                                        </div>
+                                                        
+                                                
+                                        
+                                                
+                                                        
+                                                
+                                                        {{-- <div class="form-group">
+                                                            <label for="shipping_status">{{ __('Shipping Status')}}</label>
+                                                            <select class="form-control" id="shipping_status" name="shipping_status" required>
+                                                                @foreach($shippingStatuses as $status)
+                                                                    <option value="{{ $status->id }}">{{ $status->name }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                
+                                                        <div class="form-group">
+                                                            <label for="shipping_details">{{ __('Shipping Details')}}</label>
+                                                            <textarea class="form-control" id="shipping_details" name="shipping_details" rows="4" placeholder="Shipping Details"></textarea>
+                                                        </div> --}}
+                                                
+                                                
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close')}}</button>
+                                                            <button type="submit" class="btn btn-primary">{{ __('Save')}}</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <!-- Delete Modal -->
+                                    <div class="modal fade" id="deleteModal{{ $sale->id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure you want to delete this sale?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                                    <form action="{{ route('sales.destroy', $sale->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
                                 @endforeach
                             </tbody>
                         </table>
