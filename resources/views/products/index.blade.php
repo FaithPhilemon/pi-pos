@@ -66,7 +66,7 @@
                                     <th>{{ __('Author') }}</th>
                                     <th>{{ __('ISBN') }}</th>
                                     <th>{{ __('Price') }}</th>
-                                    <th>{{ __('Description') }}</th>
+                                    <th>{{ __('Category') }}</th>
                                     <th>{{ __('Stock') }}</th>
                                     <th>{{ __('Actions') }}</th>
                                 </tr>
@@ -88,7 +88,7 @@
                                         <td>{{ $product->author }}</td>
                                         <td>{{ $product->ISBN }}</td>
                                         <td>{{ $settings->currency_symbol }}{{ number_format($product->price) }}</td>
-                                        <td>{{ $product->description }}</td>
+                                        <td>{{ $product->category->name }}</td>
                                         <td>
                                             @if ($product->stock > $product->alert_quantity)
                                                 <span class="badge badge-success">{{ $product->stock }}</span>
@@ -182,7 +182,7 @@
                                     <select class="form-control" id="category" name="category_id" required>
                                         <option value="">--------</option>
                                         @foreach($categories as $category)
-                                            @if(!$category->sub_category_id || in_array($category->id, [1, 2]))
+                                            @if(!$category->parent_category_id || in_array($category->id, [1, 2]))
                                                 <option value="{{ $category->id }}">{{ $category->name }}</option>
                                             @endif
                                         @endforeach

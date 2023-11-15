@@ -25,7 +25,8 @@ class Category extends Model
      // Relationship to subcategories
      public function subcategories()
      {
-         return $this->hasMany(Category::class, 'sub_category_id');
+        //  return $this->hasMany(Category::class, 'sub_category_id');
+         return $this->hasMany(Category::class, 'parent_category_id');
      }
 
 }
