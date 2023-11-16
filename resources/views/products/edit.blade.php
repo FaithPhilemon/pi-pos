@@ -52,122 +52,100 @@
                     <div class="card-body">
 
 
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
+
                         <form class="forms-sample" action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
-                            @method('PUT') <!-- Use PUT method for updates -->
+                            @method('PUT') <!-- Use the PUT method for updates -->
                         
-                            
-                                @if ($errors->any())
-                                    <div class="alert alert-danger">
-                                        <ul>
-                                            @foreach ($errors->all() as $error)
-                                                <li>{{ $error }}</li>
+                            <div class="row">
+                               
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label for="name">Product Title/Name<span class="text-red">*</span></label>
+                                        <input id="name" type="text" class="form-control" name="name" value="{{ $product->name }}" placeholder="Enter product title" required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                        
+                                    <div class="form-group">
+                                        <label>Description</label>
+                                        <textarea class="form-control html-editor h-205" id="product_description" name="description" rows="10">{{ $product->description }}</textarea>
+                                    </div>
+                        
+                                    <div class="form-group">
+                                        <label>Product Image</label>
+                                        <input type="file" class="form-control-file" id="product_image" name="image">
+                                    </div>
+                        
+                                    <div class="form-group">
+                                        <label for="store">{{ __('Store')}}</label>
+                                        <select class="form-control" id="store" name="store_id">
+                                            @foreach($stores as $store)
+                                                <option value="{{ $store->id }}" {{ $store->id == $product->store_id ? 'selected' : '' }}>{{ $store->name }}</option>
                                             @endforeach
-                                        </ul>
-                                    </div>
-                                @endif
-                        
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="store">{{ __('Store')}}</label>
-                                            <select class="form-control" id="store" name="store_id">
-                                                @foreach($stores as $store)
-                                                    <option value="{{ $store->id }}" {{ $product->store_id == $store->id ? 'selected' : '' }}>
-                                                        {{ $store->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+                                        </select>
                                     </div>
                         
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="category">{{ __('Category')}}</label>
-                                            <select class="form-control" id="category" name="category_id" required>
-                                                <option value="">--------</option>
-                                                @foreach($categories as $category)
-                                                    @if(!$category->sub_category_id || in_array($category->id, [1, 2]))
-                                                        <option value="{{ $category->id }}" {{ $product->category_id == $category->id ? 'selected' : '' }}>
-                                                            {{ $category->name }}
-                                                        </option>
-                                                    @endif
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                        
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="subcategory">{{ __('Subcategory')}}</label>
-                                            <select class="form-control" id="subcategory" name="subcategory_id" disabled>
-                                                <!-- Subcategories will be populated dynamically using JavaScript -->
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                        
-                        
-                                <div class="form-group">
-                                    <label for="product_name">{{ __('Name')}}</label>
-                                    <input type="text" value="{{ old('name', $product->name) }}" class="form-control" id="product_name" name="name" placeholder="Name" required>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="product_author">{{ __('Author')}}</label>
-                                            <input type="text" value="{{ old('author', $product->author) }}" class="form-control" id="product_author" name="author" placeholder="Author">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="product_isbn">{{ __('ISBN')}}</label>
-                                            <input type="text" value="{{ old('ISBN', $product->ISBN) }}" class="form-control" id="product_isbn" name="ISBN" placeholder="ISBN">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="product_description">{{ __('Description')}}</label>
-                                    <textarea class="form-control" id="product_description" name="description" rows="4">
-                                        {{ old('description', $product->description) }}
-                                    </textarea>
+                                    <button type="submit" class="btn btn-primary btn-block">{{ __('Update')}}</button>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="product_stock">{{ __('Stock Quantity')}}</label>
-                                            <input type="number" value="{{ old('stock', $product->stock) }}" class="form-control" id="product_stock" name="stock" placeholder="Stock" required>
-                                        </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="category">{{ __('Category')}}<span class="text-red">*</span></label>
+                                        <select class="form-control" id="category" name="category_id" required>
+                                            <option value="">--------</option>
+                                            @foreach($categories as $category)
+                                                @if(!$category->parent_category_id || in_array($category->id, [1, 2]))
+                                                    <option value="{{ $category->id }}" {{ $category->id == $product->category_id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                                @endif
+                                            @endforeach
+                                        </select>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="product_alert_quantity">{{ __('Alert Quantity')}}</label>
-                                            <input type="number" value="{{ old('alert_quantity', $product->alert_quantity) }}" class="form-control" id="product_alert_quantity" name="alert_quantity" placeholder="Alert Quantity">
-                                        </div>
-                                    </div>
-        
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="product_price">{{ __('Price')}}</label>
-                                            <input type="text" value="{{ old('price', $product->price) }}" class="form-control" id="product_price" name="price" placeholder="Price" required>
-                                        </div>
-                                    </div>
-        
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="product_image">{{ __('Product Image')}}</label>
-                                    <input type="file" class="form-control-file" id="product_image" name="image">
-                                </div>
-                    
-                            
                         
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close')}}</button>
-                                <button type="submit" class="btn btn-primary">{{ __('Update')}}</button>
+                                    <div class="form-group">
+                                        <label for="subcategory">{{ __('Subcategory')}} <span class="text-red">*</span></label>
+                                        <select class="form-control" id="subcategory" name="subcategory_id" disabled required>
+                                            <!-- Subcategories will be populated dynamically using JavaScript -->
+                                        </select>
+                                    </div>
+                        
+                                    <div class="form-group">
+                                        <label for="product_stock">{{ __('Qty')}}<span class="text-red">*</span></label>
+                                        <input type="number" class="form-control" id="product_stock" name="stock" placeholder="Stock Quantity" required value="{{ $product->stock }}">
+                                    </div>
+                        
+                                    <div class="form-group">
+                                        <label for="product_alert_quantity">{{ __('Stock Alert')}}<span class="text-red">*</span></label>
+                                        <input type="number" class="form-control" id="product_alert_quantity" name="alert_quantity" placeholder="Alert Quantity" value="{{ $product->alert_quantity }}">
+                                    </div>
+                        
+                                    <div class="form-group">
+                                        <label for="product_price">{{ __('Price')}} <span class="text-red">*</span></label>
+                                        <input type="text" class="form-control" id="product_price" name="price" placeholder="Enter product price" required value="{{ $product->price }}">
+                                    </div>
+                        
+                                    <div class="form-group">
+                                        <label for="product_author">{{ __('Author')}}</label>
+                                        <input type="text" class="form-control" id="product_author" name="author" placeholder="Author" value="{{ $product->author }}">
+                                    </div>
+                        
+                                    <div class="form-group">
+                                        <label for="product_isbn">{{ __('ISBN')}}</label>
+                                        <input type="text" class="form-control" id="product_isbn" name="ISBN" placeholder="ISBN" value="{{ $product->ISBN }}">
+                                    </div>
+                                </div>
                             </div>
                         </form>
+                        
                         
                         
                     </div>
