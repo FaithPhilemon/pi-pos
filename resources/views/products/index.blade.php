@@ -77,7 +77,14 @@
                                         <td>{{ $settings->product_prefix }}{{ $product->id }}</td>
                                         <td>
                                             <div class="d-inline-block align-middle">
-                                                <img src="https://cdn.pixabay.com/photo/2017/08/16/07/57/blogs-fashion-2646759_1280.png" alt="user image" class="rounded-circle img-40 align-top mr-15">
+                                                {{-- @if($product->image != null && $product->image != '')
+                                                    <img src="{{ asset('storage/' . $product->image) }}" alt="" class="rounded-circle img-40 align-top mr-15">
+                                                @else 
+                                                    <img src="storage/no-image.png" alt="" class="rounded-circle img-40 align-top mr-15">
+                                                @endif --}}
+                                                 <img src="{{ asset($product->image ? 'storage/' . $product->image : 'storage/product_images/no-image.png') }}" alt="" class="rounded img-40 align-top mr-15">
+
+                                                
                                                 {{-- <div class="d-inline-block">
                                                     <h6>{{ $settings->currency_symbol }}{{ number_format($product->price) }}</h6>
                                                     <p class="text-muted mb-0">{{ $settings->currency_symbol }}{{ number_format($product->price) }}</p>
@@ -136,6 +143,9 @@
                             </tbody>
 
                         </table>
+
+                        {{ $products->links() }}
+
                         
                     </div>
                 </div>
@@ -152,20 +162,30 @@
                     <h5 class="modal-title" id="demoModalLabel">{{ __('Add New Product')}}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
+
                 <form class="forms-sample" action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
-                        @if ($errors->any())
-                            <div class="alert alert-danger">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-sm-8">
+
+                                <div class="form-group">
+                                    <label for="name">Product Title/Name<span class="text-red">*</span></label>
+                                    <input id="name" type="text" class="form-control" name="name" value="" placeholder="Enter product title" required="">
+                                    <div class="help-block with-errors"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <textarea class="form-control html-editor h-205" id="product_description" name="description" rows="10"></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Product Image</label>
+                                    {{-- <div class="input-images" data-input-name="product-images" data-label="Drag & Drop product images here or click to browse"></div> --}}
+                                    <input type="file" class="form-control-file" id="product_image" name="image">
+                                </div>
+
                                 <div class="form-group">
                                     <label for="store">{{ __('Store')}}</label>
                                     <select class="form-control" id="store" name="store_id">
@@ -174,11 +194,12 @@
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>
 
-                            <div class="col-md-4">
+                            </div>
+                            <div class="col-sm-4">
+
                                 <div class="form-group">
-                                    <label for="category">{{ __('Category')}}</label>
+                                    <label for="category">{{ __('Category')}}<span class="text-red">*</span></label>
                                     <select class="form-control" id="category" name="category_id" required>
                                         <option value="">--------</option>
                                         @foreach($categories as $category)
@@ -188,74 +209,124 @@
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>
 
-                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="subcategory">{{ __('Subcategory')}}</label>
                                     <select class="form-control" id="subcategory" name="subcategory_id" disabled>
                                         <!-- Subcategories will be populated dynamically using JavaScript -->
                                     </select>
                                 </div>
-                            </div>
-                        </div>
-                    
-                        <div class="form-group">
-                            <label for="product_name">{{ __('Name')}}</label>
-                            <input type="text" class="form-control" id="product_name" name="name" placeholder="Name" required>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
+
+                                {{-- <div class="form-group">
+                                    <label for="sku">SKU<span class="text-red">*</span></label>
+                                    <input id="sku" type="text" class="form-control" name="sku" value="" placeholder="Enter Product SKU" required="">
+                                    <div class="help-block with-errors"></div>
+                                </div> --}}
+
+                                <div class="form-group">
+                                    <label for="product_stock">{{ __('Qty')}}<span class="text-red">*</span></label>
+                                    <input type="number" class="form-control" id="product_stock" name="stock" placeholder="Stock Quantity" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="product_alert_quantity">{{ __('Stock Alert')}}<span class="text-red">*</span></label>
+                                    <input type="number" class="form-control" id="product_alert_quantity" name="alert_quantity" placeholder="Alert Quantity">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="product_price">{{ __('Price')}} <span class="text-red">*</span></label>
+                                    <input type="text" class="form-control" id="product_price" name="price" placeholder="Enter product price" required>
+                                </div>
+
                                 <div class="form-group">
                                     <label for="product_author">{{ __('Author')}}</label>
                                     <input type="text" class="form-control" id="product_author" name="author" placeholder="Author">
                                 </div>
-                            </div>
-                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="product_isbn">{{ __('ISBN')}}</label>
                                     <input type="text" class="form-control" id="product_isbn" name="ISBN" placeholder="ISBN">
                                 </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="product_description">{{ __('Description')}}</label>
-                            <textarea class="form-control" id="product_description" name="description" rows="4"></textarea>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="product_stock">{{ __('Stock Quantity')}}</label>
-                                    <input type="number" class="form-control" id="product_stock" name="stock" placeholder="Stock" required>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="product_alert_quantity">{{ __('Alert Quantity')}}</label>
-                                    <input type="number" class="form-control" id="product_alert_quantity" name="alert_quantity" placeholder="Alert Quantity">
-                                </div>
-                            </div>
 
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="product_price">{{ __('Price')}}</label>
-                                    <input type="text" class="form-control" id="product_price" name="price" placeholder="Price" required>
-                                </div>
                             </div>
+                            {{-- <div class="col-sm-3">
 
+                                <div class="form-group">
+
+                                    <label>Select Categories</label>
+                                    <div class="border-checkbox-section ml-3">
+                                        <div class="border-checkbox-group border-checkbox-group-success d-block">
+                                            <input class="border-checkbox" type="checkbox" id="checkbox1" value="1">
+                                            <label class="border-checkbox-label" for="checkbox1">Electronics</label>
+                                        </div>
+                                        <div class="border-checkbox-group border-checkbox-group-success d-block">
+                                            <input class="border-checkbox" type="checkbox" id="checkbox2" value="2">
+                                            <label class="border-checkbox-label" for="checkbox2">Computers</label>
+                                        </div>
+                                        <div class="border-checkbox-group border-checkbox-group-success d-block">
+                                            <input class="border-checkbox" type="checkbox" id="checkbox3" value="3">
+                                            <label class="border-checkbox-label" for="checkbox3">Smart Home</label>
+                                        </div>
+                                        <div class="border-checkbox-group border-checkbox-group-success d-block">
+                                            <input class="border-checkbox" type="checkbox" id="checkbox4" value="4">
+                                            <label class="border-checkbox-label" for="checkbox4">Arts &amp; Crafts</label>
+                                        </div>
+                                        <div class="border-checkbox-group border-checkbox-group-success d-block">
+                                            <input class="border-checkbox" type="checkbox" id="checkbox5" value="5">
+                                            <label class="border-checkbox-label" for="checkbox5">Fashion</label>
+                                        </div>
+                                        <div class="border-checkbox-group border-checkbox-group-success d-block">
+                                            <input class="border-checkbox" type="checkbox" id="checkbox6" value="6">
+                                            <label class="border-checkbox-label" for="checkbox6">Baby</label>
+                                        </div>
+                                        <div class="border-checkbox-group border-checkbox-group-success d-block">
+                                            <input class="border-checkbox" type="checkbox" id="checkbox7" value="7">
+                                            <label class="border-checkbox-label" for="checkbox7">Health &amp; Care</label>
+                                        </div>
+                                        <div class="border-checkbox-group border-checkbox-group-success d-block">
+                                            <input class="border-checkbox" type="checkbox" id="checkbox8" value="8">
+                                            <label class="border-checkbox-label" for="checkbox8">Others</label>
+                                        </div>
+                                        <div class="border-checkbox-group border-checkbox-group-success d-block">
+                                            <input class="border-checkbox" type="checkbox" id="checkbox9" value="9">
+                                            <label class="border-checkbox-label" for="checkbox9">Mobile Accesories</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Shiping</label>
+                                    <div class="border-checkbox-section ml-3">
+                                        <div class="border-checkbox-group border-checkbox-group-success d-block">
+                                            <input class="border-checkbox" type="checkbox" id="checkboxfree" value="free">
+                                            <label class="border-checkbox-label" for="checkboxfree">Free Shipping</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="tax_type">Tax Type<span class="text-red">*</span></label>
+                                    <select name="tax_type" class="form-control">
+                                        <option>Select</option>
+                                        <option value="Inclusive">Inclusive</option>
+                                        <option value="Exclusive">Exclusive</option>
+                                    </select>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="input">Product Tag</label>
+                                    <input type="text" id="tags" class="form-control h-100" value="">
+                                </div>
+                                <div class="form-group text-right">
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </div>
+                            </div> --}}
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="product_image">{{ __('Product Image')}}</label>
-                            <input type="file" class="form-control-file" id="product_image" name="image">
-                        </div>
-                       
                     </div>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close')}}</button>
                         <button type="submit" class="btn btn-primary">{{ __('Save')}}</button>
                     </div>
                 </form>
+
             </div>
         </div>
     </div>
