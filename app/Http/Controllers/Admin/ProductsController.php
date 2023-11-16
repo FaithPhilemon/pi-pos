@@ -61,7 +61,7 @@ class ProductsController extends Controller
             'price'             => 'numeric',
             'image'             => 'image|max:500', // Max 500KB image size
             'category_id'       => 'nullable|exists:categories,id',
-            'subcategory_id'    => 'nullable|exists:categories,parent_category_id',
+            'subcategory_id'    => 'nullable|exists:categories,id',
             'contact_id'        => 'nullable|exists:contacts,id',
             'store_id'          => 'nullable|exists:stores,id',
         ]);
@@ -80,7 +80,7 @@ class ProductsController extends Controller
         $product->alert_quantity    = $request->input('alert_quantity');
         $product->manage_stock      = $request->input('manage_stock', 0);
         $product->price             = $request->input('price');
-        $product->category_id       = $request->input('category_id');
+        $product->category_id       = $request->input('subcategory_id');
         $product->contact_id        = $request->input('contact_id');
         $product->store_id          = $request->input('store_id');
 
@@ -119,7 +119,7 @@ class ProductsController extends Controller
             'price'             => 'numeric',
             'image'             => 'image|max:500', // Max 500KB image size
             'category_id'       => 'nullable|exists:categories,id',
-            'subcategory_id'    => 'nullable|exists:categories,parent_category_id',
+            'subcategory_id'    => 'required|exists:categories,id',
             'contact_id'        => 'nullable|exists:contacts,id',
             'store_id'          => 'nullable|exists:stores,id',
         ]);
