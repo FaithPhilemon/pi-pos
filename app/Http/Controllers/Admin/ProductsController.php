@@ -88,6 +88,8 @@ class ProductsController extends Controller
             $image = $request->file('image');
             $imagePath = $image->store('product_images', 'public');
             $product->image = $imagePath;
+        }else {
+            $product->image = 'product_images/no-image.png';
         }
 
         $product->save();
@@ -142,8 +144,11 @@ class ProductsController extends Controller
         $product->store_id          = $request->input('store_id');
 
         if ($request->hasFile('image')) {
-            // Delete the old image
-            Storage::disk('public')->delete($product->image);
+            // Delete the old image if its not the default no-image.png
+
+            if($product->image != 'product_images/no-image.png') {
+                Storage::disk('public')->delete($product->image);
+            }
 
             $image = $request->file('image');
             $imagePath = $image->store('product_images', 'public');
@@ -165,7 +170,9 @@ class ProductsController extends Controller
             // Check if the product has an image
             if ($product->image) {
                 // Attempt to delete the image
-                Storage::disk('public')->delete($product->image);
+                if ($product->image != 'product_images/no-image.png') {
+                    Storage::disk('public')->delete($product->image);
+                }
             }
         
             $product->delete();
