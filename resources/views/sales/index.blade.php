@@ -344,6 +344,30 @@
                                         </div>
                                     </div>
 
+                                    <!-- Invoice Modal -->
+                                    <div class="modal fade" id="invoiceModal{{ $sale->id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="deleteModalLabel">Sale Invoice</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <div class="row no-print">
+                                                        <div class="col-12">
+                                                            <button type="button" class="btn btn-success pull-right"><i class="fa fa-credit-card"></i> {{ __('Submit Payment')}}</button>
+                                                            <button type="button" class="btn btn-primary pull-right"><i class="fa fa-download"></i> {{ __('Generate PDF')}}</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                 @endforeach
                             </tbody>

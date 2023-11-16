@@ -97,7 +97,7 @@
                 <div class="nav-item {{ ($segment1 == 'pos') ? 'active' : '' }}">
                     <a href="{{url('pos')}}"><i class="ik ik-printer"></i><span>{{ __('POS')}}</span> </a>
                 </div>
-{{-- 
+
                 <div class="nav-lavel">{{ __('Layouts')}} </div>
                 <div class="nav-item {{ ($segment1 == 'pos') ? 'active' : '' }}">
                     <a href="{{url('inventory')}}"><i class="ik ik-shopping-cart"></i><span>{{ __('Inventory')}}</span> </a>
@@ -125,11 +125,11 @@
                         <a href="{{url('permission')}}" class="menu-item {{ ($segment1 == 'permission') ? 'active' : '' }}">{{ __('Permission')}}</a>
                         @endcan
                     </div>
-                </div> --}}
+                </div>
 
 
                 <!-- Include demo pages inside sidebar start-->
-                @include('pages.sidebar-menu')
+                {{-- @include('pages.sidebar-menu') --}}
                 <!-- Include demo pages inside sidebar end-->
 
             </nav>   
