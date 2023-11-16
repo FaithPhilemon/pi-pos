@@ -77,14 +77,8 @@
                                         <td>{{ $settings->product_prefix }}{{ $product->id }}</td>
                                         <td>
                                             <div class="d-inline-block align-middle">
-                                                {{-- @if($product->image != null && $product->image != '')
-                                                    <img src="{{ asset('storage/' . $product->image) }}" alt="" class="rounded-circle img-40 align-top mr-15">
-                                                @else 
-                                                    <img src="storage/no-image.png" alt="" class="rounded-circle img-40 align-top mr-15">
-                                                @endif --}}
+                                               
                                                  <img src="{{ asset($product->image ? 'storage/' . $product->image : 'storage/product_images/no-image.png') }}" alt="" class="rounded img-40 align-top mr-15">
-
-                                                
                                                 {{-- <div class="d-inline-block">
                                                     <h6>{{ $settings->currency_symbol }}{{ number_format($product->price) }}</h6>
                                                     <p class="text-muted mb-0">{{ $settings->currency_symbol }}{{ number_format($product->price) }}</p>
@@ -323,7 +317,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close')}}</button>
-                        <button type="submit" class="btn btn-primary">{{ __('Save')}}</button>
+                        <button type="submit" class="btn btn-primary btn-block">{{ __('Save')}}</button>
                     </div>
                 </form>
 
