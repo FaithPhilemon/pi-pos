@@ -13,6 +13,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\ProductsController;
 use App\Http\Controllers\Admin\CategoriesController;
 use App\Http\Controllers\Admin\SalesController;
+use App\Http\Controllers\PosController;
 
 /*
 |--------------------------------------------------------------------------
@@ -134,6 +135,9 @@ Route::middleware(['auth'])->group(function () {
 	Route::get('/sale/{sale}/edit', [SalesController::class, 'edit'])->name('sales.edit');
 	Route::put('/sale/{sale}', [SalesController::class, 'update'])->name('sales.update');
 	Route::delete('/sale/{sale}', [SalesController::class, 'destroy'])->name('sales.destroy');
+
+
+	Route::get('/pos', [PosController::class, 'index'])->name('sales.pos');
 
 });
 
