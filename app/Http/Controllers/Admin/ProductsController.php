@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\Facades\Image;
+
 
 class ProductsController extends Controller
 {
@@ -59,7 +62,7 @@ class ProductsController extends Controller
             'alert_quantity'    => 'nullable|integer',
             'manage_stock'      => 'nullable|boolean',
             'price'             => 'numeric',
-            'image'             => 'image|max:500', // Max 500KB image size
+            'image'             => 'image|mimes:jpeg,png,jpg,gif,webp',
             'category_id'       => 'nullable|exists:categories,id',
             'subcategory_id'    => 'nullable|exists:categories,id',
             'contact_id'        => 'nullable|exists:contacts,id',
@@ -86,9 +89,22 @@ class ProductsController extends Controller
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imagePath = $image->store('product_images', 'public');
-            $product->image = $imagePath;
-        }else {
+        
+            // Compress the image if it's larger than 500KB
+            $compressedImage = Image::make($image)->encode('jpg', 75);
+        
+            // Check the size after compression
+            if ($compressedImage->filesize() > 500 * 1024) {
+                // If still larger than 500KB, resize it
+                $compressedImage->resize(500, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->encode('jpg', 75);
+            }
+        
+            // Save the compressed image to storage
+            $compressedImage->save(storage_path("app/public/product_images/{$image->hashName()}"), 75);
+            $product->image = "product_images/{$image->hashName()}";
+        } else {
             $product->image = 'product_images/no-image.png';
         }
 
@@ -119,7 +135,7 @@ class ProductsController extends Controller
             'alert_quantity'    => 'nullable|integer',
             'manage_stock'      => 'nullable|boolean',
             'price'             => 'numeric',
-            'image'             => 'image|max:500', // Max 500KB image size
+            'image'             => 'image|mimes:jpeg,png,jpg,gif,webp',
             'category_id'       => 'nullable|exists:categories,id',
             'subcategory_id'    => 'required|exists:categories,id',
             'contact_id'        => 'nullable|exists:contacts,id',
@@ -143,17 +159,45 @@ class ProductsController extends Controller
         $product->contact_id        = auth()->user()->id;
         $product->store_id          = $request->input('store_id');
 
-        if ($request->hasFile('image')) {
-            // Delete the old image if its not the default no-image.png
+        // if ($request->hasFile('image')) {
+        //     // Delete the old image if its not the default no-image.png
 
-            if($product->image != 'product_images/no-image.png') {
+        //     if($product->image != 'product_images/no-image.png') {
+        //         Storage::disk('public')->delete($product->image);
+        //     }
+
+        //     $image = $request->file('image');
+        //     $imagePath = $image->store('product_images', 'public');
+        //     $product->image = $imagePath;
+        // }
+
+
+        if ($request->hasFile('image')) {
+            // Delete the old image if it's not the default no-image.png
+            if ($product->image != 'product_images/no-image.png') {
                 Storage::disk('public')->delete($product->image);
             }
 
+        
             $image = $request->file('image');
-            $imagePath = $image->store('product_images', 'public');
-            $product->image = $imagePath;
+
+            // Compress the image if it's larger than 500KB
+            $compressedImage = Image::make($image)->encode('jpg', 75);
+        
+            // Check the size after compression
+            if ($compressedImage->filesize() > 500 * 1024) {
+                // If still larger than 500KB, resize it
+                $compressedImage->resize(500, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->encode('jpg', 75);
+            }
+
+            // Save the compressed image to storage
+            $compressedImage->save(storage_path("app/public/product_images/{$image->hashName()}"), 75);
+            $product->image = "product_images/{$image->hashName()}";
+
         }
+        
 
         $product->save();
 
