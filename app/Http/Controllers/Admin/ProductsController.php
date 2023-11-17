@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\Facades\Image;
+
 
 class ProductsController extends Controller
 {
@@ -30,7 +33,9 @@ class ProductsController extends Controller
             $pageTitle = Category::where('id', $request->input('type'))->first()->name;
         }
 
-        $products = $query->get();
+        // $products = $query->get();
+        $products = $query->paginate(20); // 10 items per page,
+
 
         return view('products.index', compact('products', 'categories', 'stores', 'pageTitle'));
     }
@@ -49,18 +54,19 @@ class ProductsController extends Controller
         $this->authorize('create products');
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'author' => 'nullable',
-            'ISBN' => 'nullable',
-            'description' => 'nullable',
-            'stock' => 'nullable|integer',
-            'alert_quantity' => 'nullable|integer',
-            'manage_stock' => 'nullable|boolean',
-            'price' => 'numeric',
-            'image' => 'image|max:500', // Max 500KB image size
-            'category_id' => 'nullable|exists:categories,id',
-            'contact_id' => 'nullable|exists:contacts,id',
-            'store_id' => 'nullable|exists:stores,id',
+            'name'              => 'required',
+            'author'            => 'nullable',
+            'ISBN'              => 'nullable',
+            'description'       => 'nullable',
+            'stock'             => 'nullable|integer',
+            'alert_quantity'    => 'nullable|integer',
+            'manage_stock'      => 'nullable|boolean',
+            'price'             => 'numeric',
+            'image'             => 'image|mimes:jpeg,png,jpg,gif,webp',
+            'category_id'       => 'nullable|exists:categories,id',
+            'subcategory_id'    => 'nullable|exists:categories,id',
+            'contact_id'        => 'nullable|exists:contacts,id',
+            'store_id'          => 'nullable|exists:stores,id',
         ]);
 
         if ($validator->fails()) {
@@ -68,22 +74,38 @@ class ProductsController extends Controller
         }
 
         $product = new Product();
-        $product->name = $request->input('name');
-        $product->author = $request->input('author');
-        $product->ISBN = $request->input('ISBN');
-        $product->description = $request->input('description');
-        $product->stock = $request->input('stock');
-        $product->alert_quantity = $request->input('alert_quantity');
-        $product->manage_stock = $request->input('manage_stock', 0);
-        $product->price = $request->input('price');
-        $product->category_id = $request->input('category_id');
-        $product->contact_id = $request->input('contact_id');
-        $product->store_id = $request->input('store_id');
+
+        $product->name              = $request->input('name');
+        $product->author            = $request->input('author');
+        $product->ISBN              = $request->input('ISBN');
+        $product->description       = $request->input('description');
+        $product->stock             = $request->input('stock');
+        $product->alert_quantity    = $request->input('alert_quantity');
+        $product->manage_stock      = $request->input('manage_stock', 0);
+        $product->price             = $request->input('price');
+        $product->category_id       = $request->input('subcategory_id');
+        $product->contact_id        = $request->input('contact_id');
+        $product->store_id          = $request->input('store_id');
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imagePath = $image->store('product_images', 'public');
-            $product->image = $imagePath;
+        
+            // Compress the image if it's larger than 500KB
+            $compressedImage = Image::make($image)->encode('jpg', 75);
+        
+            // Check the size after compression
+            if ($compressedImage->filesize() > 500 * 1024) {
+                // If still larger than 500KB, resize it
+                $compressedImage->resize(500, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->encode('jpg', 75);
+            }
+        
+            // Save the compressed image to storage
+            $compressedImage->save(storage_path("app/public/product_images/{$image->hashName()}"), 75);
+            $product->image = "product_images/{$image->hashName()}";
+        } else {
+            $product->image = 'product_images/no-image.png';
         }
 
         $product->save();
@@ -105,44 +127,77 @@ class ProductsController extends Controller
         $this->authorize('edit products');
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'author' => 'nullable',
-            'ISBN' => 'nullable',
-            'description' => 'nullable',
-            'stock' => 'nullable|integer',
-            'alert_quantity' => 'nullable|integer',
-            'manage_stock' => 'nullable|boolean',
-            'price' => 'numeric',
-            'image' => 'image|max:500', // Max 500KB image size
-            'category_id' => 'nullable|exists:categories,id',
-            'contact_id' => 'nullable|exists:contacts,id',
-            'store_id' => 'nullable|exists:stores,id',
+            'name'              => 'required',
+            'author'            => 'nullable',
+            'ISBN'              => 'nullable',
+            'description'       => 'nullable',
+            'stock'             => 'nullable|integer',
+            'alert_quantity'    => 'nullable|integer',
+            'manage_stock'      => 'nullable|boolean',
+            'price'             => 'numeric',
+            'image'             => 'image|mimes:jpeg,png,jpg,gif,webp',
+            'category_id'       => 'nullable|exists:categories,id',
+            'subcategory_id'    => 'required|exists:categories,id',
+            'contact_id'        => 'nullable|exists:contacts,id',
+            'store_id'          => 'nullable|exists:stores,id',
         ]);
 
         if ($validator->fails()) {
             return redirect()->route('products.edit', $product->id)->withErrors($validator)->withInput();
         }
 
-        $product->name = $request->input('name');
-        $product->author = $request->input('author');
-        $product->ISBN = $request->input('ISBN');
-        $product->description = $request->input('description');
-        $product->stock = $request->input('stock');
-        $product->alert_quantity = $request->input('alert_quantity');
-        $product->manage_stock = $request->input('manage_stock', 0);
-        $product->price = $request->input('price');
-        $product->category_id = $request->input('category_id');
-        $product->contact_id = $request->input('contact_id');
-        $product->store_id = $request->input('store_id');
+        $product->name              = $request->input('name');
+        $product->author            = $request->input('author');
+        $product->ISBN              = $request->input('ISBN');
+        $product->description       = $request->input('description');
+        $product->stock             = $request->input('stock');
+        $product->alert_quantity    = $request->input('alert_quantity');
+        $product->manage_stock      = $request->input('manage_stock', 0);
+        $product->price             = $request->input('price');
+        // $product->category_id    = $request->input('category_id');
+        $product->category_id       = $request->input('subcategory_id');
+        $product->contact_id        = auth()->user()->id;
+        $product->store_id          = $request->input('store_id');
+
+        // if ($request->hasFile('image')) {
+        //     // Delete the old image if its not the default no-image.png
+
+        //     if($product->image != 'product_images/no-image.png') {
+        //         Storage::disk('public')->delete($product->image);
+        //     }
+
+        //     $image = $request->file('image');
+        //     $imagePath = $image->store('product_images', 'public');
+        //     $product->image = $imagePath;
+        // }
+
 
         if ($request->hasFile('image')) {
-            // Delete the old image
-            Storage::disk('public')->delete($product->image);
+            // Delete the old image if it's not the default no-image.png
+            if ($product->image != 'product_images/no-image.png') {
+                Storage::disk('public')->delete($product->image);
+            }
 
+        
             $image = $request->file('image');
-            $imagePath = $image->store('product_images', 'public');
-            $product->image = $imagePath;
+
+            // Compress the image if it's larger than 500KB
+            $compressedImage = Image::make($image)->encode('jpg', 75);
+        
+            // Check the size after compression
+            if ($compressedImage->filesize() > 500 * 1024) {
+                // If still larger than 500KB, resize it
+                $compressedImage->resize(500, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->encode('jpg', 75);
+            }
+
+            // Save the compressed image to storage
+            $compressedImage->save(storage_path("app/public/product_images/{$image->hashName()}"), 75);
+            $product->image = "product_images/{$image->hashName()}";
+
         }
+        
 
         $product->save();
 
@@ -159,7 +214,9 @@ class ProductsController extends Controller
             // Check if the product has an image
             if ($product->image) {
                 // Attempt to delete the image
-                Storage::disk('public')->delete($product->image);
+                if ($product->image != 'product_images/no-image.png') {
+                    Storage::disk('public')->delete($product->image);
+                }
             }
         
             $product->delete();

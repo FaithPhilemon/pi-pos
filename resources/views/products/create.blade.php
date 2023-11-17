@@ -60,107 +60,98 @@
 
                         <form class="forms-sample" action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
-                            <div class="modal-body">
-                                @if ($errors->any())
-                                    <div class="alert alert-danger">
-                                        <ul>
-                                            @foreach ($errors->all() as $error)
-                                                <li>{{ $error }}</li>
+                            <div class="row">
+                                <div class="col-sm-8">
+    
+                                    <div class="form-group">
+                                        <label for="name">Product Title/Name<span class="text-red">*</span></label>
+                                        <input id="name" type="text" class="form-control" name="name" value="" placeholder="Enter product title" required="">
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+    
+                                    <div class="form-group">
+                                        <label>Description</label>
+                                        <textarea class="form-control html-editor h-205" id="product_description" name="description" rows="10"></textarea>
+                                    </div>
+    
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Product Image</label>
+                                                {{-- <div class="input-images" data-input-name="product-images" data-label="Drag & Drop product images here or click to browse"></div> --}}
+                                                <input type="file" class="form-control-file" id="productImage" name="image">
+                                                
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <img id="preview" src="#" alt="image" height="50" width="50" class="img-thumbnail responsive border-0 mt-3 mb-3" style="display:none;"/>
+                                        </div>
+        
+        
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="store">{{ __('Store')}}</label>
+                                                <select class="form-control" id="store" name="store_id">
+                                                    @foreach($stores as $store)
+                                                        <option value="{{ $store->id }}">{{ $store->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary btn-block">{{ __('Save')}}</button>
+    
+                                </div>
+                                <div class="col-sm-4">
+    
+                                    <div class="form-group">
+                                        <label for="category">{{ __('Category')}}<span class="text-red">*</span></label>
+                                        <select class="form-control" id="category" name="category_id" required>
+                                            <option value="">--------</option>
+                                            @foreach($categories as $category)
+                                                @if(!$category->parent_category_id || in_array($category->id, [1, 2]))
+                                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                                @endif
                                             @endforeach
-                                        </ul>
+                                        </select>
                                     </div>
-                                @endif
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="store">{{ __('Store')}}</label>
-                                            <select class="form-control" id="store" name="store_id">
-                                                @foreach($stores as $store)
-                                                    <option value="{{ $store->id }}">{{ $store->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+    
+                                    <div class="form-group">
+                                        <label for="subcategory">{{ __('Subcategory')}}</label>
+                                        <select class="form-control" id="subcategory" name="subcategory_id" disabled>
+                                            <!-- Subcategories will be populated dynamically using JavaScript -->
+                                        </select>
                                     </div>
-        
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="category">{{ __('Category')}}</label>
-                                            <select class="form-control" id="category" name="category_id" required>
-                                                <option value="">--------</option>
-                                                @foreach($categories as $category)
-                                                    @if(!$category->sub_category_id || in_array($category->id, [1, 2]))
-                                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                                    @endif
-                                                @endforeach
-                                            </select>
-                                        </div>
+    
+                                    <div class="form-group">
+                                        <label for="product_stock">{{ __('Qty')}}<span class="text-red">*</span></label>
+                                        <input type="number" class="form-control" id="product_stock" name="stock" placeholder="Stock Quantity" required>
                                     </div>
-        
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="subcategory">{{ __('Subcategory')}}</label>
-                                            <select class="form-control" id="subcategory" name="subcategory_id" disabled>
-                                                <!-- Subcategories will be populated dynamically using JavaScript -->
-                                            </select>
-                                        </div>
+    
+                                    <div class="form-group">
+                                        <label for="product_alert_quantity">{{ __('Stock Alert')}}<span class="text-red">*</span></label>
+                                        <input type="number" class="form-control" id="product_alert_quantity" name="alert_quantity" placeholder="Alert Quantity">
                                     </div>
+    
+                                    <div class="form-group">
+                                        <label for="product_price">{{ __('Price')}} <span class="text-red">*</span></label>
+                                        <input type="text" class="form-control" id="product_price" name="price" placeholder="Enter product price" required>
+                                    </div>
+    
+                                    <div class="form-group">
+                                        <label for="product_author">{{ __('Author')}}</label>
+                                        <input type="text" class="form-control" id="product_author" name="author" placeholder="Author">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="product_isbn">{{ __('ISBN')}}</label>
+                                        <input type="text" class="form-control" id="product_isbn" name="ISBN" placeholder="ISBN">
+                                    </div>
+    
                                 </div>
-                            
-                                <div class="form-group">
-                                    <label for="product_name">{{ __('Name')}}</label>
-                                    <input type="text" class="form-control" id="product_name" name="name" placeholder="Name" required>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="product_author">{{ __('Author')}}</label>
-                                            <input type="text" class="form-control" id="product_author" name="author" placeholder="Author">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="product_isbn">{{ __('ISBN')}}</label>
-                                            <input type="text" class="form-control" id="product_isbn" name="ISBN" placeholder="ISBN">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="product_description">{{ __('Description')}}</label>
-                                    <textarea class="form-control" id="product_description" name="description" rows="4"></textarea>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="product_stock">{{ __('Quantity')}}</label>
-                                            <input type="number" class="form-control" id="product_stock" name="stock" placeholder="Stock Quantity" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="product_alert_quantity">{{ __('Alert Quantity')}}</label>
-                                            <input type="number" class="form-control" id="product_alert_quantity" name="alert_quantity" placeholder="Alert Quantity">
-                                        </div>
-                                    </div>
-        
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="product_price">{{ __('Price')}}</label>
-                                            <input type="text" class="form-control" id="product_price" name="price" placeholder="Price" required>
-                                        </div>
-                                    </div>
-        
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="product_image">{{ __('Product Image')}}</label>
-                                    <input type="file" class="form-control-file" id="product_image" name="image">
-                                </div>
-                               
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close')}}</button>
-                                <button type="submit" class="btn btn-primary">{{ __('Save')}}</button>
-                            </div>
+
                         </form>
                         
                     </div>
@@ -225,6 +216,17 @@
                     });
                 }
             });
+        </script>
+
+        <script>
+            productImage.onchange = evt => {
+                preview = document.getElementById('preview');
+                preview.style.display = 'block';
+                const [file] = productImage.files
+                if (file) {
+                    preview.src = URL.createObjectURL(file)
+                }
+            }
         </script>
     @endpush
 

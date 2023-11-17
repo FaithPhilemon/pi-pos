@@ -32,7 +32,7 @@
                 <div class="card ">
                     <div class="card-body">
                         <form class="forms-sample" method="POST" action="/inventory/products">
-                        <input type="hidden" name="_token" value="R7Ddbbgxb1qEbQoTDakkow75fNl3gqY3q3qkjl94">                            <div class="row">
+                            <input type="hidden" name="_token" value="R7Ddbbgxb1qEbQoTDakkow75fNl3gqY3q3qkjl94">                            <div class="row">
                                 <div class="col-sm-6">
 
                                     <div class="form-group">

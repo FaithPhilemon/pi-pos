@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 // new inventory routes
 Route::get('/inventory', function () { return view('inventory.dashboard'); });
-Route::get('/pos', function () { return view('inventory.pos'); });
+// Route::get('/pos', function () { return view('inventory.pos'); });
 Route::get('/products', function () { return view('inventory.product.list'); });
 Route::get('/products/create', function () { return view('inventory.product.create'); }); 
 Route::get('/categories', function () { return view('inventory.category.index'); }); 

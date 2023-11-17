@@ -7,6 +7,8 @@ $(document).ready(function() {
             'bSortable': false,
             'aTargets': ['nosort']
         }],
+        paging: false, // Disable pagination
+        info: false,  // Disable the "Showing 1 to 10 of 10 entries" text
         dom: "<'row'<'col-sm-2'l><'col-sm-7 text-center'B><'col-sm-3'f>>tipr",
                 buttons: [
                     {
