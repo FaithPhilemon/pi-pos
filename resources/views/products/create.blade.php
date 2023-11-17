@@ -74,18 +74,31 @@
                                         <textarea class="form-control html-editor h-205" id="product_description" name="description" rows="10"></textarea>
                                     </div>
     
-                                    <div class="form-group">
-                                        <label>Product Image</label>
-                                        <input type="file" class="form-control-file" id="product_image" name="image">
-                                    </div>
-    
-                                    <div class="form-group">
-                                        <label for="store">{{ __('Store')}}</label>
-                                        <select class="form-control" id="store" name="store_id">
-                                            @foreach($stores as $store)
-                                                <option value="{{ $store->id }}">{{ $store->name }}</option>
-                                            @endforeach
-                                        </select>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Product Image</label>
+                                                {{-- <div class="input-images" data-input-name="product-images" data-label="Drag & Drop product images here or click to browse"></div> --}}
+                                                <input type="file" class="form-control-file" id="productImage" name="image">
+                                                
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <img id="preview" src="#" alt="image" height="50" width="50" class="img-thumbnail responsive border-0 mt-3 mb-3" style="display:none;"/>
+                                        </div>
+        
+        
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="store">{{ __('Store')}}</label>
+                                                <select class="form-control" id="store" name="store_id">
+                                                    @foreach($stores as $store)
+                                                        <option value="{{ $store->id }}">{{ $store->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <button type="submit" class="btn btn-primary btn-block">{{ __('Save')}}</button>
@@ -203,6 +216,17 @@
                     });
                 }
             });
+        </script>
+
+        <script>
+            productImage.onchange = evt => {
+                preview = document.getElementById('preview');
+                preview.style.display = 'block';
+                const [file] = productImage.files
+                if (file) {
+                    preview.src = URL.createObjectURL(file)
+                }
+            }
         </script>
     @endpush
 

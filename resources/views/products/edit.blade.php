@@ -80,25 +80,39 @@
                                         <label>Description</label>
                                         <textarea class="form-control html-editor h-205" id="product_description" name="description" rows="10">{{ $product->description }}</textarea>
                                     </div>
-                        
-                                    <div class="form-group">
-                                        <label>Product Image</label>
-                                        <input type="file" class="form-control-file" id="product_image" name="image">
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Product Image</label>
+                                                <input type="file" class="form-control-file" id="productImage" name="image">
+                                                <img id="preview" src="#" alt="image" height="50" width="50" class="img-thumbnail responsive border-0 mt-3" style="display:none;"/>
+                                                @error('image')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                        </div>
+        
+        
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="store">{{ __('Store')}}</label>
+                                                <select class="form-control" id="store" name="store_id">
+                                                    @foreach($stores as $store)
+                                                        <option value="{{ $store->id }}" {{ $store->id == $product->store_id ? 'selected' : '' }}>{{ $store->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
-                        
-                                    <div class="form-group">
-                                        <label for="store">{{ __('Store')}}</label>
-                                        <select class="form-control" id="store" name="store_id">
-                                            @foreach($stores as $store)
-                                                <option value="{{ $store->id }}" {{ $store->id == $product->store_id ? 'selected' : '' }}>{{ $store->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                        
+
                                     <button type="submit" class="btn btn-primary btn-block">{{ __('Update')}}</button>
                                 </div>
 
                                 <div class="col-md-4">
+
                                     <div class="form-group">
                                         <label for="category">{{ __('Category')}}<span class="text-red">*</span></label>
                                         <select class="form-control" id="category" name="category_id" required>
@@ -324,6 +338,18 @@
                     });
                 }
             });
+        </script>
+
+
+        <script>
+            productImage.onchange = evt => {
+                preview = document.getElementById('preview');
+                preview.style.display = 'block';
+                const [file] = productImage.files
+                if (file) {
+                    preview.src = URL.createObjectURL(file)
+                }
+            }
         </script>
     @endpush
 
