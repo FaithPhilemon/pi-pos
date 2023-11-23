@@ -29,7 +29,7 @@ class ContactGroupsController extends Controller
             'name' => $request->input('name'),
         ]);
 
-        return redirect()->route('contact-groups.index')->with('success', 'Contact group created successfully.');
+        return redirect()->route('contacts.groups')->with('success', 'Contact group created successfully.');
     }
 
     public function edit(ContactGroup $contactGroup)
@@ -47,7 +47,7 @@ class ContactGroupsController extends Controller
             'name' => $request->input('name'),
         ]);
 
-        return redirect()->route('contact-groups.index')->with('success', 'Contact group updated successfully.');
+        return redirect()->route('contacts.groups')->with('success', 'Contact group updated successfully.');
     }
 
     public function destroy(ContactGroup $contactGroup)
