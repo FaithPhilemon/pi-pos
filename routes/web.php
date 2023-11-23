@@ -13,7 +13,10 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\ProductsController;
 use App\Http\Controllers\Admin\CategoriesController;
 use App\Http\Controllers\Admin\SalesController;
+use App\Http\Controllers\Admin\ContactsController;
+use App\Http\Controllers\Admin\ContactGroupsController;
 use App\Http\Controllers\PosController;
+use App\Http\Controllers\SettingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -138,6 +141,25 @@ Route::middleware(['auth'])->group(function () {
 
 
 	Route::get('/pos', [PosController::class, 'index'])->name('sales.pos');
+
+
+	Route::get('contacts', [ContactsController::class, 'index'])->name('contacts.index');
+    Route::get('contact/contact', [ContactsController::class, 'show'])->name('contacts.show');
+    // Route::get('sale/create', [ContactsController::class, 'create'])->name('contacts.create');
+	Route::post('contacts', [ContactsController::class, 'store'])->name('contacts.store');
+	Route::get('/contact/{contact}/edit', [ContactsController::class, 'edit'])->name('contacts.edit');
+	Route::put('/contact/{contact}', [ContactsController::class, 'update'])->name('contacts.update');
+	Route::delete('/contact/{contact}', [ContactsController::class, 'destroy'])->name('contacts.destroy');
+    Route::get('contact/contact', [ContactsController::class, 'show'])->name('contacts.show');
+    
+	Route::get('contactsGroups', [ContactGroupsController::class, 'index'])->name('contacts.groups');
+	Route::post('contactsGroups', [ContactGroupsController::class, 'store'])->name('contactGroup.store');
+	Route::put('/contactsGroup/{contactsGroup}', [ContactGroupsController::class, 'update'])->name('contactGroup.update');
+	Route::delete('/contactsGroup/{contactsGroup}', [ContactGroupsController::class, 'destroy'])->name('contactGroup.destroy');
+
+	
+	
+	Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
 
 });
 

@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-	<title>POS | Radmin - Laravel Admin Starter</title>
+	<title>POS | Discovery World Bookshop</title>
 	<!-- initiate head with meta tags, css and script -->
 	@include('include.head')
 </head>
@@ -17,10 +17,10 @@ shuffle($products);
 			<div class="row">
 				<div class="col-sm-1 bg-white h-100vh ">
 					<div class="pos top-menu mt-20 text-center">
-						<a href="{{url('/inventory')}}" class="nav-link m-auto mb-10"><i class="ik ik-arrow-left-circle"></i></a>
+						<a href="{{url('/dashboard')}}" class="nav-link m-auto mb-10"><i class="ik ik-arrow-left-circle"></i></a>
 						<a href="#" class="nav-link m-auto mb-10" id="apps_modal_btn" data-toggle="modal" data-target="#appsModal"><i class="ik ik-grid"></i></a>
-						<a class="nav-link m-auto mb-10" href="#" id="notiDropdown"><i class="ik ik-bell"></i><span class="badge bg-danger">3</span></a>
-						<a class="nav-link m-auto mb-10" href="{{url('profile')}}"><i class="ik ik-user"></i></a>
+						<a class="nav-link m-auto mb-10" href="#" id="notiDropdown"><i class="ik ik-bell"></i><span class="badge bg-danger">1</span></a>
+						{{-- <a class="nav-link m-auto mb-10" href="{{url('profile')}}"><i class="ik ik-user"></i></a> --}}
 						<a class="nav-link m-auto mb-10" href="{{ url('logout') }}">
 							<i class="ik ik-power"></i>
 						</a>
@@ -32,7 +32,7 @@ shuffle($products);
 							<div class="col-sm-3">
 								<div class="form-group">
 									<select class="form-control select2" name="warehouse">
-										<option selected="selected" value="">Select Warehouse</option>
+										<option selected="selected" value="">Select Store</option>
 										<option value="1">Warehouse 1</option>
 										<option value="2">Warehouse 2</option>
 									</select>
@@ -49,25 +49,6 @@ shuffle($products);
 						<div class="row pos-products layout-wrap" id="layout-wrap">
 
 							<!-- include product preview page -->
-							{{-- @foreach(array_slice($products, 0, 8) as $key => $product)
-								<div class="col-xl-3 col-lg-4 col-12 col-sm-6 mb-2 list-item list-item-grid p-2">
-									<div class="card mb-1 pos-product-card" data-info="{{ htmlentities(json_encode($product)) }}">
-										<div class="d-flex card-img">
-											<img src="{{asset($product['image'])}}" alt="{{$product['name']}}" class="list-thumbnail responsive border-0">
-										</div>
-										<div class="p-2">
-											<p>{{$product['name']}} <small class="text-muted">{{$product['category_name']}}</small> </p>
-											@if($product['offer_price'])
-											<span class="product-price"><span class="price-symbol">$</span>{{$product['offer_price']}}</span> <small class="text-red font-15"><s>{{$product['regular_price']}}</s></small>
-											@else
-											<span class="product-price"><span class="price-symbol">$</span>{{$product['regular_price']}}</span>
-											@endif
-										</div>
-									</div>
-								</div>
-							@endforeach --}}
-
-
 							@foreach($products as $key => $product)
 								<div class="col-xl-3 col-lg-4 col-12 col-sm-6 mb-2 list-item list-item-grid p-2">
 									<div class="card mb-1 pos-product-card" data-info="{{ htmlentities(json_encode($product)) }}">
@@ -76,11 +57,6 @@ shuffle($products);
 										</div>
 										<div class="p-2">
 											<p>{{$product->name}} <br><small class="text-muted">{{$product->category->name}}</small> </p>
-											{{-- @if($product['offer_price'])
-												<span class="product-price"><span class="price-symbol">$</span>{{$product['offer_price']}}</span> <small class="text-red font-15"><s>{{$product['regular_price']}}</s></small>
-											@else
-												<span class="product-price"><span class="price-symbol">{{ $settings->currency_symbol }}</span>{{ number_format($product->price) }}</span>
-											@endif --}}
 
 											<span class="product-price"><span class="price-symbol">{{ $settings->currency_symbol }}</span>{{ number_format($product->price) }}</span>
 										</div>
@@ -193,8 +169,9 @@ shuffle($products);
 		var cart = {};
 		$(document).on('click', '.pos-product-card', function() {
 			var product = JSON.parse(decodeString($(this).data('info')));
-			var price = product.offer_price ? product.offer_price : product.regular_price;
+			var price = parseFloat(product.price) || 0; // Ensure price is a number //product.offer_price ? product.offer_price : product.regular_price;
 			var id = product.id;
+			console.log(product.image);
 
 			if (cart.hasOwnProperty(id)) {
 				cart[id].quantity++;
@@ -202,12 +179,14 @@ shuffle($products);
 			} else {
 				cart[id] = {
 					name: product.name,
-					image: product.image,
+					image: 'storage/'+product.image,
 					price: price,
 					quantity: 1,
 					subtotal: price
 				};
 			}
+
+			// console.log(cart);
 			// Update cart table
 			updateCartTable();
 		});
@@ -245,6 +224,7 @@ shuffle($products);
 			for (var id in cart) {
 				if (cart.hasOwnProperty(id)) {
 					var item = cart[id];
+
 					var $tr = `<div class="d-flex justify-content-between position-relative">
 								<i class="text-red ik ik-x-circle cart-remove cursor-pointer" onclick="removeCartItem(${id})"></i>
 								<div class="cart-image-holder">
@@ -262,6 +242,8 @@ shuffle($products);
 					cartTotal += item.subtotal;
 				}
 			}
+
+			// <img src="${item.image}">
 
 			// Update cart total
 			$cartTotal.text(cartTotal.toFixed(2));
