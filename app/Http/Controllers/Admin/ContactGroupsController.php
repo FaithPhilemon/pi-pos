@@ -10,8 +10,8 @@ class ContactGroupsController extends Controller
 {
     public function index()
     {
-        $contactGroups = ContactGroup::all();
-        return view('contact_groups.index', compact('contactGroups'));
+        $groups = ContactGroup::all();
+        return view('contacts.groups', compact('groups'));
     }
 
     public function create()
