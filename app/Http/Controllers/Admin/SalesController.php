@@ -12,6 +12,7 @@ use App\Models\SaleStatus;
 use App\Models\PaymentMethod;
 use App\Models\ShippingStatus;
 use App\Models\Contact;
+use App\Models\SaleItem;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -104,34 +105,74 @@ class SalesController extends Controller
 
         try {
 
-            // Generate invoice number
-            $lastSale = Sale::latest()->first();
-            $lastId = $lastSale ? $lastSale->id : 0;
-            $randomNumber = rand(1000, 9999); 
-            $invoiceNumber = ($lastId + 1). $randomNumber;
 
-            $sale = new Sale();
+             // Generate invoice number
+             $lastSale = Sale::latest()->first();
+             $lastId = $lastSale ? $lastSale->id : 0;
+             $randomNumber = rand(1000, 9999); 
+             $invoiceNumber = ($lastId + 1). $randomNumber;
 
-            $sale->invoice_number       = $invoiceNumber;
-            $sale->date                 = $request->date;
-            $sale->phone_number         = $request->phone_number;
-            $sale->customer_name        = $request->customer_name;
-            $sale->store                = $request->store;
-            $sale->sale_status_id       = $request->sale_status;
-            $sale->payment_status_id    = $request->payment_status;
-            $sale->payment_method_id    = $request->payment_method;  
-            $sale->total_amount         = $request->total_amount;
-            $sale->total_paid           = $request->total_paid;
-            $sale->total_items          = $request->total_items;
-            $sale->shipping_status_id   = $request->shipping_status;
-            $sale->shipping_details     = $request->shipping_details;
-            $sale->added_by             = auth()->user()->id;
-            $sale->staff_note           = $request->staff_note;
-            $sale->sale_note            = $request->sale_note;
 
-            $sale->save();
+             $sale = Sale::create([
+                'invoice_number' => $invoiceNumber,
+                'date' => $request->date,
+                'phone_number' => $request->phone_number,
+                'customer_name' => $request->customer_name,
+                'store' => $request->store,
+                'sale_status_id' => $request->sale_status,
+                'payment_status_id' => $request->payment_status,
+                'payment_method_id' => $request->payment_method,
+                'total_amount' => $request->total_amount,
+                'total_paid' => $request->total_paid,
+                'total_items' => $request->total_items,
+                'shipping_status_id' => $request->shipping_status,
+                'shipping_details' => $request->shipping_details,
+                'added_by' => auth()->user()->id,
+                'staff_note' => $request->staff_note,
+                'sale_note' => $request->sale_note,
+            ]);
+            
+            // Access the last inserted ID directly from the model
+            $lastId = $sale->id;
+            
+            
+            // Insert sale items
+            foreach ($request->input('products') as $product) {
+                SaleItem::create([
+                    'sale_id' => $lastId, // Use the last inserted ID
+                    'product_name' => $product['product_name'],
+                    'price' => $product['price'],
+                    'quantity' => $product['quantity'],
+                    'total' => $product['quantity'] * $product['price'],
+                ]);
+            }
+
+            // Update totals in the sales table
+            $sale->updateTotals();
 
             return redirect()->route('sales.index')->with('success', 'Sale created successfully.');
+ 
+            //  $sale = new Sale();
+ 
+            //  $sale->invoice_number       = $invoiceNumber;
+            //  $sale->date                 = $request->date;
+            //  $sale->phone_number         = $request->phone_number;
+            //  $sale->customer_name        = $request->customer_name;
+            //  $sale->store                = $request->store;
+            //  $sale->sale_status_id       = $request->sale_status;
+            //  $sale->payment_status_id    = $request->payment_status;
+            //  $sale->payment_method_id    = $request->payment_method;  
+            //  $sale->total_amount         = $request->total_amount;
+            //  $sale->total_paid           = $request->total_paid;
+            //  $sale->total_items          = $request->total_items;
+            //  $sale->shipping_status_id   = $request->shipping_status;
+            //  $sale->shipping_details     = $request->shipping_details;
+            //  $sale->added_by             = auth()->user()->id;
+            //  $sale->staff_note           = $request->staff_note;
+            //  $sale->sale_note            = $request->sale_note;
+ 
+            //  $sale->save();
+
 
         }catch (\Exception $e) {
             $bug = $e->getMessage();

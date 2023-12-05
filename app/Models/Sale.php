@@ -28,6 +28,21 @@ class Sale extends Model
         'sale_note',
     ];
 
+
+    public function saleItems()
+    {
+        return $this->hasMany(SaleItem::class);
+    }
+
+    public function updateSaleTotals()
+    {
+        $this->total_amount = $this->saleItems()->sum('total');
+        $this->total_paid   = $this->saleItems()->sum('price');
+        $this->total_items  = $this->saleItems()->sum('quantity');
+        $this->save();
+    }
+
+
     public function addedBy()
     {
         return $this->belongsTo(User::class, 'added_by');
