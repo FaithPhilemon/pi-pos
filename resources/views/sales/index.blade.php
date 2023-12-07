@@ -44,7 +44,8 @@
                             <h3 class="mr-auto p-2">{{$pageTitle}}</h3>
                             {{-- <a href="{{ route('products.index', ['type' => 1]) }}" class="btn btn-outline-warning p-2 mr-5">{{ __('Book Products')}}</a>
                             <a href="{{ route('products.index', ['type' => 2]) }}" class="btn btn-outline-success p-2 mr-5">{{ __('Non-book Products')}}</a> --}}
-                            <button type="button" class="btn btn-outline-primary p-2 mr-10" data-toggle="modal" data-target="#addNewModal">{{ __('Add Sale')}}</button>
+                            {{-- <button type="button" class="btn btn-outline-primary p-2 mr-10" data-toggle="modal" data-target="#addNewModal">{{ __('Add Sale')}}</button> --}}
+                            <a type="button" class="btn btn-outline-primary p-2 mr-10" href="{{ route('sales.create') }}">{{ __('Add Sale')}}</a>
                     </div>
                     <div class="card-body">
                         @if ($errors->any())
