@@ -13,6 +13,7 @@ use App\Models\PaymentMethod;
 use App\Models\ShippingStatus;
 use App\Models\Contact;
 use App\Models\SaleItem;
+use App\Models\Product;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -55,7 +56,7 @@ class SalesController extends Controller
         }
 
         // $sales = $query->get();
-        $sales = $query->paginate(10); // 10 items per page,
+        $sales = $query->paginate(20); // 10 items per page,
 
         return view('sales.index', compact('sales',
                                            'pageTitle',
@@ -69,11 +70,30 @@ class SalesController extends Controller
                                         ));
     }
 
-    // public function create()
-    // {
-    //     $this->authorize('create sales');
-    //     return view('sales.create');
-    // }
+    public function create()
+    {
+        $this->authorize('create sales');
+        
+        $customers          = Contact::where('contact_group', 1)->get();
+        $stores             = Store::all();
+        $paymentMethods     = PaymentMethod::all();
+        $saleStatuses       = SaleStatus::all();
+        $paymentStatuses    = PaymentStatus::all();
+        $shippingStatuses   = ShippingStatus::all();
+        $users              = User::all();
+        $products           = Product::select('id', 'name', 'price', 'author', 'ISBN')->get();
+
+        return view('sales.create', compact('customers',
+                                            'stores',
+                                            'shippingStatuses',
+                                            'paymentMethods',
+                                            'saleStatuses',
+                                            'paymentStatuses',
+                                            'shippingStatuses',
+                                            'users',
+                                            'products'
+                                        ));
+    }
 
     public function store(Request $request)
     {
@@ -83,15 +103,15 @@ class SalesController extends Controller
         $validator = Validator::make($request->all(), [
             'invoice_number'    => 'nullable',
             'date'              => 'required|date',
-            'phone_number'      => 'required',
+            'phone_number'      => 'nullable',
             'customer_name'     => 'required',
             'store'             => 'required',
             'payment_status'    => 'required',
             'sale_status'       => 'required',
             'payment_method'    => 'required',
-            'total_amount'      => 'numeric',
-            'total_paid'        => 'numeric',
-            'total_items'       => 'integer',
+            'total_amount'      => 'numeric|nullable',
+            'total_paid'        => 'numeric|nullable',
+            'total_items'       => 'integer|nullable',
             'shipping_status'   => 'integer',
             'shipping_details'  => 'nullable',
             'added_by'          => 'exists:users,id',
@@ -100,7 +120,7 @@ class SalesController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('sales.index')->withErrors($validator)->withInput();
+            return redirect()->route('sales.create')->withErrors($validator)->withInput();
         }
 
         try {
@@ -114,22 +134,22 @@ class SalesController extends Controller
 
 
              $sale = Sale::create([
-                'invoice_number' => $invoiceNumber,
-                'date' => $request->date,
-                'phone_number' => $request->phone_number,
-                'customer_name' => $request->customer_name,
-                'store' => $request->store,
-                'sale_status_id' => $request->sale_status,
-                'payment_status_id' => $request->payment_status,
-                'payment_method_id' => $request->payment_method,
-                'total_amount' => $request->total_amount,
-                'total_paid' => $request->total_paid,
-                'total_items' => $request->total_items,
-                'shipping_status_id' => $request->shipping_status,
-                'shipping_details' => $request->shipping_details,
-                'added_by' => auth()->user()->id,
-                'staff_note' => $request->staff_note,
-                'sale_note' => $request->sale_note,
+                'invoice_number'        => $invoiceNumber,
+                'date'                  => $request->date,
+                'phone_number'          => $request->phone_number,
+                'customer_name'         => $request->customer_name,
+                'store'                 => $request->store,
+                'sale_status_id'        => $request->sale_status,
+                'payment_status_id'     => $request->payment_status,
+                'payment_method_id'     => $request->payment_method,
+                'total_amount'          => 0, //$request->total_amount,
+                'total_paid'            => 0, //$request->total_paid,
+                'total_items'           => 0, //$request->total_items,
+                'shipping_status_id'    => $request->shipping_status,
+                'shipping_details'      => $request->shipping_details,
+                'added_by'              => auth()->user()->id,
+                'staff_note'            => $request->staff_note,
+                'sale_note'             => $request->sale_note,
             ]);
             
             // Access the last inserted ID directly from the model
@@ -148,9 +168,9 @@ class SalesController extends Controller
             }
 
             // Update totals in the sales table
-            $sale->updateTotals();
+            $sale->updateSaleTotals();
 
-            return redirect()->route('sales.index')->with('success', 'Sale created successfully.');
+            return redirect()->route('sales.create')->with('success', 'Sale created successfully.');
  
             //  $sale = new Sale();
  

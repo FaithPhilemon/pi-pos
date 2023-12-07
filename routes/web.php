@@ -133,7 +133,7 @@ Route::middleware(['auth'])->group(function () {
 
 	Route::get('sales', [SalesController::class, 'index'])->name('sales.index');
     Route::get('sale/sale', [SalesController::class, 'show'])->name('sales.show');
-    // Route::get('sale/create', [SalesController::class, 'create'])->name('sales.create');
+    Route::get('sale/create', [SalesController::class, 'create'])->name('sales.create');
 	Route::post('sales', [SalesController::class, 'store'])->name('sales.store');
 	Route::get('/sale/{sale}/edit', [SalesController::class, 'edit'])->name('sales.edit');
 	Route::put('/sale/{sale}', [SalesController::class, 'update'])->name('sales.update');
