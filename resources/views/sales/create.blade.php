@@ -64,14 +64,18 @@
                             @csrf
         
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="date">{{ __('Date')}}</label>
-                                            <input type="date" class="form-control" id="date" name="date" required>
+                                            <label for="store">{{ __('Store')}}</label>
+                                            <select class="form-control" id="store" name="store" required>
+                                                @foreach($stores as $store)
+                                                    <option value="{{ $store->name }}">{{ $store->name }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
 
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="invoice_number">{{ __('Customer Name')}}</label>                                    
                                             <select class="form-control" id="customer_name" name="customer_name" required>
@@ -82,27 +86,23 @@
                                         </div>
                                     </div>
 
-        
-                                    {{-- <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <div class="form-group">
-                                            <label for="phone_number">{{ __('Contact Number')}}</label>
-                                            <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Phone Number" required>
+                                            <label for="phone_number">{{ __('Phone Number')}}</label>
+                                            <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Customer's Phone Number">
                                         </div>
-                                    </div> --}}
-        
-        
-                                    <div class="col-md-4">
+                                    </div>
+
+
+                                    <div class="col-md-3">
                                         <div class="form-group">
-                                            <label for="store">{{ __('Store')}}</label>
-                                            <select class="form-control" id="store" name="store" required>
-                                                @foreach($stores as $store)
-                                                    <option value="{{ $store->name }}">{{ $store->name }}</option>
-                                                @endforeach
-                                            </select>
+                                            <label for="date">{{ __('Date')}}</label>
+                                            <input type="date" class="form-control" id="date" name="date" required>
                                         </div>
                                     </div>
         
-                                    <div class="col-md-4">
+        
+                                    <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="payment_status">{{ __('Payment Status')}}</label>
                                             <select class="form-control" id="payment_status" name="payment_status" required>
@@ -113,7 +113,7 @@
                                         </div>
                                     </div>
         
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="payment_method">{{ __('Payment Method')}}</label>
                                             <select class="form-control" id="payment_method" name="payment_method" required>
@@ -124,7 +124,7 @@
                                         </div>
                                     </div>
         
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="sale_status">{{ __('Sale Status')}}</label>
                                             <select class="form-control" id="sale_status" name="sale_status" required>
