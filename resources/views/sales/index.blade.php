@@ -83,7 +83,8 @@
                                             <button type="button" class="btn btn-outline-dark btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ __('Actions')}} <i class="ik ik-chevron-down"></i></button>
                                             <div class="dropdown-menu">
                                                 <a class="dropdown-item" href="#">{{ __('View')}}</a>
-                                                <a class="dropdown-item" data-toggle="modal" data-target="#editNewModal{{ $sale->id}}" href="#">{{ __('Edit')}}</a>
+                                                {{-- <a class="dropdown-item" data-toggle="modal" data-target="#editNewModal{{ $sale->id}}" href="#">{{ __('Edit')}}</a> --}}
+                                                <a class="dropdown-item" href="{{ route('sales.edit', $sale->id) }}">Edit</a>
                                                 <a class="dropdown-item" data-toggle="modal" data-target="#deleteModal{{ $sale->id }}" href="#">{{ __('Delete')}}</a>
                                                 <div role="separator" class="dropdown-divider"></div>
                                                 <a class="dropdown-item" data-toggle="modal" data-target="#invoiceModal{{ $sale->id }}" href="#">{{ __('Ivoice')}}</a>
@@ -147,7 +148,7 @@
                                     </tr>
 
 
-                                    <div class="modal fade" id="editNewModal{{ $sale->id }}" tabindex="-1" role="dialog" aria-labelledby="demoModalLabel" aria-hidden="true">
+                                    {{-- <div class="modal fade" id="editNewModal{{ $sale->id }}" tabindex="-1" role="dialog" aria-labelledby="demoModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-lg" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
@@ -155,169 +156,141 @@
                                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                                 </div>
                                                 
-                                
-                                                <form class="forms-sample" action="{{ route('sales.update', $sale->id) }}" method="POST">
+
+                                                <form class="forms-sample repeater" action="{{ route('sales.update', ['sale' => $sale->id]) }}" method="POST">
                                                     @csrf
                                                     @method('PUT')
-
-                                                    <div class="modal-body">
-                                                        <div class="row">
-                                                            @if ($errors->any())
-                                                                <div class="alert alert-danger">
-                                                                    <ul>
-                                                                        @foreach ($errors->all() as $error)
-                                                                            <li>{{ $error }}</li>
-                                                                        @endforeach
-                                                                    </ul>
-                                                                </div>
-                                                            @endif
-
+                                                
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label for="store">{{ __('Store')}}</label>
+                                                                <select class="form-control" id="store" name="store" required>
+                                                                    @foreach($stores as $store)
+                                                                        <option value="{{ $store->name }}" {{ $store->name == $sale->store ? 'selected' : '' }}>{{ $store->name }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
                                                         </div>
-                                                        
-                                                        <div class="row">
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label for="invoice_number">{{ __('Invoice Number')}}</label>
-                                                                    <input value="{{ $sale->invoice_number }}" type="text" class="form-control" id="invoice_number" name="invoice_number">
-                                                                </div>
+                                                
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="invoice_number">{{ __('Customer Name')}}</label>
+                                                                <select class="form-control" id="customer_name" name="customer_name" required>
+                                                                    @foreach($customers as $customer)
+                                                                        <option value="{{ $customer->contact_name }}" {{ $customer->contact_name == $sale->customer_name ? 'selected' : '' }}>{{ $customer->contact_name }}</option>
+                                                                    @endforeach
+                                                                </select>
                                                             </div>
-
-
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label for="date">{{ __('Date')}}</label>
-                                                                    <input value="{{ date('d/m/Y', strtotime($sale->date)) }}" type="date" class="form-control" id="date" name="date" required>
-                                                                </div>
-                                                            </div>
-
-
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label for="invoice_number">{{ __('Customer Name')}}</label>                                    
-                                                                    <select class="form-control" id="customer_name" name="customer_name" required>
-                                                                        @foreach($customers as $customer)
-                                                                            <option value="{{ $customer->contact_name }}">{{ $customer->contact_name }}</option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label for="phone_number">{{ __('Contact Number')}}</label>
-                                                                    <input value="{{ $sale->phone_number }}" type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Phone Number" required>
-                                                                </div>
-                                                            </div>
-                                
-                                
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label for="store">{{ __('Store')}}</label>
-                                                                    <select class="form-control" id="store" name="store" required>
-                                                                        @foreach($stores as $store)
-                                                                            <option value="{{ $store->name }}">{{ $store->name }}</option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label for="payment_status">{{ __('Payment Status')}}</label>
-                                                                    <select class="form-control" id="payment_status" name="payment_status" required>
-                                                                        @foreach($paymentStatuses as $status)
-                                                                            <option value="{{ $status->id }}">{{ $status->name }}</option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label for="payment_method">{{ __('Payment Method')}}</label>
-                                                                    <select class="form-control" id="payment_method" name="payment_method" required>
-                                                                        @foreach($paymentMethods as $method)
-                                                                            <option value="{{ $method->id }}">{{ $method->name }}</option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label for="sale_status">{{ __('Sale Status')}}</label>
-                                                                    <select class="form-control" id="sale_status" name="sale_status" required>
-                                                                        @foreach($saleStatuses as $saleStatus)
-                                                                            <option value="{{ $saleStatus->id }}">{{ $saleStatus->name }}</option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label for="total_amount">{{ __('Total Amount')}}</label>
-                                                                    <input value="{{ $sale->total_amount }}" type="number" class="form-control" id="total_amount" name="total_amount" placeholder="Total Amount" required>
-                                                                </div>
-                                                            </div>
-                                
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label for="total_paid">{{ __('Total Paid')}}</label>
-                                                                    <input value="{{ $sale->total_paid }}" type="number" class="form-control" id="total_paid" name="total_paid" placeholder="Total Paid" required>
-                                                                </div>
-                                                            </div>
-                                
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label for="total_items">{{ __('Total Items')}}</label>
-                                                                    <input value="{{ $sale->total_items }}" type="number" class="form-control" id="total_items" name="total_items" placeholder="Total Items" required>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label for="added_by">{{ __('Added By')}}</label>
-                                                                    <select class="form-control" id="added_by" name="added_by" required>
-                                                                        @foreach($users as $user)
-                                                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                
                                                         </div>
-                                                        
                                                 
-                                        
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="phone_number">{{ __('Phone Number')}}</label>
+                                                                <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Customer's Phone Number" value="{{ $sale->phone_number }}">
+                                                            </div>
+                                                        </div>
                                                 
-                                                        
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="date">{{ __('Date')}}</label>
+                                                                <input type="date" class="form-control" id="date" name="date" value="{{ $sale->date }}" required>
+                                                            </div>
+                                                        </div>
                                                 
-                                                        {{-- <div class="form-group">
-                                                            <label for="shipping_status">{{ __('Shipping Status')}}</label>
-                                                            <select class="form-control" id="shipping_status" name="shipping_status" required>
-                                                                @foreach($shippingStatuses as $status)
-                                                                    <option value="{{ $status->id }}">{{ $status->name }}</option>
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="payment_status">{{ __('Payment Status')}}</label>
+                                                                <select class="form-control" id="payment_status" name="payment_status" required>
+                                                                    @foreach($paymentStatuses as $status)
+                                                                        <option value="{{ $status->id }}" {{ $status->id == $sale->payment_status ? 'selected' : '' }}>{{ $status->name }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="payment_method">{{ __('Payment Method')}}</label>
+                                                                <select class="form-control" id="payment_method" name="payment_method" required>
+                                                                    @foreach($paymentMethods as $method)
+                                                                        <option value="{{ $method->id }}" {{ $method->id == $sale->payment_method ? 'selected' : '' }}>{{ $method->name }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="sale_status">{{ __('Sale Status')}}</label>
+                                                                <select class="form-control" id="sale_status" name="sale_status" required>
+                                                                    @foreach($saleStatuses as $saleStatus)
+                                                                        <option value="{{ $saleStatus->id }}" {{ $saleStatus->id == $sale->sale_status ? 'selected' : '' }}>{{ $saleStatus->name }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                
+                                                    <hr>
+                                                
+                                                    <div class="form-group">
+                                                        <label for="invoice_number">{{ __('Search and add Products')}}</label>
+                                                        <select class="form-control select2" id="product_selector" name="product_selector">
+                                                            <option value="">Enter product name or ISBN number</option>
+                                                            @foreach($products as $product)
+                                                                <option value="{{ $product->id }}" data-price="{{ $product->price }}">{{ $product->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                
+                                                    <div class="table-responsive">
+                                                        <table class="table mb-0" id="products_table">
+                                                            <thead>
+                                                                <th style="width: 50%;">Product</th>
+                                                                <th>Quantity</th>
+                                                                <th>Price</th>
+                                                                <th>Discount (%)</th>
+                                                                <th>Sub-total</th>
+                                                                <th>Remove</th>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach($saleItems as $index => $item)
+                                                                    <tr>
+                                                                        <td><input class="form-control" type="text" name="products[{{ $index }}][product_name]" value="{{ $item->product_name }}" readonly /></td>
+                                                                        <td><input class="form-control quantity" type="number" name="products[{{ $index }}][quantity]" value="{{ $item->quantity }}" /></td>
+                                                                        <td><input class="form-control price" type="text" name="products[{{ $index }}][price]" value="{{ $item->price }}" readonly /></td>
+                                                                        <td><input class="form-control discount" type="number" name="products[{{ $index }}][discount]" value="{{ $item->discount }}" /></td>
+                                                                        <td><input class="form-control sub-total" type="text" name="products[{{ $index }}][sub_total]" readonly value="{{ $item->sub_total }}" /></td>
+                                                                        <td><button type="button" class="btn btn-danger btn-icon ml-2 remove-row"><i class="ik ik-trash-2"></i></button></td>
+                                                                    </tr>
                                                                 @endforeach
-                                                            </select>
-                                                        </div>
+                                                            </tbody>
                                                 
-                                                        <div class="form-group">
-                                                            <label for="shipping_details">{{ __('Shipping Details')}}</label>
-                                                            <textarea class="form-control" id="shipping_details" name="shipping_details" rows="4" placeholder="Shipping Details"></textarea>
-                                                        </div> --}}
+                                                            <tfoot>
+                                                                <tr class="text-bold">
+                                                                    <td colspan="4">Grand Total</td>
+                                                                    <td><span id="grand_total">₦{{ $grandTotal }}</span></td>
+                                                                    <td></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td colspan="4">Discount (%)</td>
+                                                                    <td><input class="form-control" type="number" id="discount" name="discount" value="{{ $sale->discount }}" /></td>
+                                                                    <td></td>
+                                                                </tr>
+                                                            </tfoot>
+                                                        </table>
+                                                    </div>
                                                 
-                                                
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close')}}</button>
-                                                            <button type="submit" class="btn btn-primary">{{ __('Save')}}</button>
-                                                        </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close')}}</button>
+                                                        <button type="submit" class="btn btn-primary">{{ __('Save')}}</button>
                                                     </div>
                                                 </form>
                                                 
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
 
 
                                     <!-- Delete Modal -->
