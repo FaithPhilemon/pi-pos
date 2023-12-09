@@ -32,7 +32,10 @@ class SalesController extends Controller
         $shippingStatuses   = ShippingStatus::all();
         $users              = User::all();
         $customers          = Contact::where('contact_group', 1)->get();
-        
+        $products           = Product::select('id', 'name', 'price', 'author', 'ISBN')->get();
+
+
+
         $pageTitle = 'All Sales';
 
 
@@ -66,7 +69,8 @@ class SalesController extends Controller
                                            'paymentStatuses',
                                            'shippingStatuses',
                                            'customers',
-                                           'users'
+                                           'users',
+                                           'products',
                                         ));
     }
 
@@ -203,7 +207,30 @@ class SalesController extends Controller
     public function edit(Sale $sale)
     {
         $this->authorize('edit sales');
-        return view('sales.edit', compact('sale'));
+        
+        $products   = Product::select('id', 'name', 'price', 'author', 'ISBN')->get();
+        $sale       = Sale::find($sale->id);
+        $stores     = Store::all();
+        $customers          = Contact::where('contact_group', 1)->get();
+        $paymentMethods     = PaymentMethod::all();
+        $saleStatuses       = SaleStatus::all();
+        $paymentStatuses    = PaymentStatus::all();
+        $shippingStatuses   = ShippingStatus::all();
+        $saleItems           = SaleItem::where('sale_id', $sale->id)->get();
+
+
+        // $customers  = Customer::all();
+
+        return view('sales.edit', compact('sale',
+                                          'products',
+                                          'stores',
+                                          'customers',
+                                          'paymentMethods',
+                                          'saleStatuses',
+                                          'paymentStatuses',
+                                          'shippingStatuses',
+                                          'saleItems'
+                                        ));
     }
 
     public function update(Request $request, Sale $sale)
