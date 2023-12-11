@@ -47,7 +47,7 @@
 
                     <div class="card-header d-flex">
                         <h3 class="mr-auto p-2">Add New Sale</h3>
-                        <a href="{{url('products')}}" class="btn btn-outline-primary p-2 mr-5">{{ __('List all Products')}}</a>
+                        <a href="{{url('sales')}}" class="btn btn-outline-primary p-2 mr-5">{{ __('List all Sales')}}</a>
                     </div>
                     <div class="card-body">
                         @if ($errors->any())
@@ -365,7 +365,7 @@
                         newRow.append('<td><input class="form-control" type="text" name="products[' + productId + '][product_name]" value="' + productName + '" readonly /></td>');
                         newRow.append('<td><input class="form-control quantity" type="number" name="products[' + productId + '][quantity]" value="1" /></td>');
                         newRow.append('<td><input class="form-control price" type="text" name="products[' + productId + '][price]" value="' + productPrice + '" readonly /></td>');
-                        newRow.append('<td><input class="form-control discount" type="number" name="products[' + productId + '][discount]" value="0" /></td>');
+                        newRow.append('<td><input class="form-control discount" type="number" name="products[' + productId + '][discount]" value="0" readonly /></td>');
                         newRow.append('<td class="sub-total">'+ productPrice +'</td>');
                         newRow.append('<td><button type="button" class="btn btn-danger btn-icon ml-2 remove-row"><i class="ik ik-trash-2"></i></button></td>');
 

@@ -1,5 +1,5 @@
 @extends('layouts.main') 
-@section('title', 'Add Product')
+@section('title', 'Edit Product')
 @section('content')
 
     <!-- push external head elements to head -->
@@ -47,7 +47,7 @@
 
                     <div class="card-header d-flex">
                         <h3 class="mr-auto p-2">Edit Sale</h3>
-                        <a href="{{url('products')}}" class="btn btn-outline-primary p-2 mr-5">{{ __('List all Products')}}</a>
+                        <a href="{{url('sales')}}" class="btn btn-outline-primary p-2 mr-5">{{ __('List all Sales')}}</a>
                     </div>
                     <div class="card-body">
                         @if ($errors->any())
@@ -161,6 +161,8 @@
                                     @if(count($saleItems) > 0)
                                         <tbody>    
                                             @foreach($saleItems as $index => $item)
+                                                <input type="hidden" name="products[{{ $index }}][sale_id]" value="{{ $sale->id }}">
+                                                
                                                 <tr>
                                                     <td><input class="form-control" type="text" name="products[{{ $index }}][product_name]" value="{{ $item->product_name }}" readonly /></td>
                                                     <td><input class="form-control quantity" type="number" name="products[{{ $index }}][quantity]" value="{{ $item->quantity }}" /></td>
@@ -191,12 +193,9 @@
                             </div>
                         
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close')}}</button>
-                                <button type="submit" class="btn btn-primary">{{ __('Save')}}</button>
+                                <button type="submit" class="btn btn-primary btn-block">{{ __('Update Sale')}}</button>
                             </div>
                         </form>
-                        
-                        
                     </div>
                 </div>
             </div>
@@ -268,15 +267,16 @@
            
             $(document).ready(function () {
                 $('#product_selector').change(function () {
-                    var productId = $(this).val();
-                    var productName = $(this).find('option:selected').text();
-                    var productPrice = $(this).find('option:selected').data('price');
+                    var productId       = $(this).val();
+                    var productName     = $(this).find('option:selected').text();
+                    var productPrice    = $(this).find('option:selected').data('price');
+                    var saleId          =  {{ $sale->id }};
                     
 
                     if (productId) {
                         // Add a new row with product details
                         var newRow = $('<tr>');
-                        newRow.append('<td><input class="form-control" type="text" name="products[' + productId + '][product_name]" value="' + productName + '" readonly /></td>');
+                        newRow.append('<td><input class="form-control" type="text" name="products[' + productId + '][product_name]" value="' + productName + '" readonly /> <input type="hidden" name="products[' + productId + '][sale_id]" value="' + saleId + '" /></td>');
                         newRow.append('<td><input class="form-control quantity" type="number" name="products[' + productId + '][quantity]" value="1" /></td>');
                         newRow.append('<td><input class="form-control price" type="text" name="products[' + productId + '][price]" value="' + productPrice + '" readonly /></td>');
                         newRow.append('<td><input class="form-control discount" type="number" name="products[' + productId + '][discount]" value="0" /></td>');
