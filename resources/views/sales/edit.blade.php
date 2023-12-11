@@ -188,6 +188,23 @@
                                                 <td></td>
                                             </tr>
                                         </tfoot>
+                                    @else
+                                    <tbody>    
+                                    </tbody>
+                        
+                                    <tfoot>
+                                        <tr class="text-bold">
+                                            {{-- {{ $grandTotal }} --}}
+                                            <td colspan="4">Grand Total</td>
+                                            <td><span id="grand_total">₦0.00</span></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4">Discount (%)</td>
+                                            <td><input class="form-control" type="number" id="discount" name="discount" value="{{ $sale->discount }}" /></td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
                                     @endif
                                 </table>
                             </div>
