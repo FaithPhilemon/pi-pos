@@ -268,7 +268,6 @@ class SalesController extends Controller
         
         try {
             
-            // $sale->invoice_number       = $request->invoice_number;
             $sale->date                 = $request->date;
             $sale->phone_number         = $request->phone_number;
             $sale->customer_name        = $request->customer_name;
@@ -276,7 +275,9 @@ class SalesController extends Controller
             $sale->sale_status_id       = $request->sale_status;
             $sale->payment_status_id    = $request->payment_status;
             $sale->payment_method_id    = $request->payment_method;  
-            $sale->discount             = $request->discount;
+            $sale->discount             = ($request->discount == "") ? 0 : $request->discount;
+            
+            // $sale->invoice_number       = $request->invoice_number;
             // $sale->total_amount         = $request->total_amount;
             // $sale->total_paid           = $request->total_paid;
             // $sale->total_items          = $request->total_items;
@@ -289,9 +290,14 @@ class SalesController extends Controller
             $sale->save();
             
             // update sale items
-            if($request->input('products')){
+            $saleItems          = SaleItem::where('sale_id', $sale->id)->get();
+            $updatedSaleItems   = [];
+
+            if(count($request->input('products')) > 0){
                 foreach ($request->input('products') as $product) {
                     // exit(print_r($request->input('products')));
+
+
                     SaleItem::updateOrCreate(
                         ['product_name' => $product['product_name'] ],
                         [
@@ -302,7 +308,17 @@ class SalesController extends Controller
                             'total'         => $product['quantity'] * $product['price']
                         ]
                     );
+                    
+                    $updatedSaleItems[] = $product['id'];
 
+                }
+            }
+
+
+            // deleted removed products from the cards
+            foreach($saleItems as $saleItem){
+                if(!in_array($saleItem['id'], $updatedSaleItems)){
+                    SaleItem::destroy($saleItem['id']);
                 }
             }
 

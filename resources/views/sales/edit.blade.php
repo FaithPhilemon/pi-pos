@@ -161,9 +161,9 @@
                                     @if(count($saleItems) > 0)
                                         <tbody>    
                                             @foreach($saleItems as $index => $item)
-                                                <input type="hidden" name="products[{{ $index }}][sale_id]" value="{{ $sale->id }}">
-                                                
                                                 <tr>
+                                                    <input type="hidden" name="products[{{ $index }}][id]" value="{{ $item->id }}">
+                                                    <input type="hidden" name="products[{{ $index }}][sale_id]" value="{{ $sale->id }}">
                                                     <td><input class="form-control" type="text" name="products[{{ $index }}][product_name]" value="{{ $item->product_name }}" readonly /></td>
                                                     <td><input class="form-control quantity" type="number" name="products[{{ $index }}][quantity]" value="{{ $item->quantity }}" /></td>
                                                     <td><input class="form-control price" type="text" name="products[{{ $index }}][price]" value="{{ $item->price }}" readonly /></td>
@@ -189,22 +189,22 @@
                                             </tr>
                                         </tfoot>
                                     @else
-                                    <tbody>    
-                                    </tbody>
-                        
-                                    <tfoot>
-                                        <tr class="text-bold">
-                                            {{-- {{ $grandTotal }} --}}
-                                            <td colspan="4">Grand Total</td>
-                                            <td><span id="grand_total">₦0.00</span></td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="4">Discount (%)</td>
-                                            <td><input class="form-control" type="number" id="discount" name="discount" value="{{ $sale->discount }}" /></td>
-                                            <td></td>
-                                        </tr>
-                                    </tfoot>
+                                        <tbody>    
+                                        </tbody>
+                            
+                                        <tfoot>
+                                            <tr class="text-bold">
+                                                {{-- {{ $grandTotal }} --}}
+                                                <td colspan="4">Grand Total</td>
+                                                <td><span id="grand_total">₦0.00</span></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4">Discount (%)</td>
+                                                <td><input class="form-control" type="number" id="discount" name="discount" value="{{ $sale->discount }}" /></td>
+                                                <td></td>
+                                            </tr>
+                                        </tfoot>
                                     @endif
                                 </table>
                             </div>
