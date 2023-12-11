@@ -73,6 +73,6 @@ class Sale extends Model
     }
 
     private function calculateDiscount($price, $percentage){
-        return ($price * ($percentage/100));
+        return $price - ($price * ($percentage/100));
     }
 }
