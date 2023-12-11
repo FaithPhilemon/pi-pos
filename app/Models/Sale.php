@@ -37,7 +37,7 @@ class Sale extends Model
     public function updateSaleTotals()
     {
         $this->total_amount = $this->saleItems()->sum('total');
-        $this->total_paid   = $this->saleItems()->sum('price');
+        $this->total_paid   = $this->calculateDiscount($this->saleItems()->sum('total'), $this->discount);
         $this->total_items  = $this->saleItems()->sum('quantity');
         $this->save();
     }
@@ -70,5 +70,9 @@ class Sale extends Model
     public function shippingStatus()
     {
         return $this->belongsTo(ShippingStatus::class, 'shipping_status_id');
+    }
+
+    private function calculateDiscount($price, $percentage){
+        return ($price * ($percentage/100));
     }
 }
