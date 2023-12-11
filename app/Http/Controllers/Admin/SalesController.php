@@ -116,6 +116,7 @@ class SalesController extends Controller
             'total_amount'      => 'numeric|nullable',
             'total_paid'        => 'numeric|nullable',
             'total_items'       => 'integer|nullable',
+            'discount'          => 'integer|nullable',
             'shipping_status'   => 'integer',
             'shipping_details'  => 'nullable',
             'added_by'          => 'exists:users,id',
@@ -148,6 +149,7 @@ class SalesController extends Controller
                 'payment_method_id'     => $request->payment_method,
                 'total_amount'          => 0, //$request->total_amount,
                 'total_paid'            => 0, //$request->total_paid,
+                'discount'              => $request->discount,
                 'total_items'           => 0, //$request->total_items,
                 'shipping_status_id'    => $request->shipping_status,
                 'shipping_details'      => $request->shipping_details,
@@ -163,11 +165,11 @@ class SalesController extends Controller
             // Insert sale items
             foreach ($request->input('products') as $product) {
                 SaleItem::create([
-                    'sale_id' => $lastId, // Use the last inserted ID
-                    'product_name' => $product['product_name'],
-                    'price' => $product['price'],
-                    'quantity' => $product['quantity'],
-                    'total' => $product['quantity'] * $product['price'],
+                    'sale_id'       => $lastId, // Use the last inserted ID
+                    'product_name'  => $product['product_name'],
+                    'price'         => $product['price'],
+                    'quantity'      => $product['quantity'],
+                    'total'         => $product['quantity'] * $product['price'],
                 ]);
             }
 
@@ -241,12 +243,16 @@ class SalesController extends Controller
         $validator = Validator::make($request->all(), [
             'invoice_number'    => 'nullable',
             'date'              => 'required|date',
+            'phone_number'      => 'nullable',
             'customer_name'     => 'required',
+            'store'             => 'required',
             'payment_status'    => 'required',
+            'sale_status'       => 'required',
             'payment_method'    => 'required',
-            'total_amount'      => 'numeric',
-            'total_paid'        => 'numeric',
-            'total_items'       => 'integer',
+            'total_amount'      => 'numeric|nullable',
+            'total_paid'        => 'numeric|nullable',
+            'discount'          => 'integer|nullable',
+            'total_items'       => 'integer|nullable',
             'shipping_status'   => 'integer',
             'shipping_details'  => 'nullable',
             'added_by'          => 'exists:users,id',
@@ -254,12 +260,15 @@ class SalesController extends Controller
             'sale_note'         => 'nullable',
         ]);
 
+
         if ($validator->fails()) {
             return redirect()->route('sales.index', $sale->id)->withErrors($validator)->withInput();
         }
-        // exit($request->invoice_number);
-
-            $sale->invoice_number       = $request->invoice_number;
+        
+        
+        try {
+            
+            // $sale->invoice_number       = $request->invoice_number;
             $sale->date                 = $request->date;
             $sale->phone_number         = $request->phone_number;
             $sale->customer_name        = $request->customer_name;
@@ -267,22 +276,46 @@ class SalesController extends Controller
             $sale->sale_status_id       = $request->sale_status;
             $sale->payment_status_id    = $request->payment_status;
             $sale->payment_method_id    = $request->payment_method;  
-            $sale->total_amount         = $request->total_amount;
-            $sale->total_paid           = $request->total_paid;
-            $sale->total_items          = $request->total_items;
-            $sale->shipping_status_id   = $request->shipping_status;
-            $sale->shipping_details     = $request->shipping_details;
-            $sale->added_by             = $request->added_by;
-            $sale->staff_note           = $request->staff_note;
-            $sale->sale_note            = $request->sale_note;
+            $sale->discount             = $request->discount;
+            // $sale->total_amount         = $request->total_amount;
+            // $sale->total_paid           = $request->total_paid;
+            // $sale->total_items          = $request->total_items;
+            // $sale->shipping_status_id   = $request->shipping_status;
+            // $sale->shipping_details     = $request->shipping_details;
+            // $sale->added_by             = $request->added_by;
+            // $sale->staff_note           = $request->staff_note;
+            // $sale->sale_note            = $request->sale_note;
 
             $sale->save();
+            
+            // update sale items
+            if($request->input('products')){
+                foreach ($request->input('products') as $product) {
+                    // exit(print_r($request->input('products')));
+                    SaleItem::updateOrCreate(
+                        ['product_name' => $product['product_name'] ],
+                        [
+                            'sale_id'       => $product['sale_id'],
+                            'product_name'  => $product['product_name'],
+                            'price'         => $product['price'],
+                            'quantity'      => $product['quantity'],
+                            'total'         => $product['quantity'] * $product['price']
+                        ]
+                    );
 
+                }
+            }
 
-        // Update the sale
-        $sale->update($request->all());
+            // Update totals in the sales table
+            $sale->updateSaleTotals();
+            
 
-        return redirect()->route('sales.index')->with('success', 'Sale updated successfully.');
+            return redirect()->back()->with('success', 'Sale updated successfully.');
+
+        }catch (\Exception $e) {
+            $bug = $e->getMessage();
+            return redirect()->back()->with('error', $bug);
+        }
     }
 
     public function destroy(Sale $sale)
