@@ -20,6 +20,9 @@
                 <div class="nav-item {{ ($segment1 == 'dashboard') ? 'active' : '' }}">
                     <a href="{{route('dashboard')}}"><i class="ik ik-bar-chart-2"></i><span>{{ __('Dashboard')}}</span></a>
                 </div>
+                <div class="nav-item {{ ($segment1 == 'stores') ? 'active' : '' }}">
+                    <a href="{{route('dashboard')}}"><i class="ik ik-home"></i><span>{{ __('Stores')}}</span></a>
+                </div>
 
 
                 <div class="nav-lavel">{{ __('PRODUCTS & SALES')}} </div>

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Store;
+use App\Models\Contact;
+
 use Illuminate\Http\Request;
 
 class PosController extends Controller
@@ -14,6 +17,10 @@ class PosController extends Controller
             ->select('id', 'name', 'image', 'category_id', 'price')
             ->get();
 
-        return view('sales.pos', compact('products'));
+        $customers          = Contact::where('contact_group', 1)->get();
+        $stores             = Store::all();
+    
+
+        return view('sales.pos', compact('products', 'customers', 'stores'));
     }
 }
