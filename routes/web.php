@@ -140,7 +140,9 @@ Route::middleware(['auth'])->group(function () {
 	Route::delete('/sale/{sale}', [SalesController::class, 'destroy'])->name('sales.destroy');
 
 
-	Route::get('/pos', [PosController::class, 'index'])->name('sales.pos');
+	Route::get('pos', [PosController::class, 'index'])->name('sales.pos');
+	Route::post('pos', [PosController::class, 'store'])->name('pos.store');
+
 
 
 	Route::get('contacts', [ContactsController::class, 'index'])->name('contacts.index');

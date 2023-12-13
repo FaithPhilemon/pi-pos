@@ -16,6 +16,7 @@ shuffle($products);
 	<div class="wrapper">
 		<div class="pos-container p-3 pt-0">
 			<div class="row">
+
 				<div class="col-sm-1 bg-white h-100vh ">
 					<div class="pos top-menu mt-20 text-center">
 						<a href="{{url('/dashboard')}}" class="nav-link m-auto mb-10"><i class="ik ik-arrow-left-circle"></i></a>
@@ -30,7 +31,7 @@ shuffle($products);
 				<div class="col-sm-8 bg-white">
 					<div class="customer-area">
 						<div class="row">
-							<div class="col-sm-3">
+							{{-- <div class="col-sm-3">
 								<div class="form-group">
 									<select class="form-control select2" name="warehouse">
 										<option selected="selected" value="">Select Store</option>
@@ -38,8 +39,8 @@ shuffle($products);
 										<option value="2">Warehouse 2</option>
 									</select>
 								</div>
-							</div>
-							<div class="col-sm-9">
+							</div> --}}
+							<div class="col-sm-12">
 								<div class="form-group">
 									<input type="text" name="product" class="form-control" placeholder="Search products">
 								</div>
@@ -74,7 +75,20 @@ shuffle($products);
 								<i class="text-danger ik ik-refresh-ccw cursor-pointer font-15" onclick="cleartCart()"></i>
 						</div>
 						<hr>
-						<form action="{{ route('sales.store') }}" method="post">
+
+						@if ($errors->any())
+							<div class="alert alert-danger">
+								<ul>
+									@foreach ($errors->all() as $error)
+										<li>{{ $error }}</li>
+									@endforeach
+								</ul>
+							</div>
+						@endif
+
+						<form action="{{ route('pos.store') }}" method="POST">
+                            @csrf
+
 							<div id="product-cart" class="product-cart mb-3">
 								<!-- Uncomment to preview original cart html
 									====================================================
@@ -108,6 +122,14 @@ shuffle($products);
 								</div>
 							</div>
 							<div class="box-shadow p-3 mb-3">
+								<div class="form-group">
+									<select class="form-control select2" id="store" name="store" required>
+										@foreach($stores as $store)
+											<option value="{{ $store->name }}">{{ $store->name }}</option>
+										@endforeach
+									</select>
+								</div>
+
 								<input type="date" class="form-control" id="date" name="date" required>
 
 								<label class="d-block">Customer Information</label>
@@ -121,7 +143,6 @@ shuffle($products);
                                         </select>
 									</div>
 									<div class="form-group">
-										{{-- <input type="text" name="phone" class="form-control" placeholder="Enter Phone" value="219-122-1234"> --}}
 										<input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Customer's Number">
 									</div>
 									{{-- <div class="form-group">
@@ -130,7 +151,8 @@ shuffle($products);
 								</div>
 							</div>
 							<div class="box-shadow p-3">
-								<button class="btn btn-danger btn-checkout btn-pos-checkout " data-toggle="modal" data-target="#InvoiceModal">PLACE ORDER</button>
+								<button type="submit" class="btn btn-danger btn-checkout btn-pos-checkout ">PLACE ORDER</button>
+								{{-- <button class="btn btn-danger btn-checkout btn-pos-checkout " data-toggle="modal" data-target="#InvoiceModal">PLACE ORDER</button> --}}
 							</div>
 						</form>
 					</div>
