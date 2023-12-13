@@ -31,7 +31,7 @@ shuffle($products);
 				<div class="col-sm-8 bg-white">
 					<div class="customer-area">
 						<div class="row">
-							{{-- <div class="col-sm-3">
+							<div class="col-sm-3">
 								<div class="form-group">
 									<select class="form-control select2" name="warehouse">
 										<option selected="selected" value="">Select Store</option>
@@ -39,10 +39,25 @@ shuffle($products);
 										<option value="2">Warehouse 2</option>
 									</select>
 								</div>
-							</div> --}}
-							<div class="col-sm-12">
+							</div>
+							
+							<div class="col-sm-3">
+								<select id="categoryFilter" class="form-control">
+									<option value="">All Categories</option>
+									@foreach($categories as $category)
+										<option value="{{ $category->id }}">{{ $category->name }}</option>
+										@foreach($category->subcategories as $subcategory)
+											<option value="{{ $subcategory->id }}">- {{ $subcategory->name }}</option>
+										@endforeach
+									@endforeach
+								</select>
+							</div>
+
+
+							<div class="col-sm-6">
 								<div class="form-group">
-									<input type="text" name="product" class="form-control" placeholder="Search products">
+									{{-- <input type="text" name="product" class="form-control" placeholder="Search products"> --}}
+									<input type="text" class="form-control" id="productSearch" placeholder="Search Product">
 								</div>
 							</div>
 
@@ -65,7 +80,12 @@ shuffle($products);
 									</div>
 								</div>
 							@endforeach
+							
 						</div>
+
+						{{ $products->links() }}
+						
+						<button id="loadMoreBtn" class="btn btn-danger btn-checkout btn-pos-checkout">Load More</button>
 					</div>
 				</div>
 				<div class="col-sm-3 bg-white product-cart-area">
@@ -151,7 +171,7 @@ shuffle($products);
 								</div>
 							</div>
 							<div class="box-shadow p-3">
-								<button type="submit" class="btn btn-danger btn-checkout btn-pos-checkout ">PLACE ORDER</button>
+								<button type="submit" class="btn btn-danger btn-checkout btn-pos-checkout">PLACE ORDER</button>
 								{{-- <button class="btn btn-danger btn-checkout btn-pos-checkout " data-toggle="modal" data-target="#InvoiceModal">PLACE ORDER</button> --}}
 							</div>
 						</form>
@@ -289,6 +309,43 @@ shuffle($products);
 			$cartTotal.text(cartTotal.toFixed(2));
 			$totalText.text((cartTotal - discount).toFixed(2));
 		}
+
+
+
+
+		$(document).ready(function () {
+			// Load more button click event
+			$('#loadMoreBtn').click(function () {
+				var nextPage = {{ $products->currentPage() + 1 }};
+				var url = '{{ route('sales.pos') }}?page=' + nextPage;
+
+				$.get(url, function (data) {
+					$('#layout-wrap').append(data);
+				});
+			});
+
+			// Real-time search input
+			$('#productSearch').on('input', function () {
+				var searchTerm = $(this).val();
+				updateProducts(searchTerm, '');
+			});
+
+			// Real-time category filter
+			$('#categoryFilter').change(function () {
+				var categoryId = $(this).val();
+				updateProducts('', categoryId);
+			});
+
+			function updateProducts(searchTerm, categoryId) {
+				var url = '{{ route('sales.pos') }}';
+				var data = { searchTerm: searchTerm, categoryId: categoryId };
+
+				$.get(url, data, function (data) {
+					$('#layout-wrap').html(data);
+				});
+			}
+		});
+
 	</script>
 </body>
 

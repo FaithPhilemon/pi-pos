@@ -9,6 +9,7 @@ use App\Models\Store;
 use App\Models\Contact;
 use App\Models\Sale;
 use App\Models\SaleItem;
+use App\Models\Category;
 
 
 use Illuminate\Http\Request;
@@ -16,19 +17,50 @@ use Illuminate\Http\Request;
 
 class PosController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Fetch product details (name, image, category, price)
-        $products = Product::with('category') // Assuming a relationship exists between Product and Category
-            ->select('id', 'name', 'image', 'category_id', 'price')
-            ->get();
+        $perPage = 50; // Number of products per page
 
-        $customers          = Contact::where('contact_group', 1)->get();
-        $stores             = Store::all();
-    
+        $query = Product::with('category')
+            ->select('id', 'name', 'image', 'category_id', 'price');
 
-        return view('sales.pos', compact('products', 'customers', 'stores'));
+        // Real-time search
+        if ($request->has('searchTerm')) {
+            $searchTerm = $request->input('searchTerm');
+            $query->where('name', 'like', '%' . $searchTerm . '%');
+        }
+
+        // Real-time category filter
+        if ($request->has('categoryId')) {
+            $categoryId = $request->input('categoryId');
+            $query->where('category_id', $categoryId);
+        }
+
+        $products   = $query->paginate($perPage);
+        $customers  = Contact::where('contact_group', 1)->get();
+        $stores     = Store::all();
+        $categories = Category::where('parent_category_id', null)->get();;
+
+        if ($request->ajax()) {
+            return view('sales.products', compact('products', 'customers', 'stores', 'categories'));
+        }
+
+        return view('sales.pos', compact('products', 'customers', 'stores', 'categories'));
     }
+
+    // public function index()
+    // {
+    //     $perPage = 20; // Number of products per page
+
+    //     $products = Product::with('category')
+    //         ->select('id', 'name', 'image', 'category_id', 'price')
+    //         ->paginate($perPage);
+
+    //     $customers = Contact::where('contact_group', 1)->get();
+    //     $stores = Store::all();
+
+    //     return view('sales.pos', compact('products', 'customers', 'stores'));
+    // }
 
 
     public function store(Request $request)
