@@ -78,13 +78,40 @@
                     </div>
                 </div>
             </div>
+
+
+
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>{{ __('Sales last 30 Days')}}</h3>
+                    </div>
+                    <div class="card-block text-center">
+                        <div id="line_chart_30_days" class="chart-shadow"></div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>{{ __('Sales last 12 Months')}}</h3>
+                    </div>
+                    <div class="card-block text-center">
+                        <div id="line_chart_12_months" class="chart-shadow"></div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <!-- page statustic chart end -->
+
+        {{-- <div class="row">
+        </div> --}}
     </div>
 	<!-- push external js -->
     @push('script')
         <script src="{{ asset('plugins/owl.carousel/dist/owl.carousel.min.js') }}"></script>
-        <script src="{{ asset('plugins/chartist/dist/chartist.min.js') }}"></script>
+        {{-- <script src="{{ asset('plugins/chartist/dist/chartist.min.js') }}"></script> --}}
         <script src="{{ asset('plugins/flot-charts/jquery.flot.js') }}"></script>
         <!-- <script src="{{ asset('plugins/flot-charts/jquery.flot.categories.js') }}"></script> -->
         <script src="{{ asset('plugins/flot-charts/curvedLines.js') }}"></script>
@@ -98,6 +125,165 @@
         <script src="{{ asset('js/widget-statistic.js') }}"></script>
         <script src="{{ asset('js/widget-data.js') }}"></script>
         <script src="{{ asset('js/dashboard-charts.js') }}"></script>
+
+        <script>
+
+            var chart30Days = AmCharts.makeChart("line_chart_30_days", {
+                "type": "serial",
+                "theme": "light",
+                "dataDateFormat": "YYYY-MM-DD",
+                "precision": 2,
+                "valueAxes": [{
+                    "id": "v1",
+                    "position": "left",
+                    "autoGridCount": false,
+                    "labelFunction": function(value) {
+                        return "₦" + Math.round(value) + "M";
+                    }
+                }, {
+                    "id": "v2",
+                    "gridAlpha": 0,
+                    "autoGridCount": false
+                }],
+                "graphs": [{
+                    "id": "g1",
+                    "valueAxis": "v2",
+                    "bullet": "round",
+                    "bulletBorderAlpha": 1,
+                    "bulletColor": "#FFFFFF",
+                    "bulletSize": 8,
+                    "hideBulletsCount": 50,
+                    "lineThickness": 3,
+                    "lineColor": "#2ed8b6",
+                    "title": "Sales",
+                    "useLineColorForBulletBorder": true,
+                    "valueField": "total_sales",
+                    "balloonText": "[[title]]<br /><b style='font-size: 130%'>[[value]]</b>"
+                }, 
+                
+                // {
+                //     "id": "g2",
+                //     "valueAxis": "v2",
+                //     "bullet": "round",
+                //     "bulletBorderAlpha": 1,
+                //     "bulletColor": "#FFFFFF",
+                //     "bulletSize": 8,
+                //     "hideBulletsCount": 50,
+                //     "lineThickness": 3,
+                //     "lineColor": "#e95753",
+                //     "title": "Market Days ALL",
+                //     "useLineColorForBulletBorder": true,
+                //     "valueField": "market2",
+                //     "balloonText": "[[title]]<br /><b style='font-size: 130%'>[[value]]</b>"
+                // }
+            
+                ],
+                "chartCursor": {
+                    "pan": true,
+                    "valueLineEnabled": true,
+                    "valueLineBalloonEnabled": true,
+                    "cursorAlpha": 0,
+                    "valueLineAlpha": 0.2
+                },
+                "categoryField": "date",
+                "categoryAxis": {
+                    "parseDates": true,
+                    "minPeriod": "DD", 
+                    "dashLength": 1,
+                    "minorGridEnabled": true,
+                    // "equalSpacing": false
+                },
+                "legend": {
+                    "useGraphSettings": true,
+                    "position": "top"
+                },
+                "balloon": {
+                    "borderThickness": 1,
+                    "shadowAlpha": 0
+                },
+                "dataProvider": {!! json_encode($salesLast30Days) !!}
+            });
+
+            // console.log({!! json_encode($salesLast30Days) !!});
+
+            var chart30Days = AmCharts.makeChart("line_chart_12_months", {
+                "type": "serial",
+                "theme": "light",
+                "dataDateFormat": "YYYY-MM-DD",
+                "precision": 2,
+                "valueAxes": [{
+                    "id": "v1",
+                    "position": "left",
+                    "autoGridCount": false,
+                    "labelFunction": function(value) {
+                        return "₦" + Math.round(value) + "M";
+                    }
+                }, {
+                    "id": "v2",
+                    "gridAlpha": 0,
+                    "autoGridCount": false
+                }],
+                "graphs": [{
+                    "id": "g1",
+                    "valueAxis": "v2",
+                    "bullet": "round",
+                    "bulletBorderAlpha": 1,
+                    "bulletColor": "#FFFFFF",
+                    "bulletSize": 8,
+                    "hideBulletsCount": 50,
+                    "lineThickness": 3,
+                    "lineColor": "#e95753",
+                    "title": "Sales",
+                    "useLineColorForBulletBorder": true,
+                    "valueField": "total_sales",
+                    "balloonText": "[[title]]<br /><b style='font-size: 130%'>[[value]]</b>"
+                }
+                
+                // , {
+                //     "id": "g2",
+                //     "valueAxis": "v2",
+                //     "bullet": "round",
+                //     "bulletBorderAlpha": 1,
+                //     "bulletColor": "#FFFFFF",
+                //     "bulletSize": 8,
+                //     "hideBulletsCount": 50,
+                //     "lineThickness": 3,
+                //     "lineColor": "#e95753",
+                //     "title": "Market Days ALL",
+                //     "useLineColorForBulletBorder": true,
+                //     "valueField": "market2",
+                //     "balloonText": "[[title]]<br /><b style='font-size: 130%'>[[value]]</b>"
+                // }
+                
+                ],
+                "chartCursor": {
+                    "pan": true,
+                    "valueLineEnabled": true,
+                    "valueLineBalloonEnabled": true,
+                    "cursorAlpha": 0,
+                    "valueLineAlpha": 0.2
+                },
+                "categoryField": "month_year",
+                "categoryAxis": {
+                    "parseDates": true,
+                    "dashLength": 1,
+                    "minorGridEnabled": true,
+                    // "minPeriod": "MM",
+                },
+                "legend": {
+                    "useGraphSettings": true,
+                    "position": "top"
+                },
+                "balloon": {
+                    "borderThickness": 1,
+                    "shadowAlpha": 0
+                },
+                "dataProvider": {!! json_encode($salesLast12Months) !!}
+            });
+
+            console.log({!! json_encode($salesLast12Months) !!});
+
+        </script>
         
     @endpush
 @endsection

@@ -61,7 +61,7 @@
                             <thead>
                                 <tr>
                                     <th>{{ __('ID') }}</th>
-                                    <th>{{ __('Product') }}</th>
+                                    <th>{{ __('Image') }}</th>
                                     <th>{{ __('Name') }}</th>
                                     <th>{{ __('Author') }}</th>
                                     <th>{{ __('ISBN') }}</th>

@@ -3,7 +3,7 @@
     <head> 
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>Login | Laravel Admin Starter Kit - Radmin</title>
+        <title>Login | Discovery World Bookshop</title>
         <meta name="description" content="">
         <meta name="keywords" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -57,12 +57,12 @@
                                 @enderror
                                 </div>
                                 <div class="row">
-                                    <div class="col text-left">
+                                    {{-- <div class="col text-left">
                                         <label class="custom-control custom-checkbox">
                                             <input type="checkbox" class="custom-control-input" id="item_checkbox" name="item_checkbox" value="option1">
                                             <span class="custom-control-label">&nbsp;Remember Me</span>
                                         </label>
-                                    </div>
+                                    </div> --}}
                                     <div class="col text-right">
                                         <a class="btn text-danger" href="{{url('password/forget')}}">
                                             {{ __('Forgot Password?') }}
@@ -72,9 +72,9 @@
                                 <div class="sign-btn text-center">
                                     <button class="btn btn-custom">Sign In</button>
                                 </div>
-                                <div class="register">
+                                {{-- <div class="register">
                                     <p>{{ __('No account?')}} <a href="{{url('register')}}">{{ __('Sign Up')}}</a></p>
-                                </div>
+                                </div> --}}
                                 
                             </form>
                         </div>

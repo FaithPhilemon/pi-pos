@@ -10,6 +10,7 @@ use App\Models\ContactGroup;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Str;
 
 class ContactsController extends Controller
@@ -17,15 +18,24 @@ class ContactsController extends Controller
     public function index(Request $request)
     {
         $type = $request->query('type');
+        
+        $pageTitle = match ($type) {
+            'suppliers' => 'Suppliers',
+            'customers' => 'Customers',
+            default => 'All Contacts',
+        };
+
         $contacts = Contact::when($type, function ($query) use ($type) {
             $group = ContactGroup::where('name', $type)->first();
             if ($group) {
                 return $query->where('contact_group', $group->id);
             }
             return $query;
-        })->get();
+        })->paginate(10); 
 
-        return view('contacts.index', compact('contacts'));
+        $groups = ContactGroup::all();
+
+        return view('contacts.index', compact('contacts', 'pageTitle', 'groups'));
     }
 
     public function create()
@@ -37,7 +47,7 @@ class ContactsController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'business_name' => 'required',
+            'business_name' => 'nullable',
             'contact_name' => 'required',
             'contact_group' => 'required|exists:contact_groups,id',
             'email' => 'email|nullable',
@@ -46,7 +56,7 @@ class ContactsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('contacts.create')->withErrors($validator)->withInput();
+            return redirect()->route('contacts.index')->withErrors($validator)->withInput();
         }
 
         Contact::create([
