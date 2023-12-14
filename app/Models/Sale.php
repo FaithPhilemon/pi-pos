@@ -20,6 +20,7 @@ class Sale extends Model
         'payment_method_id',
         'total_amount',
         'total_paid',
+        'discount',
         'total_items',
         'shipping_status_id',
         'shipping_details',
