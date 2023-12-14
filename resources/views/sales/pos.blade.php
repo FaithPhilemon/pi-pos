@@ -56,7 +56,6 @@ shuffle($products);
 
 							<div class="col-sm-6">
 								<div class="form-group">
-									{{-- <input type="text" name="product" class="form-control" placeholder="Search products"> --}}
 									<input type="text" class="form-control" id="productSearch" placeholder="Search Product">
 								</div>
 							</div>
@@ -65,17 +64,21 @@ shuffle($products);
 
 						<div class="row pos-products layout-wrap" id="layout-wrap">
 
-							<!-- include product preview page -->
 							@foreach($products as $key => $product)
-								<div class="col-xl-3 col-lg-4 col-12 col-sm-6 mb-2 list-item list-item-grid p-2">
+								<div class="col-xl-2 col-lg-4 col-12 col-sm-6 mb-2 list-item list-item-grid p-2">
 									<div class="card mb-1 pos-product-card" data-info="{{ htmlentities(json_encode($product)) }}">
 										<div class="d-flex card-img">
 											<img src="{{ asset($product->image ? 'storage/' . $product->image : 'product_images/no-image.png') }}" alt="" class="list-thumbnail responsive border-0">
 										</div>
-										<div class="p-2">
-											<p>{{$product->name}} <br><small class="text-muted">{{$product->category->name}}</small> </p>
-
-											<span class="product-price"><span class="price-symbol">{{ $settings->currency_symbol }}</span>{{ number_format($product->price) }}</span>
+										<div class="p-2" style="height: 120px; overflow: hidden;">
+											<p style="margin-bottom: 0; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">
+												{{$product->name}}
+												<br>
+												<small class="text-muted">{{$product->category->name}}</small>
+											</p>
+											<span class="product-price">
+												<span class="price-symbol">{{ $settings->currency_symbol }}</span>{{ number_format($product->price) }}
+											</span>
 										</div>
 									</div>
 								</div>
@@ -83,9 +86,9 @@ shuffle($products);
 							
 						</div>
 
-						{{ $products->links() }}
+						{{-- {{ $products->links() }} --}}
 						
-						<button id="loadMoreBtn" class="btn btn-danger btn-checkout btn-pos-checkout">Load More</button>
+						<button id="loadMoreBtn" class="btn btn-outline-danger p-2 mr-10 btn-checkout btn-pos-checkout">Load More</button>
 					</div>
 				</div>
 				<div class="col-sm-3 bg-white product-cart-area">
@@ -227,7 +230,7 @@ shuffle($products);
 			var product = JSON.parse(decodeString($(this).data('info')));
 			var price = parseFloat(product.price) || 0; // Ensure price is a number //product.offer_price ? product.offer_price : product.regular_price;
 			var id = product.id;
-			console.log(product.image);
+			// console.log(product.image);
 
 			if (cart.hasOwnProperty(id)) {
 				cart[id].quantity++;
@@ -311,8 +314,6 @@ shuffle($products);
 		}
 
 
-
-
 		$(document).ready(function () {
 			// Load more button click event
 			$('#loadMoreBtn').click(function () {
@@ -327,23 +328,41 @@ shuffle($products);
 			// Real-time search input
 			$('#productSearch').on('input', function () {
 				var searchTerm = $(this).val();
-				updateProducts(searchTerm, '');
+				updateProductsSearch(searchTerm);
 			});
 
 			// Real-time category filter
 			$('#categoryFilter').change(function () {
 				var categoryId = $(this).val();
-				updateProducts('', categoryId);
+				updateProductsCategory(categoryId);
 			});
 
-			function updateProducts(searchTerm, categoryId) {
+			function updateProductsSearch(searchTerm) {
 				var url = '{{ route('sales.pos') }}';
-				var data = { searchTerm: searchTerm, categoryId: categoryId };
+				var data = { searchTerm: searchTerm};
 
 				$.get(url, data, function (data) {
 					$('#layout-wrap').html(data);
 				});
 			}
+
+			function updateProductsCategory(categoryId) {
+				var url = '{{ route('sales.pos') }}';
+				var data = { categoryId: categoryId };
+
+				$.get(url, data, function (data) {
+					$('#layout-wrap').html(data);
+				});
+			}
+
+			// function updateProducts(searchTerm ='', categoryId='') {
+			// 	var url = '{{ route('sales.pos') }}';
+			// 	var data = { searchTerm: searchTerm, categoryId: categoryId };
+
+			// 	$.get(url, data, function (data) {
+			// 		$('#layout-wrap').html(data);
+			// 	});
+			// }
 		});
 
 	</script>

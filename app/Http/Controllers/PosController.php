@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
+
 
 
 use App\Models\Product;
@@ -19,7 +21,7 @@ class PosController extends Controller
 {
     public function index(Request $request)
     {
-        $perPage = 50; // Number of products per page
+        $perPage = 30; // Number of products per page
 
         $query = Product::with('category')
             ->select('id', 'name', 'image', 'category_id', 'price');
@@ -47,21 +49,7 @@ class PosController extends Controller
 
         return view('sales.pos', compact('products', 'customers', 'stores', 'categories'));
     }
-
-    // public function index()
-    // {
-    //     $perPage = 20; // Number of products per page
-
-    //     $products = Product::with('category')
-    //         ->select('id', 'name', 'image', 'category_id', 'price')
-    //         ->paginate($perPage);
-
-    //     $customers = Contact::where('contact_group', 1)->get();
-    //     $stores = Store::all();
-
-    //     return view('sales.pos', compact('products', 'customers', 'stores'));
-    // }
-
+    
 
     public function store(Request $request)
     {
