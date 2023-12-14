@@ -29,6 +29,8 @@ shuffle($products);
 					</div>
 				</div>
 				<div class="col-sm-8 bg-white">
+					@include('include.message')
+
 					<div class="customer-area">
 						<div class="row">
 							<div class="col-sm-3">
@@ -135,8 +137,8 @@ shuffle($products);
 									<strong id="subtotal-products">0.00</strong>
 								</div>
 								<div class="d-flex justify-content-between font-15 align-items-center">
-									<span>Discount</span>
-									<input type="number" class="form-control w-90 font-15 text-right" name="discount" id="discount">
+									<span>Discount(%)</span>
+									<input type="number" value="0" class="form-control w-90 font-15 text-right" name="discount" id="discount">
 								</div>
 								<hr>
 								<div class="d-flex justify-content-between font-20 align-items-center">
@@ -274,7 +276,7 @@ shuffle($products);
 				$totalText = $('#total-bill');
 
 			var cartTotal = 0,
-				discount = $('#discount').val();
+				discountPercentage = parseFloat($('#discount').val()) || 0;
 
 			// Empty cart table
 			$cartTable.empty();
@@ -306,11 +308,18 @@ shuffle($products);
 				}
 			}
 
-			// <img src="${item.image}">
+
+			// Calculate discount based on percentage
+			var discountAmount = (cartTotal * (discountPercentage / 100));
+    
+			// Update cart total and total text
+			$cartTotal.text(cartTotal.toFixed(2));
+			$totalText.text((cartTotal - discountAmount).toFixed(2));
+
 
 			// Update cart total
-			$cartTotal.text(cartTotal.toFixed(2));
-			$totalText.text((cartTotal - discount).toFixed(2));
+			// $cartTotal.text(cartTotal.toFixed(2));
+			// $totalText.text((cartTotal - discount).toFixed(2));
 		}
 
 

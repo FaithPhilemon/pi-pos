@@ -69,7 +69,7 @@ class PosController extends Controller
             'total_amount'      => 'numeric|nullable',
             'total_paid'        => 'numeric|nullable',
             'total_items'       => 'integer|nullable',
-            'discount'          => 'integer|nullable',
+            'discount'          => 'integer|required',
             'shipping_status'   => 'integer',
             'shipping_details'  => 'nullable',
             'added_by'          => 'exists:users,id',
@@ -90,6 +90,7 @@ class PosController extends Controller
              $randomNumber = rand(1000, 9999); 
              $invoiceNumber = ($lastId + 1). $randomNumber;
 
+            //  exit(print_r($request->discount));
 
              $sale = Sale::create([
                 'invoice_number'        => $invoiceNumber,
@@ -129,7 +130,7 @@ class PosController extends Controller
             // Update totals in the sales table
             $sale->updateSaleTotals();
 
-            return redirect()->back()->with('success', 'Sale created successfully.');
+            return redirect()->route('sales.pos')->with('success', 'Sale created successfully.');
  
             
         }catch (\Exception $e) {
