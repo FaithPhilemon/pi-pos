@@ -149,7 +149,7 @@ class SalesController extends Controller
                 'payment_method_id'     => $request->payment_method,
                 'total_amount'          => 0, //$request->total_amount,
                 'total_paid'            => 0, //$request->total_paid,
-                'discount'              => $request->discount,
+                'discount'              => ($request->discount == "") ? 0 : $request->discount,
                 'total_items'           => 0, //$request->total_items,
                 'shipping_status_id'    => $request->shipping_status,
                 'shipping_details'      => $request->shipping_details,
