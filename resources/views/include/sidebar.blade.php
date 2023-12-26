@@ -50,8 +50,8 @@
                         @can('manage_sales')
                             <a href="{{url('sales')}}" class="menu-item {{ ($segment1 == 'sales') ? 'active' : '' }}">{{ __('All Sales')}}</a>
                             <a href="{{url('sale/create')}}" class="menu-item {{ ($segment1 == 'sales' && $segment2 == 'create') ? 'active' : '' }}">{{ __('Add Sale')}}</a>
-                            <a href="{{url('sales?type=return')}}" class="menu-item {{ ($segment1 == 'sales' && $segment2 == 'create') ? 'active' : '' }}">{{ __('Sales Return')}}</a>
-                            <a href="{{url('sale?type=return')}}" class="menu-item {{ ($segment1 == 'sales' && $segment2 == 'create') ? 'active' : '' }}">{{ __('Add Sale')}}</a>
+                            <a href="{{url('sales?type=return')}}" class="menu-item {{ ($segment1 == 'sales' && $segment2 == 'create') ? 'active' : '' }}">{{ __('List Sales Return')}}</a>
+                            <a href="{{url('sale?invoices=due')}}" class="menu-item {{ ($segment1 == 'sales' && $segment2 == 'create') ? 'active' : '' }}">{{ __('List Invoices Due Sale')}}</a>
                         @endcan
 
                     </div>
