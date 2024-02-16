@@ -45,6 +45,17 @@ class SalesController extends Controller
             $query->where('payment_status', $request->input('payment_status'));
         }
 
+        if ($request->has('type') && $request->has('type') == 'return') {
+            $query->where('payment_status_id', 4);
+            $pageTitle = 'All Sales Return';
+        }
+
+        if ($request->has('invoices') && $request->has('type') == 'due') {
+            $query->where('payment_status_id', PaymentStatus::where('name', 'Unpaid')->first()->id)->count();
+            $pageTitle = 'Invoice Due';
+        }
+
+
         if ($request->has('payment_method')) {
             $query->where('payment_method', $request->input('payment_method'));
         }

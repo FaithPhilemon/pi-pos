@@ -50,8 +50,8 @@
                         @can('manage_sales')
                             <a href="{{url('sales')}}" class="menu-item {{ ($segment1 == 'sales') ? 'active' : '' }}">{{ __('All Sales')}}</a>
                             <a href="{{url('sale/create')}}" class="menu-item {{ ($segment1 == 'sales' && $segment2 == 'create') ? 'active' : '' }}">{{ __('Add Sale')}}</a>
-                            {{-- <a href="{{url('sale/create')}}" class="menu-item {{ ($segment1 == 'sales' && $segment2 == 'create') ? 'active' : '' }}">{{ __('Add Sale')}}</a>
-                            <a href="{{url('sale/create')}}" class="menu-item {{ ($segment1 == 'sales' && $segment2 == 'create') ? 'active' : '' }}">{{ __('Add Sale')}}</a> --}}
+                            <a href="{{url('sales?type=return')}}" class="menu-item {{ ($segment1 == 'sales' && $segment2 == 'create') ? 'active' : '' }}">{{ __('List Sales Return')}}</a>
+                            <a href="{{url('sale?invoices=due')}}" class="menu-item {{ ($segment1 == 'sales' && $segment2 == 'create') ? 'active' : '' }}">{{ __('List Invoices Due Sale')}}</a>
                         @endcan
 
                     </div>
@@ -96,7 +96,8 @@
 
                 <div class="nav-lavel">{{ __('SYSTEM')}} </div>
                 <div class="nav-item {{ ($segment1 == 'settings') ? 'active' : '' }}">
-                    <a href="{{route('settings')}}"><i class="ik ik-settings"></i><span>{{ __('Settings')}}</span></a>
+                    <a href="#"><i class="ik ik-settings"></i><span>{{ __('Settings')}}</span></a>
+                    {{-- <a href="{{route('settings')}}"><i class="ik ik-settings"></i><span>{{ __('Settings')}}</span></a> --}}
                 </div>
 
                 {{-- <div class="nav-lavel">{{ __('Layouts')}} </div>
