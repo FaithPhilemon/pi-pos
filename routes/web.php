@@ -119,7 +119,8 @@ Route::middleware(['auth'])->group(function () {
 	Route::post('/categories', [CategoriesController::class, 'store'])->name('categories.store');
 	Route::put('/categories/{category}', [CategoriesController::class, 'update'])->name('categories.update');
 
-
+	// Delete Categories
+	Route::delete('/categories/{category}', [CategoriesController::class, 'destroy'])->name('categories.destroy');
 
     // Print Labels
     Route::get('products/labels', [ProductsController::class, 'labels'])->name('products.labels');
