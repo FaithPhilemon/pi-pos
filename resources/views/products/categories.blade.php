@@ -79,7 +79,7 @@
                                             <td>
                                                 <div class="table-actions row">
                                                     <a href="#" data-toggle="modal" data-target="#editModal{{ $category->id }}"><i class="ik ik-edit f-16 text-green"></i></a>
-                                                    {{-- <a href="#" data-toggle="modal" data-target="#deleteModal{{ $category->id }}"><i class="ik ik-trash-2 f-16 text-red"></i></a> --}}
+                                                    <a href="#" data-toggle="modal" data-target="#deleteModal{{ $category->id }}"><i class="ik ik-trash-2 f-16 text-red"></i></a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -139,7 +139,7 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                                                    <form action="{{ route('products.destroy', $category->id) }}" method="POST">
+                                                    <form action="{{ route('categories.destroy', $category->id) }}" method="POST">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-danger">Yes, Delete</button>
@@ -178,7 +178,7 @@
                                             <td>
                                                 <div class="table-actions row">
                                                     <a href="#" data-toggle="modal" data-target="#editSubModal{{ $category->id }}"><i class="ik ik-edit f-16 text-green"></i></a>
-                                                    {{-- <a href="#" data-toggle="modal" data-target="#deleteModal{{ $category->id }}"><i class="ik ik-trash-2 f-16 text-red"></i></a> --}}
+                                                    <a href="#" data-toggle="modal" data-target="#deleteModal{{ $category->id }}"><i class="ik ik-trash-2 f-16 text-red"></i></a>
                                                 </div>
                                             </td>
                                         </tr>
