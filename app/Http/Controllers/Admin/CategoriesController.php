@@ -88,6 +88,13 @@ class CategoriesController extends Controller
     public function destroy(Category $category)
     {
         $this->authorize('delete categories');
+
+        // Check if the category has any associated products
+        if ($category->products()->exists()) {
+            return redirect()->route('products.categories')->with('error', 'Cannot delete category. It has associated products.');
+        }
+
+        // If no associated products, proceed with deletion
         $category->delete();
         return redirect()->route('products.categories')->with('success', 'Category deleted successfully.');
     }
