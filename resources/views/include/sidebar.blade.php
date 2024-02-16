@@ -96,7 +96,8 @@
 
                 <div class="nav-lavel">{{ __('SYSTEM')}} </div>
                 <div class="nav-item {{ ($segment1 == 'settings') ? 'active' : '' }}">
-                    <a href="{{route('settings')}}"><i class="ik ik-settings"></i><span>{{ __('Settings')}}</span></a>
+                    <a href="#"><i class="ik ik-settings"></i><span>{{ __('Settings')}}</span></a>
+                    {{-- <a href="{{route('settings')}}"><i class="ik ik-settings"></i><span>{{ __('Settings')}}</span></a> --}}
                 </div>
 
                 {{-- <div class="nav-lavel">{{ __('Layouts')}} </div>
