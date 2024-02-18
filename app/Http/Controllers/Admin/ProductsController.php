@@ -21,16 +21,32 @@ class ProductsController extends Controller
 {
     public function index(Request $request)
     {
-        $this->authorize('view products');
+        // $this->authorize('view products');
         $query = Product::query();
         $categories = Category::all();
         $stores = Store::all();
         $pageTitle = 'All Products';
 
 
+        // if ($request->has('type')) {
+        //     $query->where('category_id', $request->input('type'));
+        //     $pageTitle = Category::where('id', $request->input('type'))->first()->name;
+        // }
+
         if ($request->has('type')) {
-            $query->where('category_id', $request->input('type'));
-            $pageTitle = Category::where('id', $request->input('type'))->first()->name;
+            $categoryId = $request->input('type');
+        
+            // Check if the category exists
+            $category = Category::find($categoryId);
+            if (!$category) {
+                return redirect()->route('products.index')->with('error', 'Category not found!');
+            }
+        
+            // Category exists, proceed with the query
+            $query->where('category_id', $categoryId);
+        
+            // Fetch the page title
+            $pageTitle = $category->name;
         }
 
         // $products = $query->get();
@@ -42,7 +58,7 @@ class ProductsController extends Controller
 
     public function create()
     {
-        $this->authorize('create products');
+        // $this->authorize('create products');
         $categories = Category::all();
         $contacts = Contact::all();
         $stores = Store::all();
@@ -51,7 +67,7 @@ class ProductsController extends Controller
 
     public function store(Request $request)
     {
-        $this->authorize('create products');
+        // $this->authorize('create products');
 
         $validator = Validator::make($request->all(), [
             'name'              => 'required',
@@ -115,7 +131,7 @@ class ProductsController extends Controller
 
     public function edit(Product $product)
     {
-        $this->authorize('edit products');
+        // $this->authorize('edit products');
         $categories = Category::all();
         $contacts = Contact::all();
         $stores = Store::all();
@@ -124,7 +140,7 @@ class ProductsController extends Controller
 
     public function update(Request $request, Product $product)
     {
-        $this->authorize('edit products');
+        // $this->authorize('edit products');
 
         $validator = Validator::make($request->all(), [
             'name'              => 'required',
@@ -208,7 +224,7 @@ class ProductsController extends Controller
 
     public function destroy(Product $product)
     {
-        $this->authorize('delete products');
+        // $this->authorize('delete products');
 
         try {
             // Check if the product has an image
