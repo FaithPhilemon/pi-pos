@@ -78,7 +78,7 @@
                                         <td>
                                             <div class="d-inline-block align-middle">
                                                
-                                                 <img src="{{ asset($product->image ? 'storage/' . $product->image : 'storage/product_images/no-image.png') }}" alt="" class="rounded img-40 align-top mr-15">
+                                                 <img src="{{ asset($product->image ? 'public/img/products/' . $product->image : 'no-image.png') }}" alt="" class="rounded img-40 align-top mr-15">
                                                 {{-- <div class="d-inline-block">
                                                     <h6>{{ $settings->currency_symbol }}{{ number_format($product->price) }}</h6>
                                                     <p class="text-muted mb-0">{{ $settings->currency_symbol }}{{ number_format($product->price) }}</p>
