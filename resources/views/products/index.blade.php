@@ -78,7 +78,7 @@
                                         <td>
                                             <div class="d-inline-block align-middle">
                                                
-                                                 <img src="{{ asset($product->image ? 'storage/' . $product->image : 'storage/product_images/no-image.png') }}" alt="" class="rounded img-40 align-top mr-15">
+                                                 <img src="{{ asset($product->image ? 'public/img/products/' . $product->image : 'no-image.png') }}" alt="" class="rounded img-40 align-top mr-15">
                                                 {{-- <div class="d-inline-block">
                                                     <h6>{{ $settings->currency_symbol }}{{ number_format($product->price) }}</h6>
                                                     <p class="text-muted mb-0">{{ $settings->currency_symbol }}{{ number_format($product->price) }}</p>
@@ -227,12 +227,12 @@
                                 </div> --}}
 
                                 <div class="form-group">
-                                    <label for="product_stock">{{ __('Qty')}}<span class="text-red">*</span></label>
-                                    <input type="number" class="form-control" id="product_stock" name="stock" placeholder="Stock Quantity" required>
+                                    <label for="product_stock">{{ __('Qty')}}</label>
+                                    <input type="number" class="form-control" id="product_stock" name="stock" placeholder="Stock Quantity">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="product_alert_quantity">{{ __('Stock Alert')}}<span class="text-red">*</span></label>
+                                    <label for="product_alert_quantity">{{ __('Stock Alert')}}</label>
                                     <input type="number" class="form-control" id="product_alert_quantity" name="alert_quantity" placeholder="Alert Quantity">
                                 </div>
 

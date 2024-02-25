@@ -24,7 +24,7 @@ class SalesController extends Controller
 {
     public function index(Request $request)
     {
-        $this->authorize('view sales');
+        // $this->authorize('view sales');
         $stores             = Store::all();
         $paymentMethods     = PaymentMethod::all();
         $saleStatuses       = SaleStatus::all();
@@ -87,7 +87,7 @@ class SalesController extends Controller
 
     public function create()
     {
-        $this->authorize('create sales');
+        // $this->authorize('create sales');
         
         $customers          = Contact::where('contact_group', 1)->get();
         $stores             = Store::all();
@@ -112,7 +112,7 @@ class SalesController extends Controller
 
     public function store(Request $request)
     {
-        $this->authorize('create sales');
+        // $this->authorize('create sales');
 
         // Validation rules for the sale data
         $validator = Validator::make($request->all(), [
@@ -219,7 +219,7 @@ class SalesController extends Controller
 
     public function edit(Sale $sale)
     {
-        $this->authorize('edit sales');
+        // $this->authorize('edit sales');
         
         $products   = Product::select('id', 'name', 'price', 'author', 'ISBN')->get();
         $sale       = Sale::find($sale->id);
@@ -248,7 +248,7 @@ class SalesController extends Controller
 
     public function update(Request $request, Sale $sale)
     {
-        $this->authorize('edit sales');
+        // $this->authorize('edit sales');
 
         // Validation rules for the sale data
         $validator = Validator::make($request->all(), [
@@ -347,7 +347,7 @@ class SalesController extends Controller
 
     public function destroy(Sale $sale)
     {
-        $this->authorize('delete sales');
+        // $this->authorize('delete sales');
         $sale->delete();
         return redirect()->route('sales.index')->with('success', 'Sale deleted successfully.');
     }

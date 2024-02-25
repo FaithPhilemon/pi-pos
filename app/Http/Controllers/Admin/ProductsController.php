@@ -118,10 +118,11 @@ class ProductsController extends Controller
             }
         
             // Save the compressed image to storage
-            $compressedImage->save(storage_path("app/public/product_images/{$image->hashName()}"), 75);
-            $product->image = "product_images/{$image->hashName()}";
+            $compressedImage->save("public/img/products/{$image->hashName()}", 75);
+            // $compressedImage->save(storage_path("public/img/products/{$image->hashName()}"), 75);
+            $product->image = "{$image->hashName()}";
         } else {
-            $product->image = 'product_images/no-image.png';
+            $product->image = 'no-image.png';
         }
 
         $product->save();
@@ -172,26 +173,19 @@ class ProductsController extends Controller
         $product->price             = $request->input('price');
         // $product->category_id    = $request->input('category_id');
         $product->category_id       = $request->input('subcategory_id');
-        $product->contact_id        = auth()->user()->id;
         $product->store_id          = $request->input('store_id');
-
-        // if ($request->hasFile('image')) {
-        //     // Delete the old image if its not the default no-image.png
-
-        //     if($product->image != 'product_images/no-image.png') {
-        //         Storage::disk('public')->delete($product->image);
-        //     }
-
-        //     $image = $request->file('image');
-        //     $imagePath = $image->store('product_images', 'public');
-        //     $product->image = $imagePath;
-        // }
 
 
         if ($request->hasFile('image')) {
             // Delete the old image if it's not the default no-image.png
-            if ($product->image != 'product_images/no-image.png') {
-                Storage::disk('public')->delete($product->image);
+            if ($product->image != 'no-image.png') {
+                // Storage::disk('public')->delete($product->image);
+
+                $fileToDelete = public_path('img/products/' . $product->image);
+                if(File::exists($fileToDelete)) {
+                    File::delete($fileToDelete);
+                }
+
             }
 
         
@@ -209,8 +203,9 @@ class ProductsController extends Controller
             }
 
             // Save the compressed image to storage
-            $compressedImage->save(storage_path("app/public/product_images/{$image->hashName()}"), 75);
-            $product->image = "product_images/{$image->hashName()}";
+            $compressedImage->save("public/img/products/{$image->hashName()}", 75);
+            // $compressedImage->save(storage_path("public/img/products/{$image->hashName()}"), 75);
+            $product->image = "{$image->hashName()}";
 
         }
         
@@ -230,8 +225,11 @@ class ProductsController extends Controller
             // Check if the product has an image
             if ($product->image) {
                 // Attempt to delete the image
-                if ($product->image != 'product_images/no-image.png') {
-                    Storage::disk('public')->delete($product->image);
+                if ($product->image != 'no-image.png') {
+                    // Storage::disk('public')->delete($product->image);
+
+                    $fileToDelete = public_path('img/products/' . $product->image);
+                    File::delete($fileToDelete);
                 }
             }
         

@@ -126,12 +126,12 @@
                                     </div>
     
                                     <div class="form-group">
-                                        <label for="product_stock">{{ __('Qty')}}<span class="text-red">*</span></label>
-                                        <input type="number" class="form-control" id="product_stock" name="stock" placeholder="Stock Quantity" required>
+                                        <label for="product_stock">{{ __('Qty')}}</label>
+                                        <input type="number" class="form-control" id="product_stock" name="stock" placeholder="Stock Quantity">
                                     </div>
     
                                     <div class="form-group">
-                                        <label for="product_alert_quantity">{{ __('Stock Alert')}}<span class="text-red">*</span></label>
+                                        <label for="product_alert_quantity">{{ __('Stock Alert')}}</label>
                                         <input type="number" class="form-control" id="product_alert_quantity" name="alert_quantity" placeholder="Alert Quantity">
                                     </div>
     
