@@ -70,7 +70,8 @@ shuffle($products);
 								<div class="col-xl-2 col-lg-4 col-12 col-sm-6 mb-2 list-item list-item-grid p-2">
 									<div class="card mb-1 pos-product-card" data-info="{{ htmlentities(json_encode($product)) }}">
 										<div class="d-flex card-img">
-											<img src="{{ asset($product->image ? 'storage/' . $product->image : 'product_images/no-image.png') }}" alt="" class="list-thumbnail responsive border-0">
+											<img src="{{ asset($product->image ? 'public/img/products/' . $product->image : 'public/img/products/no-image.png') }}" alt="" class="list-thumbnail responsive border-0">
+											{{-- <img src="{{ asset($product->image ? 'storage/' . $product->image : 'product_images/no-image.png') }}" alt="" class="list-thumbnail responsive border-0"> --}}
 										</div>
 										<div class="p-2" style="height: 120px; overflow: hidden;">
 											<p style="margin-bottom: 0; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">
@@ -240,7 +241,8 @@ shuffle($products);
 			} else {
 				cart[id] = {
 					name: product.name,
-					image: 'storage/'+product.image,
+					image: 'public/img/products/'+product.image,
+					// image: 'storage/'+product.image,
 					price: price,
 					quantity: 1,
 					subtotal: price
