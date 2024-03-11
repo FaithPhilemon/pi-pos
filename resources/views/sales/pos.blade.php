@@ -93,6 +93,8 @@ shuffle($products);
 						<button id="loadMoreBtn" class="btn btn-outline-danger p-2 mr-10 btn-checkout btn-pos-checkout">Load More</button>
 					</div>
 				</div>
+
+
 				<div class="col-sm-3 bg-white product-cart-area">
 					<div class="product-selection-area">
 						<div class="d-flex justify-content-between align-items-center">
@@ -115,21 +117,7 @@ shuffle($products);
                             @csrf
 
 							<div id="product-cart" class="product-cart mb-3">
-								<!-- Uncomment to preview original cart html
-									====================================================
-									<div class="d-flex justify-content-between position-relative">
-										<i class="text-red ik ik-x-circle cart-remove cursor-pointer" onclick="removeCartItem(ID)"></i>
-										<div class="cart-image-holder">
-											<img src="IMAGE_SRC">
-										</div>
-										<div class="w-100 p-2">
-											<h5 class="mb-2 cart-item-title">ITEM_NAME</h5>
-											<div class="d-flex justify-content-between">
-												<span class="text-muted">QUANTITYx</span>
-												<span class="text-success font-weight-bold cart-item-price">SUBTOTAL</span>
-											</div>
-										</div>
-								</div> -->
+								
 							</div>
 							<div class="box-shadow p-3">
 								<div class="d-flex justify-content-between font-15 align-items-center">
@@ -166,7 +154,6 @@ shuffle($products);
 								<label class="d-block">Customer Information</label>
 								<div class="d-block">
 									<div class="form-group">
-										{{-- <input type="text" name="name" class="form-control" placeholder="Enter Customer Name" value="Christopher Alex"> --}}
 										<select class="form-control select2" id="customer_name" name="customer_name" required>
                                             @foreach($customers as $customer)
 											<option value="{{ $customer->contact_name }}">{{ $customer->contact_name }}</option>
@@ -220,11 +207,15 @@ shuffle($products);
 			</div>
 		</div>
 	</div>
-	<!-- initiate scripts-->
-	<script src="{{ asset('all.js') }}"></script>
-	<script src="{{ asset('dist/js/theme.js') }}"></script>
-    <script src="{{ asset('src/js/vendor/jquery-3.3.1.min.js') }}"></script>
-	<script src="{{ asset('plugins/select2/dist/js/select2.min.js') }}"></script>
+	<!-- push external js -->
+    @push('script')
+		<!-- initiate scripts-->
+		<script src="{{ asset('all.js') }}"></script>
+		<script src="{{ asset('dist/js/theme.js') }}"></script>
+		<script src="{{ asset('src/js/vendor/jquery-3.3.1.min.js') }}"></script>
+		<script src="{{ asset('plugins/select2/dist/js/select2.min.js') }}"></script>
+	
+	@endpush
 
 	<script>
 		const parser = new DOMParser();
@@ -279,63 +270,6 @@ shuffle($products);
 				updateCartTable();
 			}
 		}
-
-		// Function to update the cart table
-		// function updateCartTable() {
-
-		// 	var $cartTable = $('#product-cart'),
-		// 		$cartTotal = $('#subtotal-products'),
-		// 		$totalText = $('#total-bill');
-
-		// 	var cartTotal = 0,
-		// 		discountPercentage = parseFloat($('#discount').val()) || 0;
-		// 		discountAmount2 = $('#discountAmt').val();
-
-		// 	// Empty cart table
-		// 	$cartTable.empty();
-
-		// 	// Loop through cart items and add them to cart table
-		// 	for (var id in cart) {
-		// 		if (cart.hasOwnProperty(id)) {
-		// 			var item = cart[id];
-
-		// 			var $tr = `<div class="d-flex justify-content-between position-relative">
-		// 						<i class="text-red ik ik-x-circle cart-remove cursor-pointer" onclick="removeCartItem(${id})"></i>
-		// 						<div class="cart-image-holder">
-		// 							<img src="${item.image}">
-		// 						</div>
-		// 						<div class="w-100 p-2">
-		// 							<h5 class="mb-2 cart-item-title">${item.name}</h5>
-		// 							<input type="hidden" name="products[${id}][product_name]" value="${item.name}">
-		// 							<div class="d-flex justify-content-between">
-		// 								<span class="text-muted">${item.quantity}x</span>
-		// 								<input type="hidden" name="products[${id}][quantity]" value="${item.quantity}">
-
-		// 								<span class="text-success font-weight-bold cart-item-price">${item.subtotal.toFixed(2)}</span>
-		// 								<input type="hidden" name="products[${id}][price]" value="${item.price}">
-		// 							</div>
-		// 						</div>
-		// 					</div>`;
-		// 			$cartTable.append($tr);
-		// 			cartTotal += item.subtotal;
-		// 		}
-		// 	}
-
-
-		// 	// Calculate discount based on percentage or price
-		// 	var discountAmount = (cartTotal * (discountPercentage / 100));
-    
-		// 	// Update cart total and total text
-		// 	$cartTotal.text(cartTotal.toFixed(2));
-		// 	// $totalText.text((cartTotal - discountAmount).toFixed(2));
-		// 	// $totalText.text((cartTotal - discountAmount2).toFixed(2));
-
-		// 	$totalText.text((cartTotal - Math.min(discountAmount, discountAmount2)).toFixed(2));
-
-
-		// 	// Update cart total
-		// 	// $cartTotal.text(cartTotal.toFixed(2));
-		// }
 
 
 		function updateCartTable() {
@@ -448,6 +382,8 @@ shuffle($products);
 		});
 
 	</script>
+
+
 </body>
 
 </html>
