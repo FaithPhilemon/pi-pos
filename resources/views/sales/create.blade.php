@@ -78,7 +78,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="invoice_number">{{ __('Customer Name')}}</label>                                    
-                                            <select class="form-control" id="customer_name" name="customer_name" required>
+                                            <select class="form-control select2" id="customer_name" name="customer_name" required>
                                                 @foreach($customers as $customer)
                                                     <option value="{{ $customer->contact_name }}">{{ $customer->contact_name }}</option>
                                                 @endforeach

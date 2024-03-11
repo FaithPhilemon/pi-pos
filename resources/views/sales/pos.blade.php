@@ -35,7 +35,7 @@ shuffle($products);
 						<div class="row">
 							<div class="col-sm-3">
 								<div class="form-group">
-									<select class="form-control select2" name="warehouse">
+									<select class="form-control" name="warehouse">
 										<option selected="selected" value="">Select Store</option>
 										<option value="1">Warehouse 1</option>
 										<option value="2">Warehouse 2</option>
@@ -44,7 +44,7 @@ shuffle($products);
 							</div>
 							
 							<div class="col-sm-3">
-								<select id="categoryFilter" class="form-control">
+								<select id="categoryFilter" class="form-control select2">
 									<option value="">All Categories</option>
 									@foreach($categories as $category)
 										<option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -71,7 +71,6 @@ shuffle($products);
 									<div class="card mb-1 pos-product-card" data-info="{{ htmlentities(json_encode($product)) }}">
 										<div class="d-flex card-img">
 											<img src="{{ asset($product->image ? 'public/img/products/' . $product->image : 'public/img/products/no-image.png') }}" alt="" class="list-thumbnail responsive border-0">
-											{{-- <img src="{{ asset($product->image ? 'storage/' . $product->image : 'product_images/no-image.png') }}" alt="" class="list-thumbnail responsive border-0"> --}}
 										</div>
 										<div class="p-2" style="height: 120px; overflow: hidden;">
 											<p style="margin-bottom: 0; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">
@@ -94,6 +93,8 @@ shuffle($products);
 						<button id="loadMoreBtn" class="btn btn-outline-danger p-2 mr-10 btn-checkout btn-pos-checkout">Load More</button>
 					</div>
 				</div>
+
+
 				<div class="col-sm-3 bg-white product-cart-area">
 					<div class="product-selection-area">
 						<div class="d-flex justify-content-between align-items-center">
@@ -116,21 +117,7 @@ shuffle($products);
                             @csrf
 
 							<div id="product-cart" class="product-cart mb-3">
-								<!-- Uncomment to preview original cart html
-									====================================================
-									<div class="d-flex justify-content-between position-relative">
-										<i class="text-red ik ik-x-circle cart-remove cursor-pointer" onclick="removeCartItem(ID)"></i>
-										<div class="cart-image-holder">
-											<img src="IMAGE_SRC">
-										</div>
-										<div class="w-100 p-2">
-											<h5 class="mb-2 cart-item-title">ITEM_NAME</h5>
-											<div class="d-flex justify-content-between">
-												<span class="text-muted">QUANTITYx</span>
-												<span class="text-success font-weight-bold cart-item-price">SUBTOTAL</span>
-											</div>
-										</div>
-								</div> -->
+								
 							</div>
 							<div class="box-shadow p-3">
 								<div class="d-flex justify-content-between font-15 align-items-center">
@@ -138,9 +125,15 @@ shuffle($products);
 									<strong id="subtotal-products">0.00</strong>
 								</div>
 								<div class="d-flex justify-content-between font-15 align-items-center">
-									<span>Discount(%)</span>
-									<input type="number" value="0" class="form-control w-90 font-15 text-right" name="discount" id="discount">
+									<span>Percentage Discount</span>
+									<input type="number" class="form-control w-90 font-15 text-right" name="percentage" id="discount">
 								</div>
+
+								<div class="d-flex justify-content-between font-15 align-items-center pt-5">
+									<span>Prince Discount</span>
+									<input class="form-control w-90 font-15 text-right" id="discountAmt" name="price">
+								</div>
+
 								<hr>
 								<div class="d-flex justify-content-between font-20 align-items-center">
 									<b>Total</b>
@@ -215,13 +208,20 @@ shuffle($products);
 			</div>
 		</div>
 	</div>
-	<!-- initiate scripts-->
+	
+	<!-- push external js -->
 	<script src="{{ asset('all.js') }}"></script>
 	<script src="{{ asset('dist/js/theme.js') }}"></script>
-    <script src="{{ asset('src/js/vendor/jquery-3.3.1.min.js') }}"></script>
+	<script src="{{ asset('src/js/vendor/jquery-3.3.1.min.js') }}"></script>
 	<script src="{{ asset('plugins/select2/dist/js/select2.min.js') }}"></script>
+	
 
 	<script>
+		$(document).ready(function() {
+			$(".select2").select2();
+		});
+
+
 		const parser = new DOMParser();
 
 		function decodeString(inputStr) {
@@ -242,7 +242,6 @@ shuffle($products);
 				cart[id] = {
 					name: product.name,
 					image: 'public/img/products/'+product.image,
-					// image: 'storage/'+product.image,
 					price: price,
 					quantity: 1,
 					subtotal: price
@@ -258,6 +257,10 @@ shuffle($products);
 			updateCartTable();
 		});
 
+		$(document).on('keyup', '#discountAmt', function() {
+			updateCartTable();
+		});
+
 		function removeCartItem(id) {
 			delete cart[id];
 			updateCartTable();
@@ -267,18 +270,20 @@ shuffle($products);
 			if (confirm('Are you sure to clear cart?')) {
 				cart = {};
 				$('#discount').val(0)
+				$('#discountAmt').val(0)
 				updateCartTable();
 			}
 		}
 
-		// Function to update the cart table
+
 		function updateCartTable() {
 			var $cartTable = $('#product-cart'),
 				$cartTotal = $('#subtotal-products'),
 				$totalText = $('#total-bill');
 
 			var cartTotal = 0,
-				discountPercentage = parseFloat($('#discount').val()) || 0;
+				discountPercentage = parseFloat($('#discount').val()) || 0,
+				discountAmount2 = parseFloat($('#discountAmt').val()) || 0;
 
 			// Empty cart table
 			$cartTable.empty();
@@ -310,18 +315,20 @@ shuffle($products);
 				}
 			}
 
+			// Check which input field has focus to determine discount type
+			var activeDiscountInput = document.activeElement.id;
+			var discountAmount = 0;
+			if (activeDiscountInput === 'discount') {
+				discountAmount = (cartTotal * (discountPercentage / 100));
+				$('#discountAmt').val(''); // Clear price-based discount input
+			} else if (activeDiscountInput === 'discountAmt') {
+				discountAmount = Math.min(discountAmount2, cartTotal); // Ensure price-based discount doesn't exceed cart total
+				$('#discount').val(''); // Clear percentage-based discount input
+			}
 
-			// Calculate discount based on percentage
-			var discountAmount = (cartTotal * (discountPercentage / 100));
-    
 			// Update cart total and total text
 			$cartTotal.text(cartTotal.toFixed(2));
 			$totalText.text((cartTotal - discountAmount).toFixed(2));
-
-
-			// Update cart total
-			// $cartTotal.text(cartTotal.toFixed(2));
-			// $totalText.text((cartTotal - discount).toFixed(2));
 		}
 
 
@@ -353,6 +360,7 @@ shuffle($products);
 				var data = { searchTerm: searchTerm};
 
 				$.get(url, data, function (data) {
+					console.log(data);
 					$('#layout-wrap').html(data);
 				});
 			}
@@ -362,6 +370,7 @@ shuffle($products);
 				var data = { categoryId: categoryId };
 
 				$.get(url, data, function (data) {
+					console.log(data);
 					$('#layout-wrap').html(data);
 				});
 			}
@@ -377,6 +386,8 @@ shuffle($products);
 		});
 
 	</script>
+
+
 </body>
 
 </html>
