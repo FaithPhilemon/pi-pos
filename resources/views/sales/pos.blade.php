@@ -35,7 +35,7 @@ shuffle($products);
 						<div class="row">
 							<div class="col-sm-3">
 								<div class="form-group">
-									<select class="form-control select2" name="warehouse">
+									<select class="form-control" name="warehouse">
 										<option selected="selected" value="">Select Store</option>
 										<option value="1">Warehouse 1</option>
 										<option value="2">Warehouse 2</option>
@@ -44,7 +44,7 @@ shuffle($products);
 							</div>
 							
 							<div class="col-sm-3">
-								<select id="categoryFilter" class="form-control">
+								<select id="categoryFilter" class="form-control select2">
 									<option value="">All Categories</option>
 									@foreach($categories as $category)
 										<option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -154,6 +154,7 @@ shuffle($products);
 								<label class="d-block">Customer Information</label>
 								<div class="d-block">
 									<div class="form-group">
+										{{-- <input type="text" name="name" class="form-control" placeholder="Enter Customer Name" value="Christopher Alex"> --}}
 										<select class="form-control select2" id="customer_name" name="customer_name" required>
                                             @foreach($customers as $customer)
 											<option value="{{ $customer->contact_name }}">{{ $customer->contact_name }}</option>
@@ -207,17 +208,20 @@ shuffle($products);
 			</div>
 		</div>
 	</div>
-	<!-- push external js -->
-    @push('script')
-		<!-- initiate scripts-->
-		<script src="{{ asset('all.js') }}"></script>
-		<script src="{{ asset('dist/js/theme.js') }}"></script>
-		<script src="{{ asset('src/js/vendor/jquery-3.3.1.min.js') }}"></script>
-		<script src="{{ asset('plugins/select2/dist/js/select2.min.js') }}"></script>
 	
-	@endpush
+	<!-- push external js -->
+	<script src="{{ asset('all.js') }}"></script>
+	<script src="{{ asset('dist/js/theme.js') }}"></script>
+	<script src="{{ asset('src/js/vendor/jquery-3.3.1.min.js') }}"></script>
+	<script src="{{ asset('plugins/select2/dist/js/select2.min.js') }}"></script>
+	
 
 	<script>
+		$(document).ready(function() {
+			$(".select2").select2();
+		});
+
+
 		const parser = new DOMParser();
 
 		function decodeString(inputStr) {
