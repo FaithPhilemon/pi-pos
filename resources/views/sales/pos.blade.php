@@ -71,7 +71,6 @@ shuffle($products);
 									<div class="card mb-1 pos-product-card" data-info="{{ htmlentities(json_encode($product)) }}">
 										<div class="d-flex card-img">
 											<img src="{{ asset($product->image ? 'public/img/products/' . $product->image : 'public/img/products/no-image.png') }}" alt="" class="list-thumbnail responsive border-0">
-											{{-- <img src="{{ asset($product->image ? 'storage/' . $product->image : 'product_images/no-image.png') }}" alt="" class="list-thumbnail responsive border-0"> --}}
 										</div>
 										<div class="p-2" style="height: 120px; overflow: hidden;">
 											<p style="margin-bottom: 0; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">
@@ -138,9 +137,15 @@ shuffle($products);
 									<strong id="subtotal-products">0.00</strong>
 								</div>
 								<div class="d-flex justify-content-between font-15 align-items-center">
-									<span>Discount(%)</span>
-									<input type="number" value="0" class="form-control w-90 font-15 text-right" name="discount" id="discount">
+									<span>Percentage Discount</span>
+									<input type="number" class="form-control w-90 font-15 text-right" name="percentage" id="discount">
 								</div>
+
+								<div class="d-flex justify-content-between font-15 align-items-center pt-5">
+									<span>Prince Discount</span>
+									<input class="form-control w-90 font-15 text-right" id="discountAmt" name="price">
+								</div>
+
 								<hr>
 								<div class="d-flex justify-content-between font-20 align-items-center">
 									<b>Total</b>
@@ -242,7 +247,6 @@ shuffle($products);
 				cart[id] = {
 					name: product.name,
 					image: 'public/img/products/'+product.image,
-					// image: 'storage/'+product.image,
 					price: price,
 					quantity: 1,
 					subtotal: price
@@ -258,6 +262,10 @@ shuffle($products);
 			updateCartTable();
 		});
 
+		$(document).on('keyup', '#discountAmt', function() {
+			updateCartTable();
+		});
+
 		function removeCartItem(id) {
 			delete cart[id];
 			updateCartTable();
@@ -267,18 +275,77 @@ shuffle($products);
 			if (confirm('Are you sure to clear cart?')) {
 				cart = {};
 				$('#discount').val(0)
+				$('#discountAmt').val(0)
 				updateCartTable();
 			}
 		}
 
 		// Function to update the cart table
+		// function updateCartTable() {
+
+		// 	var $cartTable = $('#product-cart'),
+		// 		$cartTotal = $('#subtotal-products'),
+		// 		$totalText = $('#total-bill');
+
+		// 	var cartTotal = 0,
+		// 		discountPercentage = parseFloat($('#discount').val()) || 0;
+		// 		discountAmount2 = $('#discountAmt').val();
+
+		// 	// Empty cart table
+		// 	$cartTable.empty();
+
+		// 	// Loop through cart items and add them to cart table
+		// 	for (var id in cart) {
+		// 		if (cart.hasOwnProperty(id)) {
+		// 			var item = cart[id];
+
+		// 			var $tr = `<div class="d-flex justify-content-between position-relative">
+		// 						<i class="text-red ik ik-x-circle cart-remove cursor-pointer" onclick="removeCartItem(${id})"></i>
+		// 						<div class="cart-image-holder">
+		// 							<img src="${item.image}">
+		// 						</div>
+		// 						<div class="w-100 p-2">
+		// 							<h5 class="mb-2 cart-item-title">${item.name}</h5>
+		// 							<input type="hidden" name="products[${id}][product_name]" value="${item.name}">
+		// 							<div class="d-flex justify-content-between">
+		// 								<span class="text-muted">${item.quantity}x</span>
+		// 								<input type="hidden" name="products[${id}][quantity]" value="${item.quantity}">
+
+		// 								<span class="text-success font-weight-bold cart-item-price">${item.subtotal.toFixed(2)}</span>
+		// 								<input type="hidden" name="products[${id}][price]" value="${item.price}">
+		// 							</div>
+		// 						</div>
+		// 					</div>`;
+		// 			$cartTable.append($tr);
+		// 			cartTotal += item.subtotal;
+		// 		}
+		// 	}
+
+
+		// 	// Calculate discount based on percentage or price
+		// 	var discountAmount = (cartTotal * (discountPercentage / 100));
+    
+		// 	// Update cart total and total text
+		// 	$cartTotal.text(cartTotal.toFixed(2));
+		// 	// $totalText.text((cartTotal - discountAmount).toFixed(2));
+		// 	// $totalText.text((cartTotal - discountAmount2).toFixed(2));
+
+		// 	$totalText.text((cartTotal - Math.min(discountAmount, discountAmount2)).toFixed(2));
+
+
+		// 	// Update cart total
+		// 	// $cartTotal.text(cartTotal.toFixed(2));
+		// }
+
+
 		function updateCartTable() {
 			var $cartTable = $('#product-cart'),
 				$cartTotal = $('#subtotal-products'),
 				$totalText = $('#total-bill');
 
 			var cartTotal = 0,
-				discountPercentage = parseFloat($('#discount').val()) || 0;
+				discountPercentage = parseFloat($('#discount').val()) || 0,
+				discountAmount2 = parseFloat($('#discountAmt').val()) || 0;
 
 			// Empty cart table
 			$cartTable.empty();
@@ -310,18 +377,20 @@ shuffle($products);
 				}
 			}
 
+			// Check which input field has focus to determine discount type
+			var activeDiscountInput = document.activeElement.id;
+			var discountAmount = 0;
+			if (activeDiscountInput === 'discount') {
+				discountAmount = (cartTotal * (discountPercentage / 100));
+				$('#discountAmt').val(''); // Clear price-based discount input
+			} else if (activeDiscountInput === 'discountAmt') {
+				discountAmount = Math.min(discountAmount2, cartTotal); // Ensure price-based discount doesn't exceed cart total
+				$('#discount').val(''); // Clear percentage-based discount input
+			}
 
-			// Calculate discount based on percentage
-			var discountAmount = (cartTotal * (discountPercentage / 100));
-    
 			// Update cart total and total text
 			$cartTotal.text(cartTotal.toFixed(2));
 			$totalText.text((cartTotal - discountAmount).toFixed(2));
-
-
-			// Update cart total
-			// $cartTotal.text(cartTotal.toFixed(2));
-			// $totalText.text((cartTotal - discount).toFixed(2));
 		}
 
 
@@ -353,6 +422,7 @@ shuffle($products);
 				var data = { searchTerm: searchTerm};
 
 				$.get(url, data, function (data) {
+					console.log(data);
 					$('#layout-wrap').html(data);
 				});
 			}
@@ -362,6 +432,7 @@ shuffle($products);
 				var data = { categoryId: categoryId };
 
 				$.get(url, data, function (data) {
+					console.log(data);
 					$('#layout-wrap').html(data);
 				});
 			}
