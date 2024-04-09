@@ -1,4 +1,66 @@
-$(document).ready(function() {
+$(document).ready(function () {
+    
+    var table = $('#data_table2').DataTable({
+        responsive: true,
+        select: true,
+        'aoColumnDefs': [{
+            'bSortable': false,
+            'aTargets': ['nosort']
+        }],
+        paging: true, // Disable/Enable pagination
+        info: false,  // Disable the "Showing 1 to 10 of 10 entries" text
+        dom: "<'row'<'col-sm-2'l><'col-sm-7 text-center'B><'col-sm-3'f>>tipr",
+                buttons: [
+                    {
+                        extend: 'copy',
+                        className: 'btn-sm btn-info', 
+                        header: false,
+                        footer: true,
+                        exportOptions: {
+                            // columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        className: 'btn-sm btn-success',
+                        header: false,
+                        footer: true,
+                        exportOptions: {
+                            // columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'excel',
+                        className: 'btn-sm btn-warning',
+                        header: false,
+                        footer: true,
+                        exportOptions: {
+                            // columns: ':visible',
+                        }
+                    },
+                    {
+                        extend: 'pdf',
+                        className: 'btn-sm btn-primary',
+                        header: false,
+                        footer: true,
+                        exportOptions: {
+                            // columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        className: 'btn-sm btn-default',
+                        header: true,
+                        footer: false,
+                        orientation: 'landscape',
+                        exportOptions: {
+                            // columns: ':visible',
+                            stripHtml: false
+                        }
+                    }
+                ]
+    
+    });
 
     var table = $('#data_table').DataTable({
         responsive: true,
@@ -61,6 +123,8 @@ $(document).ready(function() {
                 ]
     
     });
+
+    
     $('#data_table tbody').on( 'click', 'tr', function() {
         if ( $(this).hasClass('selected') ) {
             $(this).removeClass('selected');
