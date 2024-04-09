@@ -50,7 +50,7 @@ class ProductsController extends Controller
         }
 
         // $products = $query->get();
-        $products = $query->paginate(20); // 10 items per page,
+        $products = $query->paginate(50); // 50 items per page,
 
 
         return view('products.index', compact('products', 'categories', 'stores', 'pageTitle'));
