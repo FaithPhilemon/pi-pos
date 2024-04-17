@@ -8,14 +8,6 @@
         <link rel="stylesheet" href="{{ asset('plugins/select2/dist/css/select2.min.css') }}">
     @endpush
 
-    <style>
-        /* Custom CSS to adjust the width of discount_type and discount_amount inputs */
-        #discount_type, #discount_amount {
-            width: 100%;
-        }
-
-    </style>
-
     <div class="container-fluid">
         <div class="page-header">
             <div class="row align-items-end">
@@ -143,9 +135,42 @@
                                         </div>
                                     </div>
         
-                                    
+                                    {{-- <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="total_amount">{{ __('Total Amount')}}</label>
+                                            <input type="text" class="form-control" id="total_amount" name="total_amount" value="0" placeholder="Total Amount" required>
+                                        </div>
+                                    </div>
+        
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="total_paid">{{ __('Total Paid')}}</label>
+                                            <input type="text" class="form-control" id="total_paid" name="total_paid" value="0" placeholder="Total Paid" required>
+                                        </div>
+                                    </div>
+        
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="total_items">{{ __('Total Items')}}</label>
+                                            <input type="number" class="form-control" id="total_items" value="0" name="total_items" placeholder="Total Items" required>
+                                        </div>
+                                    </div> --}}
         
                                 </div>
+                        
+                                {{-- <div class="form-group">
+                                    <label for="shipping_status">{{ __('Shipping Status')}}</label>
+                                    <select class="form-control" id="shipping_status" name="shipping_status" required>
+                                        @foreach($shippingStatuses as $status)
+                                            <option value="{{ $status->id }}">{{ $status->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                        
+                                <div class="form-group">
+                                    <label for="shipping_details">{{ __('Shipping Details')}}</label>
+                                    <textarea class="form-control" id="shipping_details" name="shipping_details" rows="4" placeholder="Shipping Details"></textarea>
+                                </div> --}}
                         
                                 <hr>
 
@@ -165,7 +190,7 @@
                                             <th style="width: 50%;">Product</th>
                                             <th>Quantity</th>
                                             <th>Price</th>
-                                            <th>Discount(₦)</th>
+                                            <th>Discount</th>
                                             <th>Total Amount</th>
                                             <th>Action</th>
                                         </thead>
@@ -178,31 +203,19 @@
                                                 <td><span id="grand_total">₦0.00</span></td>
                                                 <td></td>
                                             </tr>
-                                            <tr id="discount_row">
-                                                <td colspan="4">Discount on All</td>
-                                                <td colspan="2">
-                                                    <form id="discount_form">
-                                                        <div class="form-row align-items-center">
-                                                            <div class="col">
-                                                                <select class="form-control" id="discount_type" name="discount_type">
-                                                                    <option value="percentage">Percentage</option>
-                                                                    <option value="fixed">Fixed</option>
-                                                                </select>
-                                                            </div>
-                                                            <div class="col">
-                                                                <input class="form-control" type="number" id="discount_amount" name="discount_amount" value="0">
-                                                            </div>
-                                                        </div>
-                                                    </form>
-                                                </td>
-                                            </tr>
-                                            {{-- <tr>
-                                                <td colspan="4">Discount on All	(%)</td>
+                                            <tr>
+                                                <td colspan="4">Discount (%)</td>
                                                 <td><input class="form-control" type="number" id="discount" name="discount" value="0" /></td>
                                                 <td></td>
-                                            </tr> --}}
+                                            </tr>
                                         </tfoot>
                                     </table>
+                                </div>
+
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close')}}</button>
+                                    <button type="submit" class="btn btn-primary">{{ __('Save')}}</button>
                                 </div>
                         </form>
                         
@@ -215,44 +228,14 @@
 
 
 
-    <!-- Modal for discount input -->
-    <div class="modal fade" id="discountModal" tabindex="-1" role="dialog" aria-labelledby="discountModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="discountModalLabel">Apply Discount</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="discountForm">
-                        <div class="form-group">
-                            <label for="discountType">Discount Type</label>
-                            <select class="form-control" id="discountType" name="discountType">
-                                <option value="percentage">Percentage(%)</option>
-                                <option value="fixed">Fixed(₦)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="discountAmount">Discount Amount</label>
-                            <input type="number" class="form-control" id="discountAmount" name="discountAmount" min="0" step="0.01">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="applyDiscountBtn">Apply Discount</button>
-                </div>
-            </div>
-        </div>
-    </div>
+
    
 
     
 
     <!-- push external js -->
     @push('script')
+        {{-- <script src="{{ asset('src/js/vendor/jquery-3.3.1.min.js') }}"></script> --}}
 
         <script src="{{ asset('plugins/DataTables/datatables.min.js') }}"></script>
         <script src="{{ asset('js/datatables.js') }}"></script>
@@ -304,6 +287,69 @@
         </script>
 
         <script>
+            // $(document).ready(function () {
+            //     $('#product_selector').change(function () {
+            //         var productId = $(this).val();
+            //         var productName = $(this).find('option:selected').text();
+            //         var productPrice = $(this).find('option:selected').data('price');
+
+            //         if (productId) {
+            //             // Add a new row with product details
+            //             var newRow = $('<tr>');
+            //             newRow.append('<td><input class="form-control" type="text" name="products[' + productId + '][product_name]" value="' + productName + '" readonly /></td>');
+            //             newRow.append('<td><input class="form-control quantity" type="number" name="products[' + productId + '][quantity]" value="1" /></td>');
+            //             newRow.append('<td><input class="form-control price" type="text" name="products[' + productId + '][price]" value="' + productPrice + '" readonly /></td>');
+            //             newRow.append('<td><input class="form-control discount" type="number" name="products[' + productId + '][discount]" value="0" /></td>');
+            //             newRow.append('<td><input class="form-control sub-total" type="text" name="products[' + productId + '][sub_total]" readonly /></td>');
+            //             newRow.append('<td><button type="button" class="btn btn-danger btn-icon ml-2 remove-row"><i class="ik ik-trash-2"></i></button></td>');
+
+            //             // Append the new row to the table
+            //             $('#products_table tbody').append(newRow);
+
+            //             updateSubTotal(newRow);
+            //             updateGrandTotal();
+            //         }
+            //     });
+
+            //     // Remove row when the "Remove" button is clicked
+            //     $('#products_table').on('click', '.remove-row', function () {
+            //         $(this).closest('tr').remove();
+            //         updateGrandTotal();
+            //     });
+
+            //     // Update sub-total and grand total when quantity or discount changes
+            //     $('#products_table').on('input', '.quantity, .discount', function () {
+            //         updateSubTotal($(this).closest('tr'));
+            //         updateGrandTotal();
+            //     });
+
+            //     // Update grand total when discount input changes
+            //     $('#discount').on('input', function () {
+            //         updateGrandTotal();
+            //     });
+
+            //     function updateSubTotal(row) {
+            //         var quantity = parseFloat(row.find('.quantity').val()) || 0;
+            //         var price = parseFloat(row.find('.price').val()) || 0;
+            //         var discount = parseFloat(row.find('.discount').val()) || 0;
+
+            //         var subTotal = quantity * price * (1 - discount / 100);
+            //         row.find('.sub-total').val(subTotal.toFixed(2));
+            //     }
+
+            //     function updateGrandTotal() {
+            //         var grandTotal = 0;
+
+            //         $('#products_table tbody tr').each(function () {
+            //             grandTotal += parseFloat($(this).find('.sub-total').val()) || 0;
+            //         });
+
+            //         var discount = parseFloat($('#discount').val()) || 0;
+            //         grandTotal *= (1 - discount / 100);
+
+            //         $('#grand_total').text("₦" + grandTotal.toFixed(2));
+            //     }
+            // });
 
 
             $(document).ready(function () {
@@ -316,10 +362,10 @@
                     if (productId) {
                         // Add a new row with product details
                         var newRow = $('<tr>');
-                        newRow.append('<td><input class="form-control row-index" type="hidden" value="' + $('#products_table tbody tr').length + '"><input class="form-control" type="text" name="products[' + productId + '][product_name]" value="' + productName + '" readonly /></td>');
+                        newRow.append('<td><input class="form-control" type="text" name="products[' + productId + '][product_name]" value="' + productName + '" readonly /></td>');
                         newRow.append('<td><input class="form-control quantity" type="number" name="products[' + productId + '][quantity]" value="1" /></td>');
                         newRow.append('<td><input class="form-control price" type="text" name="products[' + productId + '][price]" value="' + productPrice + '" readonly /></td>');
-                        newRow.append('<td><input class="form-control discount" type="number" name="products[' + productId + '][discount]" value="0" readonly data-toggle="tooltip" data-placement="top" title="Click to change" style="cursor: pointer;"/></td>');
+                        newRow.append('<td><input class="form-control discount" type="number" name="products[' + productId + '][discount]" value="0" readonly /></td>');
                         newRow.append('<td class="sub-total">'+ productPrice +'</td>');
                         newRow.append('<td><button type="button" class="btn btn-danger btn-icon ml-2 remove-row"><i class="ik ik-trash-2"></i></button></td>');
 
@@ -328,7 +374,6 @@
 
                         updateGrandTotal();
                     }
-
                 });
 
                 // Remove row when the "Remove" button is clicked
@@ -344,7 +389,7 @@
                 });
 
                 // Update grand total when discount input changes
-                $('#discount_amount').on('input', function () {
+                $('#discount').on('input', function () {
                     updateGrandTotal();
                 });
 
@@ -357,69 +402,6 @@
                     row.find('.sub-total').text(subTotal.toFixed(2));
                 }
 
-
-
-                var selectedRowIndex; // Variable to store the selected row index
-
-                // Click event handler for discount inputs to open modal
-                $('#products_table').on('click', '.discount', function () {
-                    selectedRowIndex = $(this).closest('tr').index(); // Store the index of the selected row
-                    console.log("Selected Row Index:", selectedRowIndex);
-                    $('#discountModal').modal('show');
-                });
-
-                // Apply discount button click event handler
-                $('#applyDiscountBtn').click(function () {
-                    // console.log("Apply Discount button clicked");
-                    var discountType = $('#discountType').val();
-                    var discountAmount = parseFloat($('#discountAmount').val()) || 0;
-
-                    if (!isNaN(selectedRowIndex)) {
-                        console.log("Selected Row Index:", selectedRowIndex);
-                        var row = $('#products_table tbody tr').eq(selectedRowIndex);
-                        var price = parseFloat(row.find('.price').val());
-                        var quantity = parseFloat(row.find('.quantity').val()) || 0;
-
-                        // console.log("Price:", price);
-                        // console.log("Quantity:", quantity);
-
-                        var discount = 0;
-
-                        if (discountType === 'percentage') {
-                            discount = price * discountAmount / 100;
-                            // console.log("Discount (Percentage):", discount);
-                        } else {
-                            discount = Math.min(discountAmount, price * quantity);
-                            // console.log("Discount (Fixed):", discount);
-                        }
-
-                        var subTotal = (price * quantity) - discount;
-                        row.find('.discount').val(discount.toFixed(2)); // Update the discount value
-                        row.find('.sub-total').text(subTotal.toFixed(2));
-
-                        updateGrandTotal();
-                    } else {
-                        console.log("No selected row index found.");
-                    }
-
-                    $('#discountModal').modal('hide');
-                });
-
-
-
-                // function updateGrandTotal() {
-                //     var grandTotal = 0;
-
-                //     $('#products_table tbody tr').each(function () {
-                //         grandTotal += parseFloat($(this).find('.sub-total').text()) || 0;
-                //     });
-
-                //     var discount = parseFloat($('#discount').val()) || 0;
-                //     grandTotal *= (1 - discount / 100);
-
-                //     $('#grand_total').text("₦" + grandTotal.toFixed(2));
-                // }
-
                 function updateGrandTotal() {
                     var grandTotal = 0;
 
@@ -427,24 +409,12 @@
                         grandTotal += parseFloat($(this).find('.sub-total').text()) || 0;
                     });
 
-                    var discountType = $('#discount_type').val();
-                    var discountAmount = parseFloat($('#discount_amount').val()) || 0;
-
-                    if (discountType === 'percentage') {
-                        grandTotal *= (1 - discountAmount / 100);
-                    } else {
-                        grandTotal -= discountAmount;
-                    }
+                    var discount = parseFloat($('#discount').val()) || 0;
+                    grandTotal *= (1 - discount / 100);
 
                     $('#grand_total').text("₦" + grandTotal.toFixed(2));
                 }
-
-
             });
-
-
-
-            
 
         </script>
     @endpush
