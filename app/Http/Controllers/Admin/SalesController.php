@@ -179,6 +179,7 @@ class SalesController extends Controller
                     'sale_id'       => $lastId, // Use the last inserted ID
                     'product_name'  => $product['product_name'],
                     'price'         => $product['price'],
+                    'discount'      => $product['discount'],
                     'quantity'      => $product['quantity'],
                     'total'         => $product['quantity'] * $product['price'],
                 ]);
@@ -230,6 +231,7 @@ class SalesController extends Controller
         $paymentStatuses    = PaymentStatus::all();
         $shippingStatuses   = ShippingStatus::all();
         $saleItems           = SaleItem::where('sale_id', $sale->id)->get();
+        $saleItemsTotal      = SaleItem::where('sale_id', $sale->id)->sum('total');
 
 
         // $customers  = Customer::all();
@@ -242,7 +244,8 @@ class SalesController extends Controller
                                           'saleStatuses',
                                           'paymentStatuses',
                                           'shippingStatuses',
-                                          'saleItems'
+                                          'saleItems',
+                                          'saleItemsTotal'
                                         ));
     }
 
@@ -305,16 +308,15 @@ class SalesController extends Controller
             $updatedSaleItems   = [];
 
             if(count($request->input('products')) > 0){
-                foreach ($request->input('products') as $product) {
                     // exit(print_r($request->input('products')));
-
-
+                foreach ($request->input('products') as $product) {
                     SaleItem::updateOrCreate(
                         ['product_name' => $product['product_name'] ],
                         [
                             'sale_id'       => $product['sale_id'],
                             'product_name'  => $product['product_name'],
                             'price'         => $product['price'],
+                            'discount'      => (int)$product['discount'],
                             'quantity'      => $product['quantity'],
                             'total'         => $product['quantity'] * $product['price']
                         ]
