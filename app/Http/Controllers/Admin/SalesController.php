@@ -70,7 +70,7 @@ class SalesController extends Controller
         }
 
         // $sales = $query->get();
-        $sales = $query->paginate(20); // 10 items per page,
+        $sales = $query->paginate(40); // 50 items per page,
 
         return view('sales.index', compact('sales',
                                            'pageTitle',
