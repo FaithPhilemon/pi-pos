@@ -1,5 +1,5 @@
 @extends('layouts.main') 
-@section('title', 'Edit Product')
+@section('title', 'Edit Sale')
 @section('content')
 
     <!-- push external head elements to head -->
