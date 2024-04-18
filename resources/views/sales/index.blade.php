@@ -71,9 +71,10 @@
                                     <th>{{ __('Payment Status') }}</th>
                                     <th>{{ __('Payment Method') }}</th>
                                     <th>{{ __('Total Amount') }}</th>
+                                    <th>{{ __('Total Discount') }}</th>
                                     <th>{{ __('Total Paid') }}</th>
                                     <th>{{ __('Total Items') }}</th>
-                                    <th>{{ __('Added By') }}</th>
+                                    {{-- <th>{{ __('Added By') }}</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -142,9 +143,10 @@
                                         </td>
                                         <td>{{ $sale->paymentMethod->name }}</td>
                                         <td>{{ $settings->currency_symbol }}{{ number_format($sale->total_amount) }}</td>
+                                        <td>{{ $sale->discount}}</td>
                                         <td>{{ $settings->currency_symbol }}{{ number_format($sale->total_paid) }}</td>
                                         <td>{{ $sale->total_items }}</td>
-                                        <td>{{ $sale->addedBy->name }}</td>
+                                        {{-- <td>{{ $sale->addedBy->name }}</td> --}}
                                     </tr>
 
 
