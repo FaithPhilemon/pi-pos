@@ -124,19 +124,19 @@ shuffle($products);
 									<span>Subtotal</span>
 									<strong id="subtotal-products">0.00</strong>
 								</div>
-								<div class="d-flex justify-content-between font-15 align-items-center">
+								{{-- <div class="d-flex justify-content-between font-15 align-items-center">
 									<span>Percentage Discount</span>
 									<input type="number" class="form-control w-90 font-15 text-right" name="percentage" id="discount">
 								</div>
 
 								<div class="d-flex justify-content-between font-15 align-items-center pt-5">
-									<span>Prince Discount</span>
+									<span>Price Discount</span>
 									<input class="form-control w-90 font-15 text-right" id="discountAmt" name="price">
-								</div>
+								</div> --}}
 
 								<hr>
 								<div class="d-flex justify-content-between font-20 align-items-center">
-									<b>Total</b>
+									<b>Total Payable</b>
 									<b id="total-bill">0.00</b>
 								</div>
 							</div>
@@ -208,11 +208,44 @@ shuffle($products);
 			</div>
 		</div>
 	</div>
+
+	<!-- Modal for discount input -->
+	<div class="modal fade" id="discountModal" tabindex="-1" role="dialog" aria-labelledby="discountModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="discountModalLabel">Apply Discount</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form id="discountForm">
+					<div class="form-group">
+						<label for="discountType">Discount Type</label>
+						<select class="form-control" id="discountType" name="discountType">
+							<option value="percentage">Percentage(%)</option>
+							<option value="fixed">Fixed(₦)</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="discountAmount">Discount Amount</label>
+						<input type="number" class="form-control" id="discountAmount" name="discountAmount" min="0" step="0.01">
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" id="applyDiscountBtn">Apply Discount</button>
+			</div>
+		</div>
+	</div>
+	</div>
 	
 	<!-- push external js -->
 	<script src="{{ asset('all.js') }}"></script>
 	<script src="{{ asset('dist/js/theme.js') }}"></script>
-	<script src="{{ asset('src/js/vendor/jquery-3.3.1.min.js') }}"></script>
+	{{-- <script src="{{ asset('src/js/vendor/jquery-3.3.1.min.js') }}"></script> --}}
 	<script src="{{ asset('plugins/select2/dist/js/select2.min.js') }}"></script>
 	
 
@@ -305,8 +338,10 @@ shuffle($products);
 										<span class="text-muted">${item.quantity}x</span>
 										<input type="hidden" name="products[${id}][quantity]" value="${item.quantity}">
 
-										<span class="text-success font-weight-bold cart-item-price">${item.subtotal.toFixed(2)}</span>
-										<input type="hidden" name="products[${id}][price]" value="${item.price}">
+										<span class="text-success font-weight-bold cart-item-price">${item.subtotal.toFixed()}</span>
+										<input class="sub-total" type="hidden" name="products[${id}][price]" value="${item.price.toFixed()}">
+										<span class="text-muted">discount>></span>
+										<input class="form-control w-30 discount" type="number" name="products[${id}][discount]" value="${item.discount}" readonly data-toggle="tooltip" data-placement="top" title="Click to change" style="cursor: pointer;"/>
 									</div>
 								</div>
 							</div>`;
@@ -327,8 +362,8 @@ shuffle($products);
 			}
 
 			// Update cart total and total text
-			$cartTotal.text(cartTotal.toFixed(2));
-			$totalText.text((cartTotal - discountAmount).toFixed(2));
+			$cartTotal.text(cartTotal.toFixed());
+			$totalText.text((cartTotal - discountAmount).toFixed());
 		}
 
 
@@ -383,6 +418,82 @@ shuffle($products);
 			// 		$('#layout-wrap').html(data);
 			// 	});
 			// }
+
+
+			var selectedRowIndex; // Variable to store the selected row index
+
+			// Click event handler for discount inputs to open modal
+			$('#product-cart').on('click', '.discount', function () {
+				var $parentDiv = $(this).closest('.position-relative');
+				selectedRowIndex = $('#product-cart > .position-relative').index($parentDiv); // Store the index of the selected row
+				$('#discountModal').modal('show');
+				// console.log(selectedRowIndex);
+			});
+
+
+
+			// Apply discount button click event handler
+			$('#applyDiscountBtn').click(function () {
+				var discountType = $('#discountType').val();
+				var discountAmount = parseFloat($('#discountAmount').val()) || 0;
+
+				if (!isNaN(selectedRowIndex)) {
+					var row = $('#product-cart > .position-relative').eq(selectedRowIndex);
+					var price = parseFloat(row.find('.cart-item-price').text());
+					var quantity = parseFloat(row.find('.text-muted').text().split('x')[0]) || 0;
+
+					var discount = 0;
+
+					if (discountType === 'percentage') {
+						discount = price * discountAmount / 100;
+					} else {
+						discount = Math.min(discountAmount, price * quantity);
+					}
+
+					// console.log("Discount is: "+discount);
+
+					// Update the discount value
+					row.find('.discount').val(discount.toFixed());
+					var subTotal = (price * quantity) - discount;
+					row.find('.sub-total').text(subTotal.toFixed());
+
+					// Update the grand total
+					updateGrandTotal();
+				} else {
+					console.log("No selected row index found.");
+				}
+
+				$('#discountModal').modal('hide');
+			});
+
+
+			function updateGrandTotal() {
+				var grandTotal = 0;
+
+				// Loop through cart items to calculate subtotal and apply discounts
+				$('#product-cart > .position-relative').each(function () {
+					var price = parseFloat($(this).find('.cart-item-price').text());
+					var quantity = parseFloat($(this).find('.text-muted').text().split('x')[0]) || 0;
+					var discount = parseFloat($(this).find('.discount').val()) || 0;
+					var subTotal = (price * quantity) - discount;
+					grandTotal += subTotal;
+				});
+
+				// Update grand total based on discount type and amount
+				// var discountType = $('#discountType').val();
+				// var discountAmount = parseFloat($('#discountAmount').val()) || 0;
+
+				// if (discountType === 'percentage') {
+				// 	grandTotal *= (1 - discountAmount / 100);
+				// } else {
+				// 	grandTotal -= discountAmount;
+				// }
+
+				// Display the updated grand total
+				$('#total-bill').text("₦" + grandTotal.toFixed());
+			}
+
+
 		});
 
 	</script>
