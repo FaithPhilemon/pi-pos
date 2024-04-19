@@ -272,7 +272,6 @@
                 var subcategorySelect = $('#subcategory');
     
                 categorySelect.on('change', function () {
-                    console.log('Category selected');
                     var selectedCategoryId = $(this).val();
                     // Enable or disable subcategory based on category selection
                     subcategorySelect.prop('disabled', !selectedCategoryId);
@@ -369,33 +368,25 @@
                 // Click event handler for discount inputs to open modal
                 $('#products_table').on('click', '.discount', function () {
                     selectedRowIndex = $(this).closest('tr').index(); // Store the index of the selected row
-                    console.log("Selected Row Index:", selectedRowIndex);
                     $('#discountModal').modal('show');
                 });
 
                 // Apply discount button click event handler
                 $('#applyDiscountBtn').click(function () {
-                    // console.log("Apply Discount button clicked");
                     var discountType = $('#discountType').val();
                     var discountAmount = parseFloat($('#discountAmount').val()) || 0;
 
                     if (!isNaN(selectedRowIndex)) {
-                        console.log("Selected Row Index:", selectedRowIndex);
                         var row = $('#products_table tbody tr').eq(selectedRowIndex);
                         var price = parseFloat(row.find('.price').val());
                         var quantity = parseFloat(row.find('.quantity').val()) || 0;
-
-                        // console.log("Price:", price);
-                        // console.log("Quantity:", quantity);
 
                         var discount = 0;
 
                         if (discountType === 'percentage') {
                             discount = price * discountAmount / 100;
-                            // console.log("Discount (Percentage):", discount);
                         } else {
                             discount = Math.min(discountAmount, price * quantity);
-                            // console.log("Discount (Fixed):", discount);
                         }
 
                         var subTotal = (price * quantity) - discount;
