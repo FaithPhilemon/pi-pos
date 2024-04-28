@@ -12,23 +12,119 @@ $products = config('mockdata.products');
 shuffle($products);
 @endphp --}}
 
+
 <body id="app">
 	<div class="wrapper">
 		<div class="pos-container p-3 pt-0">
-			<div class="row">
 
-				<div class="col-sm-1 bg-white h-100vh ">
+			<header class="header-top" header-theme="light">
+				<div class="container-fluid">
+					<div class="d-flex justify-content-between">
+						<div class="top-menu d-flex align-items-center">
+							<a class="nav-link" href="{{ url('logout') }}">
+								<i class="ik ik-power"></i>
+							</a>&nbsp;&nbsp;
+
+							<a href="{{url('/dashboard')}}" class="nav-link"><i class="ik ik-arrow-left-circle"></i></a>&nbsp;&nbsp;
+
+							{{-- <button type="button" class="btn-icon mobile-nav-toggle d-lg-none"><span></span></button> --}}
+							
+				
+							{{-- <button class="nav-link" title="clear cache">
+								<a  href="{{url('clear-cache')}}">
+								<i class="ik ik-battery-charging"></i> 
+							</a>
+							</button> &nbsp;&nbsp;
+							<button type="button" id="navbar-fullscreen" class="nav-link"><i class="ik ik-maximize"></i></button> --}}
+						</div>
+						<div class="top-menu d-flex align-items-center">
+							<div class="dropdown">
+								<a class="nav-link dropdown-toggle" href="#" id="notiDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ik ik-bell"></i><span class="badge bg-danger">3</span></a>
+								<div class="dropdown-menu dropdown-menu-right notification-dropdown" aria-labelledby="notiDropdown">
+									<h4 class="header">{{ __('Notifications')}}</h4>
+									<div class="notifications-wrap">
+										<a href="#" class="media">
+											<span class="d-flex">
+												<i class="ik ik-check"></i> 
+											</span>
+											<span class="media-body">
+												<span class="heading-font-family media-heading">{{ __('Invitation accepted')}}</span> 
+												<span class="media-content">{{ __('Your have been Invited ...')}}</span>
+											</span>
+										</a>
+										<a href="#" class="media">
+											<span class="d-flex">
+												<img src="{{ asset('img/users/1.jpg')}}" class="rounded-circle" alt="">
+											</span>
+											<span class="media-body">
+												<span class="heading-font-family media-heading">{{ __('Steve Smith')}}</span> 
+												<span class="media-content">{{ __('I slowly updated projects')}}</span>
+											</span>
+										</a>
+										<a href="#" class="media">
+											<span class="d-flex">
+												<i class="ik ik-calendar"></i> 
+											</span>
+											<span class="media-body">
+												<span class="heading-font-family media-heading">{{ __('To Do')}}</span> 
+												<span class="media-content">{{ __('Meeting with Nathan on Friday 8 AM ...')}}</span>
+											</span>
+										</a>
+									</div>
+									<div class="footer"><a href="javascript:void(0);">{{ __('See all activity')}}</a></div>
+								</div>
+							</div>
+							<button type="button" class="nav-link ml-10 right-sidebar-toggle"><i class="ik ik-message-square"></i><span class="badge bg-success">3</span></button>
+							<div class="dropdown">
+								<a class="nav-link dropdown-toggle" href="#" id="menuDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ik ik-plus"></i></a>
+								<div class="dropdown-menu dropdown-menu-right menu-grid" aria-labelledby="menuDropdown">
+									<a class="dropdown-item" href="#" data-toggle="tooltip" data-placement="top" title="Dashboard"><i class="ik ik-bar-chart-2"></i></a>
+									<a class="dropdown-item" href="#" data-toggle="tooltip" data-placement="top" title="Message"><i class="ik ik-mail"></i></a>
+									<a class="dropdown-item" href="#" data-toggle="tooltip" data-placement="top" title="Accounts"><i class="ik ik-users"></i></a>
+									<a class="dropdown-item" href="#" data-toggle="tooltip" data-placement="top" title="Sales"><i class="ik ik-shopping-cart"></i></a>
+									<a class="dropdown-item" href="#" data-toggle="tooltip" data-placement="top" title="Purchase"><i class="ik ik-briefcase"></i></a>
+									<a class="dropdown-item" href="#" data-toggle="tooltip" data-placement="top" title="Pages"><i class="ik ik-clipboard"></i></a>
+									<a class="dropdown-item" href="#" data-toggle="tooltip" data-placement="top" title="Chats"><i class="ik ik-message-square"></i></a>
+									<a class="dropdown-item" href="#" data-toggle="tooltip" data-placement="top" title="Contacts"><i class="ik ik-map-pin"></i></a>
+									<a class="dropdown-item" href="#" data-toggle="tooltip" data-placement="top" title="Blocks"><i class="ik ik-inbox"></i></a>
+									<a class="dropdown-item" href="#" data-toggle="tooltip" data-placement="top" title="Events"><i class="ik ik-calendar"></i></a>
+									<a class="dropdown-item" href="#" data-toggle="tooltip" data-placement="top" title="Notifications"><i class="ik ik-bell"></i></a>
+									<a class="dropdown-item" href="#" data-toggle="tooltip" data-placement="top" title="More"><i class="ik ik-more-horizontal"></i></a>
+								</div>
+							</div>
+							<button type="button" class="nav-link ml-10" id="apps_modal_btn" data-toggle="modal" data-target="#appsModal"><i class="ik ik-grid"></i></button>
+							<div class="dropdown">
+								<a class="dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img class="avatar" src="{{ asset('img/user.jpg')}}" alt=""></a>
+								<div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+									<a class="dropdown-item" href="{{url('profile')}}"><i class="ik ik-user dropdown-icon"></i> {{ __('Profile')}}</a>
+									<a class="dropdown-item" href="#"><i class="ik ik-navigation dropdown-icon"></i> {{ __('Message')}}</a>
+									<a class="dropdown-item" href="{{ url('logout') }}">
+										<i class="ik ik-power dropdown-icon"></i> 
+										{{ __('Logout')}}
+									</a>
+								</div>
+							</div>
+			
+						</div>
+					</div>
+				</div>
+			</header>
+
+			<div class="row" style="margin-top: 70px">
+
+				{{-- <div class="col-sm-1 bg-white h-100vh ">
 					<div class="pos top-menu mt-20 text-center">
 						<a href="{{url('/dashboard')}}" class="nav-link m-auto mb-10"><i class="ik ik-arrow-left-circle"></i></a>
 						<a href="#" class="nav-link m-auto mb-10" id="apps_modal_btn" data-toggle="modal" data-target="#appsModal"><i class="ik ik-grid"></i></a>
-						<a class="nav-link m-auto mb-10" href="#" id="notiDropdown"><i class="ik ik-bell"></i><span class="badge bg-danger">1</span></a>
-						{{-- <a class="nav-link m-auto mb-10" href="{{url('profile')}}"><i class="ik ik-user"></i></a> --}}
+						<a class="nav-link m-auto mb-10" href="#" id="notiDropdown"><i class="ik ik-bell"></i><span class="badge bg-danger">1</span></a> 
+						<a class="nav-link m-auto mb-10" href="{{url('profile')}}"><i class="ik ik-user"></i></a> 
 						<a class="nav-link m-auto mb-10" href="{{ url('logout') }}">
 							<i class="ik ik-power"></i>
 						</a>
 					</div>
-				</div>
-				<div class="col-sm-8 bg-white">
+				</div> --}}
+
+				<div class="col-sm-7 bg-white">
 					@include('include.message')
 
 					<div class="customer-area">
@@ -94,8 +190,7 @@ shuffle($products);
 					</div>
 				</div>
 
-
-				<div class="col-sm-3 bg-white product-cart-area">
+				<div class="col-sm-5 bg-white product-cart-area">
 					<div class="product-selection-area">
 						<div class="d-flex justify-content-between align-items-center">
 							<h5 class="mb-0"> Order Details</h6>
@@ -113,7 +208,7 @@ shuffle($products);
 							</div>
 						@endif
 
-						<form action="{{ route('pos.store') }}" method="POST">
+						<form action="{{ route('pos.store') }}" method="POST" id="mainForm">
                             @csrf
 
 							<div id="product-cart" class="product-cart mb-3">
@@ -149,7 +244,7 @@ shuffle($products);
 									</select>
 								</div>
 
-								<input type="date" class="form-control" id="date" name="date" required>
+								{{-- <input type="date" class="form-control" id="date" name="date" required> --}}
 
 								<label class="d-block">Customer Information</label>
 								<div class="d-block">
@@ -161,17 +256,30 @@ shuffle($products);
                                             @endforeach
                                         </select>
 									</div>
+									
 									<div class="form-group">
 										<input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Customer's Number">
 									</div>
-									{{-- <div class="form-group">
+									 {{--<div class="form-group">
 										<textarea type="text" name="name" class="form-control h-82px" placeholder="Enter Address" value="Christopher Alex"></textarea>
 									</div> --}}
 								</div>
 							</div>
-							<div class="box-shadow p-3">
-								<button type="submit" class="btn btn-danger btn-checkout btn-pos-checkout">PLACE ORDER</button>
-								{{-- <button class="btn btn-danger btn-checkout btn-pos-checkout " data-toggle="modal" data-target="#InvoiceModal">PLACE ORDER</button> --}}
+
+
+							
+							<div class="box-shadow p-3 row">
+								<div class="col-md-6">
+									<button type="button" class="btn btn-danger btn-block" id="holdBtn" data-toggle="modal" data-target="#holdModal">
+										<i class="fa fa-hand-paper" aria-hidden="true"></i>HOLD
+									</button>
+									
+									{{-- <button class="btn btn-danger btn-checkout btn-pos-checkout " data-toggle="modal" data-target="#InvoiceModal">PLACE ORDER 2</button> --}}
+								</div>
+
+								<div class="col-md-6">
+									<button type="submit" class="btn btn-success btn-checkout btn-pos-checkout">PLACE ORDER</button>
+								</div>
 							</div>
 						</form>
 					</div>
@@ -182,6 +290,35 @@ shuffle($products);
 	</div>
 	<!-- initiate modal menu section-->
 	@include('include.modalmenu')
+
+	{{-- Hold transaction modal --}}
+	<div class="modal fade" id="holdModal" tabindex="-1" role="dialog" aria-labelledby="holdModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="holdModalLabel">Hold Invoice?</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="holdReference">Enter Reference:</label>
+						<input type="text" class="form-control" id="holdReference" name="hold_reference" placeholder="Enter reference code" required>
+						<br>
+						<div class="alert alert-primary" role="alert">
+							<strong>Note</strong> Same Reference will replace the old list if exist!
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-danger" id="holdSubmitBtn">Yes, Hold</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">No, Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<!-- Preview Invoice Modal -->
 	<div class="modal fade edit-layout-modal pr-0 " id="InvoiceModal" role="dialog" aria-labelledby="InvoiceModalLabel" aria-hidden="true">
@@ -241,6 +378,27 @@ shuffle($products);
 		</div>
 	</div>
 	</div>
+
+
+	{{-- Modal for success hold --}}
+	<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+		  <div class="modal-content">
+			<div class="modal-header">
+			  <h5 class="modal-title" id="successModalLabel">Success</h5>
+			  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			  </button>
+			</div>
+			<div class="modal-body">
+			  <!-- Success message will be displayed here -->
+			</div>
+			<div class="modal-footer">
+			  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		  </div>
+		</div>
+	  </div>
 	
 	<!-- push external js -->
 	<script src="{{ asset('all.js') }}"></script>
@@ -495,6 +653,64 @@ shuffle($products);
 
 
 		});
+							
+
+		// Handle hold transactions
+		document.getElementById('holdSubmitBtn').addEventListener('click', function() {
+			// Capture data from the main form
+			var formData = new FormData(document.getElementById('mainForm'));
+			// Add hold reference
+			var holdReference = document.getElementById('holdReference').value;
+			formData.append('hold_reference', holdReference);
+
+
+			// Send hold request to the server using AJAX
+			$.ajax({
+				url: 'pos', 
+				type: 'POST',
+				data: formData, // form data
+				processData: false, 
+				contentType: false, 
+				success: function(response) {
+					// if (response.success) {
+					// 	// Reload the page
+					// 	window.location.href = response.reload_url;
+					// } else {
+					// 	console.error('Sale hold failed:', response.message);
+					// }
+
+					if (response.success) {
+						// Show success message in a modal or alert
+						showAlert('Success', response.message);
+						window.location.href = response.reload_url;
+					} else {
+						console.error('Sale creation failed:', response.message);
+					}
+				},
+				error: function(xhr, status, error) {
+					// Handle error
+					console.error('Hold request failed:', error);
+				}
+			});
+		});
+
+
+		// $(document).ready(function() {
+		// 	// Check if there's a success message in the session
+		// 	var successMessage = '{{ session('success') }}';
+		// 	if (successMessage) {
+		// 		// Show the success modal
+		// 		showAlert('Success', successMessage);
+		// 	}
+		// });
+
+		function showAlert(title, message) {
+			// Example of showing a Bootstrap modal
+			$('#successModal .modal-title').text(title);
+			$('#successModal .modal-body').text(message);
+			$('#successModal').modal('show');
+		}
+
 
 	</script>
 
