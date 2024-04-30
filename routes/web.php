@@ -144,6 +144,13 @@ Route::middleware(['auth'])->group(function () {
 	Route::get('pos', [PosController::class, 'index'])->name('sales.pos');
 	Route::post('pos', [PosController::class, 'store'])->name('pos.store');
 	Route::post('/pos/hold', 'SalesController@storeHold')->name('hold.store');
+	// Route::get('hold-sales', 'SaleController@getHoldSales')->name('hold-sales');
+	Route::get('hold-sales', [PosController::class, 'getHoldSales'])->name('hold-sales');
+	Route::delete('/hold/{sale}', [PosController::class, 'destroy'])->name('hold.destroy');
+    Route::get('pos/hold/{id}', [PosController::class, 'show'])->name('posHold.show');
+
+
+
 
 
 
