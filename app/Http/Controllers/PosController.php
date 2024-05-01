@@ -41,14 +41,52 @@ class PosController extends Controller
         $products   = $query->paginate($perPage);
         $customers  = Contact::where('contact_group', 1)->get();
         $stores     = Store::all();
-        $categories = Category::where('parent_category_id', null)->get();;
+        $categories = Category::where('parent_category_id', null)->get();
+
+        $holdSales = Sale::whereNotNull('hold_reference')->orderBy('created_at', 'desc')->limit(20)->get();            
+        $holdCount = $holdSales->count();
+
 
         if ($request->ajax()) {
-            return view('sales.products', compact('products', 'customers', 'stores', 'categories'));
+            return view('sales.products', compact('products', 'customers', 'stores', 'categories', 'holdSales', 'holdCount'));
         }
 
-        return view('sales.pos', compact('products', 'customers', 'stores', 'categories'));
+        return view('sales.pos', compact('products', 'customers', 'stores', 'categories', 'holdSales', 'holdCount'));
     }
+
+    public function show($id, Request $request)
+    {
+        $perPage = 30; // Number of products per page
+
+        $query = Product::with('category')
+            ->select('id', 'name', 'image', 'category_id', 'price');
+
+        // Real-time search
+        if ($request->has('searchTerm')) {
+            $searchTerm = $request->input('searchTerm');
+            $query->where('name', 'like', '%' . $searchTerm . '%');
+        }
+
+        // Real-time category filter
+        if ($request->has('categoryId')) {
+            $categoryId = $request->input('categoryId');
+            $query->where('category_id', $categoryId);
+        }
+
+        $products   = $query->paginate($perPage);
+        $customers  = Contact::where('contact_group', 1)->get();
+        $stores     = Store::all();
+        $categories = Category::where('parent_category_id', null)->get();
+        $holdSale = Sale::findOrFail($id);
+
+        $saleItems           = SaleItem::where('sale_id', $id)->get();
+
+        $holdSales = Sale::whereNotNull('hold_reference')->orderBy('created_at', 'desc')->limit(20)->get();            
+        $holdCount = $holdSales->count();
+
+        return view('sales.pos', compact('holdSale', 'holdCount', 'holdSales', 'products', 'customers', 'stores', 'categories', 'saleItems'));
+    }
+
 
     public function store(Request $request)
     {
@@ -158,6 +196,137 @@ class PosController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
+    }
+
+
+    public function getHoldSales()
+    {
+        try {
+            // Fetch hold sales records
+            $holdSales = Sale::whereNotNull('hold_reference')->orderBy('created_at', 'desc')->limit(20)->get();
+            
+            // Count the number of hold sales
+            $holdCount = $holdSales->count();
+
+            // Prepare the response data
+            $response = [
+                'holdSales' => $holdSales,
+                'holdCount' => $holdCount,
+            ];
+
+            // Return the response as JSON
+            return response()->json($response);
+
+        } catch (\Exception $e) {
+            // Handle any errors
+            return response()->json(['error' => 'Failed to fetch hold sales.'], 500);
+        }
+    }
+
+    public function update(Request $request, Sale $sale)
+    {
+        // $this->authorize('edit sales');
+
+        // Validation rules for the sale data
+        $validator = Validator::make($request->all(), [
+            'invoice_number'    => 'nullable',
+            // 'date'              => 'required|date',
+            'phone_number'      => 'nullable',
+            'customer_name'     => 'required',
+            'store'             => 'required',
+            // 'payment_status'    => 'required',
+            // 'sale_status'       => 'required',
+            // 'payment_method'    => 'required',
+            // 'total_amount'      => 'numeric|nullable',
+            // 'total_paid'        => 'numeric|nullable',
+            // 'discount'          => 'integer|nullable',
+            // 'total_items'       => 'integer|nullable',
+            // 'shipping_status'   => 'integer',
+            // 'shipping_details'  => 'nullable',
+            'added_by'          => 'exists:users,id',
+            'staff_note'        => 'nullable',
+            'sale_note'         => 'nullable',
+        ]);
+
+
+        if ($validator->fails()) {
+            return redirect()->route('sales.index', $sale->id)->withErrors($validator)->withInput();
+        }
+        
+        
+        try {
+            
+            $sale->date                 = $request->date;
+            $sale->phone_number         = $request->phone_number;
+            $sale->customer_name        = $request->customer_name;
+            $sale->store                = $request->store;
+            $sale->sale_status_id       = $request->sale_status;
+            $sale->payment_status_id    = $request->payment_status;
+            $sale->payment_method_id    = $request->payment_method;  
+            $sale->discount             = ($request->discount == "") ? 0 : $request->discount;
+            
+            // $sale->invoice_number       = $request->invoice_number;
+            // $sale->total_amount         = $request->total_amount;
+            // $sale->total_paid           = $request->total_paid;
+            // $sale->total_items          = $request->total_items;
+            // $sale->shipping_status_id   = $request->shipping_status;
+            // $sale->shipping_details     = $request->shipping_details;
+            // $sale->added_by             = $request->added_by;
+            // $sale->staff_note           = $request->staff_note;
+            // $sale->sale_note            = $request->sale_note;
+
+            $sale->save();
+            
+            // update sale items
+            $saleItems          = SaleItem::where('sale_id', $sale->id)->get();
+            $updatedSaleItems   = [];
+
+            if(count($request->input('products')) > 0){
+                    // exit(print_r($request->input('products')));
+                foreach ($request->input('products') as $product) {
+                    SaleItem::updateOrCreate(
+                        ['product_name' => $product['product_name'] ],
+                        [
+                            'sale_id'       => $product['sale_id'],
+                            'product_name'  => $product['product_name'],
+                            'price'         => $product['price'],
+                            'discount'      => (int)$product['discount'],
+                            'quantity'      => $product['quantity'],
+                            'total'         => $product['quantity'] * $product['price']
+                        ]
+                    );
+                    
+                    $updatedSaleItems[] = $product['id'];
+
+                }
+            }
+
+
+            // deleted removed products from the cards
+            foreach($saleItems as $saleItem){
+                if(!in_array($saleItem['id'], $updatedSaleItems)){
+                    SaleItem::destroy($saleItem['id']);
+                }
+            }
+
+            // Update totals in the sales table
+            $sale->updateSaleTotals();
+            
+
+            return redirect()->back()->with('success', 'Sale updated successfully.');
+
+        }catch (\Exception $e) {
+            $bug = $e->getMessage();
+            return redirect()->back()->with('error', $bug);
+        }
+    }
+
+
+    public function destroy(Sale $sale)
+    {
+        // $this->authorize('delete sales');
+        $sale->delete();
+        return redirect()->route('sales.pos')->with('success', 'Hold deleted successfully.');
     }
 
     
