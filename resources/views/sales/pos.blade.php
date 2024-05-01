@@ -39,42 +39,58 @@ shuffle($products);
 						</div>
 						<div class="top-menu d-flex align-items-center">
 							<div class="dropdown">
-								<a class="nav-link dropdown-toggle" href="#" id="notiDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ik ik-bell"></i><span class="badge bg-danger">3</span></a>
+								<a class="nav-link dropdown-toggle" href="#" id="notiDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<i class="ik ik-shopping-cart"></i>
+									<span class="badge bg-danger" id="holdCount">{{$holdCount}}</span>
+									{{-- <span class="ml-2">{{ __('HOLD LIST')}}</span> --}}
+								</a>
 								<div class="dropdown-menu dropdown-menu-right notification-dropdown" aria-labelledby="notiDropdown">
-									<h4 class="header">{{ __('Notifications')}}</h4>
-									<div class="notifications-wrap">
-										<a href="#" class="media">
-											<span class="d-flex">
-												<i class="ik ik-check"></i> 
-											</span>
-											<span class="media-body">
-												<span class="heading-font-family media-heading">{{ __('Invitation accepted')}}</span> 
-												<span class="media-content">{{ __('Your have been Invited ...')}}</span>
-											</span>
-										</a>
-										<a href="#" class="media">
-											<span class="d-flex">
-												<img src="{{ asset('img/users/1.jpg')}}" class="rounded-circle" alt="">
-											</span>
-											<span class="media-body">
-												<span class="heading-font-family media-heading">{{ __('Steve Smith')}}</span> 
-												<span class="media-content">{{ __('I slowly updated projects')}}</span>
-											</span>
-										</a>
-										<a href="#" class="media">
-											<span class="d-flex">
-												<i class="ik ik-calendar"></i> 
-											</span>
-											<span class="media-body">
-												<span class="heading-font-family media-heading">{{ __('To Do')}}</span> 
-												<span class="media-content">{{ __('Meeting with Nathan on Friday 8 AM ...')}}</span>
-											</span>
-										</a>
+									<h4 class="header">{{ __('Hold List')}}</h4>
+									<div class="table-responsive">
+										<table class="table table-hover mb-0">
+											<thead>
+												<tr>
+													<th>Date</th>
+													<th>Reference</th>
+													<th>Action</th>
+												</tr>
+											</thead>
+											<tbody id="holdList">
+												@foreach ($holdSales as $holdSale)
+													<tr>
+														<td>{{ \Carbon\Carbon::parse($holdSale->date)->format('Y-m-d') }}</td>
+														<td><a href="#" class="hold-link" data-hold-id="{{ $holdSale->id }}">{{ $holdSale->hold_reference }}</a></td>
+														<td>
+															<div class="row justify-content-left">
+																{{-- <form action="{{ route('posHold.show', $holdSale->id) }}" method="GET">
+																	@csrf
+																	<button type="submit" class="btn-outline-primary">
+																		<i class="ik ik-edit-2"></i>
+																	</button>
+																</form> --}}
+																<a href="{{ route('posHold.show', $holdSale->id) }}" class="btn btn-outline-primary">
+																	<i class="ik ik-edit-2"></i>
+																</a>																
+																<form action="{{ route('hold.destroy', $holdSale->id) }}" method="POST">
+																	@csrf
+																	@method('DELETE')
+																	<button type="submit" class="btn btn-outline-danger">
+																		<i class="ik ik-trash-2"></i>
+																	</button>
+																</form>
+															</div>
+														</td>
+													</tr>
+												@endforeach
+											</tbody>
+										</table>
 									</div>
 									<div class="footer"><a href="javascript:void(0);">{{ __('See all activity')}}</a></div>
 								</div>
-							</div>
-							<button type="button" class="nav-link ml-10 right-sidebar-toggle"><i class="ik ik-message-square"></i><span class="badge bg-success">3</span></button>
+							</div>							
+							
+
+							{{-- <button type="button" class="nav-link ml-10 right-sidebar-toggle"><i class="ik ik-message-square"></i><span class="badge bg-success">3</span></button>
 							<div class="dropdown">
 								<a class="nav-link dropdown-toggle" href="#" id="menuDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ik ik-plus"></i></a>
 								<div class="dropdown-menu dropdown-menu-right menu-grid" aria-labelledby="menuDropdown">
@@ -91,20 +107,19 @@ shuffle($products);
 									<a class="dropdown-item" href="#" data-toggle="tooltip" data-placement="top" title="Notifications"><i class="ik ik-bell"></i></a>
 									<a class="dropdown-item" href="#" data-toggle="tooltip" data-placement="top" title="More"><i class="ik ik-more-horizontal"></i></a>
 								</div>
-							</div>
-							<button type="button" class="nav-link ml-10" id="apps_modal_btn" data-toggle="modal" data-target="#appsModal"><i class="ik ik-grid"></i></button>
+							</div> --}}
+							{{-- <button type="button" class="nav-link ml-10" id="apps_modal_btn" data-toggle="modal" data-target="#appsModal"><i class="ik ik-grid"></i></button> --}}
 							<div class="dropdown">
 								<a class="dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img class="avatar" src="{{ asset('img/user.jpg')}}" alt=""></a>
 								<div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
 									<a class="dropdown-item" href="{{url('profile')}}"><i class="ik ik-user dropdown-icon"></i> {{ __('Profile')}}</a>
-									<a class="dropdown-item" href="#"><i class="ik ik-navigation dropdown-icon"></i> {{ __('Message')}}</a>
+									{{-- <a class="dropdown-item" href="#"><i class="ik ik-navigation dropdown-icon"></i> {{ __('Message')}}</a> --}}
 									<a class="dropdown-item" href="{{ url('logout') }}">
 										<i class="ik ik-power dropdown-icon"></i> 
 										{{ __('Logout')}}
 									</a>
 								</div>
 							</div>
-			
 						</div>
 					</div>
 				</div>
@@ -208,80 +223,196 @@ shuffle($products);
 							</div>
 						@endif
 
-						<form action="{{ route('pos.store') }}" method="POST" id="mainForm">
-                            @csrf
-
-							<div id="product-cart" class="product-cart mb-3">
+						@if(isset($saleItems))
+							<!-- Prepopulated form for hold sale -->
+							<form action="{{ route('pos.store') }}" method="POST" id="mainForm">
+								@csrf
+	
+								{{-- <div id="product-cart" class="product-cart mb-3">
+									<script>
+										$(document).ready(function() {
+											var holdSaleItems = {!! json_encode($holdSale->items) !!};
+											var productCart = $('#product-cart');
 								
-							</div>
-							<div class="box-shadow p-3">
-								<div class="d-flex justify-content-between font-15 align-items-center">
-									<span>Subtotal</span>
-									<strong id="subtotal-products">0.00</strong>
-								</div>
-								{{-- <div class="d-flex justify-content-between font-15 align-items-center">
-									<span>Percentage Discount</span>
-									<input type="number" class="form-control w-90 font-15 text-right" name="percentage" id="discount">
-								</div>
-
-								<div class="d-flex justify-content-between font-15 align-items-center pt-5">
-									<span>Price Discount</span>
-									<input class="form-control w-90 font-15 text-right" id="discountAmt" name="price">
+											holdSaleItems.forEach(function(item) {
+												var html = `
+													<div class="d-flex justify-content-between position-relative">
+														<i class="text-red ik ik-x-circle cart-remove cursor-pointer" onclick="removeCartItem(${item.id})"></i>
+														<div class="cart-image-holder">
+															<img src="${item.image}">
+														</div>
+														<div class="w-100 p-2">
+															<h5 class="mb-2 cart-item-title">${item.name}</h5>
+															<input type="hidden" name="products[${item.id}][product_name]" value="${item.name}">
+															<div class="d-flex justify-content-between">
+																<span class="text-muted">${item.quantity}x</span>
+																<input type="hidden" name="products[${item.id}][quantity]" value="${item.quantity}">
+																<span class="text-success font-weight-bold cart-item-price">${item.subtotal.toFixed()}</span>
+																<input class="sub-total" type="hidden" name="products[${item.id}][price]" value="${item.price.toFixed()}">
+																<span class="text-muted">discount>></span>
+																<input class="form-control w-30 discount" type="number" name="products[${item.id}][discount]" value="${item.discount}" readonly data-toggle="tooltip" data-placement="top" title="Click to change" style="cursor: pointer;"/>
+															</div>
+														</div>
+													</div>
+												`;
+												productCart.append(html);
+											});
+										});
+									</script>
 								</div> --}}
 
-								<hr>
-								<div class="d-flex justify-content-between font-20 align-items-center">
-									<b>Total Payable</b>
-									<b id="total-bill">0.00</b>
-								</div>
-							</div>
-							<div class="box-shadow p-3 mb-3">
-								<div class="form-group">
-									<select class="form-control select2" id="store" name="store" required>
-										@foreach($stores as $store)
-											<option value="{{ $store->name }}">{{ $store->name }}</option>
-										@endforeach
-									</select>
+								<div id="product-cart" class="product-cart mb-3">
+									@foreach($saleItems as $item)
+										<div class="d-flex justify-content-between position-relative">
+											<i class="text-red ik ik-x-circle cart-remove cursor-pointer" onclick="removeCartItem({{ $item->id }})"></i>
+											<div class="cart-image-holder">
+												<img src="{{ $item->image }}">
+											</div>
+											<div class="w-100 p-2">
+												<h5 class="mb-2 cart-item-title">{{ $item->product_name }}</h5>
+												<input type="hidden" name="products[{{ $item->id }}][product_name]" value="{{ $item->product_name }}">
+												<div class="d-flex justify-content-between">
+													<span class="text-muted">{{ $item->quantity }}x</span>
+													<input type="hidden" name="products[{{ $item->id }}][quantity]" value="{{ $item->quantity }}">
+													<span class="text-success font-weight-bold cart-item-price">{{ $item->total }}</span>
+													<input class="sub-total" type="hidden" name="products[{{ $item->id }}][price]" value="{{ $item->price }}">
+													<span class="text-muted">discount>></span>
+													<input class="form-control w-30 discount" type="number" name="products[{{ $item->id }}][discount]" value="{{ $item->discount }}" readonly data-toggle="tooltip" data-placement="top" title="Click to change" style="cursor: pointer;"/>
+												</div>
+											</div>
+										</div>
+									@endforeach
 								</div>
 
-								{{-- <input type="date" class="form-control" id="date" name="date" required> --}}
-
-								<label class="d-block">Customer Information</label>
-								<div class="d-block">
-									<div class="form-group">
-										{{-- <input type="text" name="name" class="form-control" placeholder="Enter Customer Name" value="Christopher Alex"> --}}
-										<select class="form-control select2" id="customer_name" name="customer_name" required>
-                                            @foreach($customers as $customer)
-											<option value="{{ $customer->contact_name }}">{{ $customer->contact_name }}</option>
-                                            @endforeach
-                                        </select>
+								<div class="box-shadow p-3">
+									<div class="d-flex justify-content-between font-15 align-items-center">
+										<span>Subtotal</span>
+										<strong id="subtotal-products">0.00</strong>
 									</div>
 									
-									<div class="form-group">
-										<input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Customer's Number">
+	
+									<hr>
+									<div class="d-flex justify-content-between font-20 align-items-center">
+										<b>Total Payable</b>
+										<b id="total-bill">0.00</b>
 									</div>
-									 {{--<div class="form-group">
-										<textarea type="text" name="name" class="form-control h-82px" placeholder="Enter Address" value="Christopher Alex"></textarea>
+								</div>
+								<div class="box-shadow p-3 mb-3">
+									<div class="form-group">
+										<select class="form-control select2" id="store" name="store" required>
+											@foreach($stores as $store)
+												<option value="{{ $store->name }}">{{ $store->name }}</option>
+											@endforeach
+										</select>
+									</div>
+	
+	
+									<label class="d-block">Customer Information</label>
+									<div class="d-block">
+										<div class="form-group">
+											<select class="form-control select2" id="customer_name" name="customer_name" required>
+												@foreach($customers as $customer)
+												<option value="{{ $customer->contact_name }}">{{ $customer->contact_name }}</option>
+												@endforeach
+											</select>
+										</div>
+										
+										<div class="form-group">
+											<input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Customer's Number">
+										</div>
+									</div>
+								</div>
+								
+								<div class="box-shadow p-3 row">
+									<div class="col-md-6">
+										<button type="button" class="btn btn-danger btn-block" id="holdBtn" data-toggle="modal" data-target="#holdModal">
+											<i class="fa fa-hand-paper" aria-hidden="true"></i>HOLD
+										</button>
+									</div>
+	
+									<div class="col-md-6">
+										<button type="submit" class="btn btn-success btn-checkout btn-pos-checkout">PLACE ORDER</button>
+									</div>
+								</div>
+							</form>
+						@else
+							<!-- Default order form -->
+							<form action="{{ route('pos.store') }}" method="POST" id="mainForm">
+								@csrf
+	
+								<div id="product-cart" class="product-cart mb-3">
+									
+								</div>
+								<div class="box-shadow p-3">
+									<div class="d-flex justify-content-between font-15 align-items-center">
+										<span>Subtotal</span>
+										<strong id="subtotal-products">0.00</strong>
+									</div>
+									{{-- <div class="d-flex justify-content-between font-15 align-items-center">
+										<span>Percentage Discount</span>
+										<input type="number" class="form-control w-90 font-15 text-right" name="percentage" id="discount">
+									</div>
+	
+									<div class="d-flex justify-content-between font-15 align-items-center pt-5">
+										<span>Price Discount</span>
+										<input class="form-control w-90 font-15 text-right" id="discountAmt" name="price">
 									</div> --}}
+	
+									<hr>
+									<div class="d-flex justify-content-between font-20 align-items-center">
+										<b>Total Payable</b>
+										<b id="total-bill">0.00</b>
+									</div>
 								</div>
-							</div>
-
-
-							
-							<div class="box-shadow p-3 row">
-								<div class="col-md-6">
-									<button type="button" class="btn btn-danger btn-block" id="holdBtn" data-toggle="modal" data-target="#holdModal">
-										<i class="fa fa-hand-paper" aria-hidden="true"></i>HOLD
-									</button>
-									
-									{{-- <button class="btn btn-danger btn-checkout btn-pos-checkout " data-toggle="modal" data-target="#InvoiceModal">PLACE ORDER 2</button> --}}
+								<div class="box-shadow p-3 mb-3">
+									<div class="form-group">
+										<select class="form-control select2" id="store" name="store" required>
+											@foreach($stores as $store)
+												<option value="{{ $store->name }}">{{ $store->name }}</option>
+											@endforeach
+										</select>
+									</div>
+	
+									{{-- <input type="date" class="form-control" id="date" name="date" required> --}}
+	
+									<label class="d-block">Customer Information</label>
+									<div class="d-block">
+										<div class="form-group">
+											{{-- <input type="text" name="name" class="form-control" placeholder="Enter Customer Name" value="Christopher Alex"> --}}
+											<select class="form-control select2" id="customer_name" name="customer_name" required>
+												@foreach($customers as $customer)
+												<option value="{{ $customer->contact_name }}">{{ $customer->contact_name }}</option>
+												@endforeach
+											</select>
+										</div>
+										
+										<div class="form-group">
+											<input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Customer's Number">
+										</div>
+										 {{--<div class="form-group">
+											<textarea type="text" name="name" class="form-control h-82px" placeholder="Enter Address" value="Christopher Alex"></textarea>
+										</div> --}}
+									</div>
 								</div>
-
-								<div class="col-md-6">
-									<button type="submit" class="btn btn-success btn-checkout btn-pos-checkout">PLACE ORDER</button>
+	
+	
+								
+								<div class="box-shadow p-3 row">
+									<div class="col-md-6">
+										<button type="button" class="btn btn-danger btn-block" id="holdBtn" data-toggle="modal" data-target="#holdModal">
+											<i class="fa fa-hand-paper" aria-hidden="true"></i>HOLD
+										</button>
+										
+										{{-- <button class="btn btn-danger btn-checkout btn-pos-checkout " data-toggle="modal" data-target="#InvoiceModal">PLACE ORDER 2</button> --}}
+									</div>
+	
+									<div class="col-md-6">
+										<button type="submit" class="btn btn-success btn-checkout btn-pos-checkout">PLACE ORDER</button>
+									</div>
 								</div>
-							</div>
-						</form>
+							</form>
+						@endif
+						
 					</div>
 
 				</div>
@@ -465,6 +596,59 @@ shuffle($products);
 				updateCartTable();
 			}
 		}
+
+		// function updateCartTable() {
+		// 	var $cartTable = $('#product-cart'),
+		// 		$cartTotal = $('#subtotal-products'),
+		// 		$totalText = $('#total-bill');
+
+		// 	var cartTotal = 0,
+		// 		discountPercentage = parseFloat($('#discount').val()) || 0,
+		// 		discountAmount2 = parseFloat($('#discountAmt').val()) || 0;
+
+		// 	// Loop through cart items and add them to cart table
+		// 	for (var id in cart) {
+		// 		if (cart.hasOwnProperty(id)) {
+		// 			var item = cart[id];
+
+		// 			var $tr = `<div class="d-flex justify-content-between position-relative">
+		// 						<i class="text-red ik ik-x-circle cart-remove cursor-pointer" onclick="removeCartItem(${id})"></i>
+		// 						<div class="cart-image-holder">
+		// 							<img src="${item.image}">
+		// 						</div>
+		// 						<div class="w-100 p-2">
+		// 							<h5 class="mb-2 cart-item-title">${item.name}</h5>
+		// 							<input type="hidden" name="products[${id}][product_name]" value="${item.name}">
+		// 							<div class="d-flex justify-content-between">
+		// 								<span class="text-muted">${item.quantity}x</span>
+		// 								<input type="hidden" name="products[${id}][quantity]" value="${item.quantity}">
+		// 								<span class="text-success font-weight-bold cart-item-price">${item.subtotal.toFixed()}</span>
+		// 								<input class="sub-total" type="hidden" name="products[${id}][price]" value="${item.price.toFixed()}">
+		// 								<span class="text-muted">discount>></span>
+		// 								<input class="form-control w-30 discount" type="number" name="products[${id}][discount]" value="${item.discount}" readonly data-toggle="tooltip" data-placement="top" title="Click to change" style="cursor: pointer;"/>
+		// 							</div>
+		// 						</div>
+		// 					</div>`;
+		// 			$cartTable.append($tr);
+		// 			cartTotal += item.subtotal;
+		// 		}
+		// 	}
+
+		// 	// Check which input field has focus to determine discount type
+		// 	var activeDiscountInput = document.activeElement.id;
+		// 	var discountAmount = 0;
+		// 	if (activeDiscountInput === 'discount') {
+		// 		discountAmount = (cartTotal * (discountPercentage / 100));
+		// 		$('#discountAmt').val(''); // Clear price-based discount input
+		// 	} else if (activeDiscountInput === 'discountAmt') {
+		// 		discountAmount = Math.min(discountAmount2, cartTotal); // Ensure price-based discount doesn't exceed cart total
+		// 		$('#discount').val(''); // Clear percentage-based discount input
+		// 	}
+
+		// 	// Update cart total and total text
+		// 	$cartTotal.text(cartTotal.toFixed());
+		// 	$totalText.text((cartTotal - discountAmount).toFixed());
+		// }
 
 
 		function updateCartTable() {
@@ -695,21 +879,88 @@ shuffle($products);
 		});
 
 
-		// $(document).ready(function() {
-		// 	// Check if there's a success message in the session
-		// 	var successMessage = '{{ session('success') }}';
-		// 	if (successMessage) {
-		// 		// Show the success modal
-		// 		showAlert('Success', successMessage);
-		// 	}
-		// });
-
 		function showAlert(title, message) {
 			// Example of showing a Bootstrap modal
 			$('#successModal .modal-title').text(title);
 			$('#successModal .modal-body').text(message);
 			$('#successModal').modal('show');
 		}
+
+
+		// Function to load hold sales
+		// function loadHoldSales() {
+		// 	$.ajax({
+		// 		url: 'hold-sales', // Assuming this is the route to fetch hold sales
+		// 		type: 'GET',
+		// 		success: function(response) {
+		// 			$('#holdList').empty(); // Clear existing hold list
+		// 			$('#holdCount').text(response.holdCount); // Update hold count badge
+		// 			$.each(response.holdSales, function(index, holdSale) {
+		// 				var holdDate = new Date(holdSale.date);
+		// 				var formattedDate = holdDate.toLocaleDateString();
+
+		// 				var holdItem = `
+		// 					<tr>
+		// 						<td>${formattedDate}</td>
+		// 						<td><a href="#" class="hold-link" data-hold-id="${holdSale.id}">${holdSale.hold_reference}</a></td>
+		// 						<td>
+		// 							<form action="/sale/${holdSale.id}" method="POST" id="deleteForm_${holdSale.id}">
+		// 								@csrf
+		// 								@method('DELETE')
+		// 								<button type="submit" class="btn btn-sm btn-outline-danger delete-hold" data-hold-id="${holdSale.id}">
+		// 									<i class="ik ik-trash-2"></i>
+		// 								</button>
+		// 							</form>
+		// 							<button class="btn btn-sm btn-outline-primary edit-hold" data-hold-id="${holdSale.id}">
+		// 								<i class="ik ik-edit-2"></i>
+		// 							</button>
+		// 						</td>
+		// 					</tr>`;
+		// 				$('#holdList').append(holdItem);
+		// 			});
+
+		// 			// $.each(response.holdSales, function(index, holdSale) {
+		// 			// 	var holdItem = `
+		// 			// 		<a href="#" class="media">
+		// 			// 			<span class="d-flex">
+		// 			// 				<i class="ik ik-cart"></i> 
+		// 			// 			</span>
+		// 			// 			<span class="media-body">
+		// 			// 				<span class="text-muted">${holdSale.date}</span> 
+		// 			// 				<span class="heading-font-family media-heading">
+		// 			// 					<a href="#" class="hold-link" data-hold-id="${holdSale.id}">${holdSale.holdReference}</a>
+		// 			// 				</span> 
+		// 			// 				<span class="media-content">${holdSale.message}</span>
+		// 			// 			</span>
+		// 			// 			<span class="ml-auto">
+		// 			// 				<button class="btn btn-sm btn-outline-primary edit-hold" data-hold-id="${holdSale.id}">
+		// 			// 					<i class="ik ik-edit-2"></i>
+		// 			// 				</button>
+		// 			// 				<button class="btn btn-sm btn-outline-danger delete-hold" data-hold-id="${holdSale.id}">
+		// 			// 					<i class="ik ik-trash-2"></i>
+		// 			// 				</button>
+		// 			// 			</span>
+		// 			// 		</a>`;
+		// 			// 	$('#holdList').append(holdItem);
+		// 			// });
+		// 		},
+		// 		error: function(xhr, status, error) {
+		// 			console.error('Failed to load hold sales:', error);
+		// 		}
+		// 	});
+		// }
+
+		// Call the function to load hold sales when the page loads
+		// $(document).ready(function() {
+		// 	loadHoldSales();
+		// });
+
+		// Click event listener for hold link
+		// $(document).on('click', '.hold-link', function(e) {
+		// 	e.preventDefault();
+		// 	var holdId = $(this).data('hold-id');
+		// 	// Logic to populate form with hold sales data goes here
+		// });
 
 
 	</script>
