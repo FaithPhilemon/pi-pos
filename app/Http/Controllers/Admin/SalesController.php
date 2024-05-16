@@ -70,7 +70,7 @@ class SalesController extends Controller
         }
 
         // $sales = $query->get();
-        $sales = $query->paginate(20); // 10 items per page,
+        $sales = $query->paginate(40); // 50 items per page,
 
         return view('sales.index', compact('sales',
                                            'pageTitle',
@@ -113,11 +113,11 @@ class SalesController extends Controller
     public function store(Request $request)
     {
         // $this->authorize('create sales');
-
+        
         // Validation rules for the sale data
         $validator = Validator::make($request->all(), [
             'invoice_number'    => 'nullable',
-            'date'              => 'required|date',
+            'date'              => 'nullable|date',
             'phone_number'      => 'nullable',
             'customer_name'     => 'required',
             'store'             => 'required',
@@ -141,7 +141,6 @@ class SalesController extends Controller
 
         try {
 
-
              // Generate invoice number
              $lastSale = Sale::latest()->first();
              $lastId = $lastSale ? $lastSale->id : 0;
@@ -150,24 +149,25 @@ class SalesController extends Controller
 
 
              $sale = Sale::create([
-                'invoice_number'        => $invoiceNumber,
-                'date'                  => $request->date,
-                'phone_number'          => $request->phone_number,
-                'customer_name'         => $request->customer_name,
-                'store'                 => $request->store,
-                'sale_status_id'        => $request->sale_status,
-                'payment_status_id'     => $request->payment_status,
-                'payment_method_id'     => $request->payment_method,
-                'total_amount'          => 0, //$request->total_amount,
-                'total_paid'            => 0, //$request->total_paid,
-                'discount'              => ($request->discount == "") ? 0 : $request->discount,
-                'total_items'           => 0, //$request->total_items,
-                'shipping_status_id'    => $request->shipping_status,
-                'shipping_details'      => $request->shipping_details,
-                'added_by'              => auth()->user()->id,
-                'staff_note'            => $request->staff_note,
-                'sale_note'             => $request->sale_note,
-            ]);
+                        'invoice_number'        => $invoiceNumber,
+                        'date'                  => date('Y-m-d H:i:s'), 
+                        'phone_number'          => $request->phone_number,
+                        'customer_name'         => $request->customer_name,
+                        'store'                 => $request->store,
+                        'sale_status_id'        => $request->sale_status,
+                        'payment_status_id'     => $request->payment_status,
+                        'payment_method_id'     => $request->payment_method,
+                        'total_amount'          => 0, //$request->total_amount,
+                        'total_paid'            => 0, //$request->total_paid,
+                        'discount'              => ($request->discount == "") ? 0 : $request->discount,
+                        'total_items'           => 0, //$request->total_items,
+                        'shipping_status_id'    => $request->shipping_status,
+                        'shipping_details'      => $request->shipping_details,
+                        'added_by'              => auth()->user()->id,
+                        'staff_note'            => $request->staff_note,
+                        'sale_note'             => $request->sale_note,
+                ]
+            );
             
             // Access the last inserted ID directly from the model
             $lastId = $sale->id;
@@ -179,8 +179,9 @@ class SalesController extends Controller
                     'sale_id'       => $lastId, // Use the last inserted ID
                     'product_name'  => $product['product_name'],
                     'price'         => $product['price'],
+                    'discount'      => $product['discount'],
                     'quantity'      => $product['quantity'],
-                    'total'         => $product['quantity'] * $product['price'],
+                    'total'         => $product['price'] * $product['quantity'],
                 ]);
             }
 
@@ -189,27 +190,6 @@ class SalesController extends Controller
 
             return redirect()->route('sales.create')->with('success', 'Sale created successfully.');
  
-            //  $sale = new Sale();
- 
-            //  $sale->invoice_number       = $invoiceNumber;
-            //  $sale->date                 = $request->date;
-            //  $sale->phone_number         = $request->phone_number;
-            //  $sale->customer_name        = $request->customer_name;
-            //  $sale->store                = $request->store;
-            //  $sale->sale_status_id       = $request->sale_status;
-            //  $sale->payment_status_id    = $request->payment_status;
-            //  $sale->payment_method_id    = $request->payment_method;  
-            //  $sale->total_amount         = $request->total_amount;
-            //  $sale->total_paid           = $request->total_paid;
-            //  $sale->total_items          = $request->total_items;
-            //  $sale->shipping_status_id   = $request->shipping_status;
-            //  $sale->shipping_details     = $request->shipping_details;
-            //  $sale->added_by             = auth()->user()->id;
-            //  $sale->staff_note           = $request->staff_note;
-            //  $sale->sale_note            = $request->sale_note;
- 
-            //  $sale->save();
-
 
         }catch (\Exception $e) {
             $bug = $e->getMessage();
@@ -230,6 +210,7 @@ class SalesController extends Controller
         $paymentStatuses    = PaymentStatus::all();
         $shippingStatuses   = ShippingStatus::all();
         $saleItems           = SaleItem::where('sale_id', $sale->id)->get();
+        $saleItemsTotal      = SaleItem::where('sale_id', $sale->id)->sum('total');
 
 
         // $customers  = Customer::all();
@@ -242,7 +223,8 @@ class SalesController extends Controller
                                           'saleStatuses',
                                           'paymentStatuses',
                                           'shippingStatuses',
-                                          'saleItems'
+                                          'saleItems',
+                                          'saleItemsTotal'
                                         ));
     }
 
@@ -253,7 +235,7 @@ class SalesController extends Controller
         // Validation rules for the sale data
         $validator = Validator::make($request->all(), [
             'invoice_number'    => 'nullable',
-            'date'              => 'required|date',
+            // 'date'              => 'required|date',
             'phone_number'      => 'nullable',
             'customer_name'     => 'required',
             'store'             => 'required',
@@ -305,16 +287,15 @@ class SalesController extends Controller
             $updatedSaleItems   = [];
 
             if(count($request->input('products')) > 0){
-                foreach ($request->input('products') as $product) {
                     // exit(print_r($request->input('products')));
-
-
+                foreach ($request->input('products') as $product) {
                     SaleItem::updateOrCreate(
                         ['product_name' => $product['product_name'] ],
                         [
                             'sale_id'       => $product['sale_id'],
                             'product_name'  => $product['product_name'],
                             'price'         => $product['price'],
+                            'discount'      => (int)$product['discount'],
                             'quantity'      => $product['quantity'],
                             'total'         => $product['quantity'] * $product['price']
                         ]

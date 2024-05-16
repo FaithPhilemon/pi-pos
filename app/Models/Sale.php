@@ -11,6 +11,7 @@ class Sale extends Model
 
     protected $fillable = [
         'invoice_number',
+        'hold_reference',
         'date',
         'phone_number',
         'customer_name',
@@ -38,8 +39,10 @@ class Sale extends Model
     public function updateSaleTotals()
     {
         $this->total_amount = $this->saleItems()->sum('total');
-        $this->total_paid   = $this->calculateDiscount($this->saleItems()->sum('total'), $this->discount);
+        $this->total_paid   = $this->saleItems()->sum('total') - $this->saleItems()->sum('discount');
+        // $this->total_paid   = $this->calculateDiscount($this->saleItems()->sum('total'), $this->discount);
         $this->total_items  = $this->saleItems()->sum('quantity');
+        $this->discount     = $this->saleItems()->sum('discount');
         $this->save();
     }
 
