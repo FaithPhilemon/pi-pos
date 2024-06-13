@@ -1,49 +1,117 @@
-# Radmin: Laravel Dashboard Template Starter
-Radmin Laravel Starter revolutionizes website management with advanced user and role management, a flexible REST API, server-side datatables, data editing, and export options. The Themekit Bootstrap 4 interface makes managing websites a breeze.
+# POS System
 
-## Basic Installation
-1. Create a database in phpmyadmin. Open `.env` file and change following credentials
-```
-DB_HOST=127.0.0.1
-DB_DATABASE=your_database_name
-DB_USERNAME=your_database_user
-DB_PASSWORD=your_database_password
-```
-2. You have two options to add the database schema: 
-    - either import the `database.sql` file found in the `database` directory 
-    - or execute the migration command `php artisan migrate:refresh --seed`
+A Point of Sale (POS) system designed to manage sales, customers, and inventory efficiently. This project includes features like inventory management, customer management, holding sales, adding and removing items from the cart, and calculating totals with discounts.
 
-3. Run `php artisan serve` to access the website at http://127.0.0.1:8000/ or http://localhost:8000
+## Table of Contents
 
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Run inside Docker 🐳
-Before running Laravel inside Docker, please make sure you have installed `docker`.
+## Features
 
-1. Copy environment, docker-compose and Dockerfile
+- Inventory management
+- Supplier, customers, and staff management
+- Add items to cart
+- Update item quantities in cart
+- Remove items from cart
+- Calculate subtotal and total payable amount
+- Apply percentage and fixed discounts
+- Hold sales for later completion
+- Print sales reciept
+- Payment management
+- Reporting
 
-```bash
-cp .env.docker.example .env
-cp docker-conf/php/local.example docker-conf/php/Dockerfile
-cp docker-compose.yml.example docker-compose.yml
-```
+## Installation
 
-2. Run the following command to build the Docker image:
-```bash
-docker compose build
-```
-This command will download all the necessary dependencies and build the Docker image according to the specifications in the Dockerfile.
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/your-username/pos-system.git
+    cd pos-system
+    ```
 
-3. Once the build is complete, run the following command to start the Docker container: 
-```bash
-docker-compose up -d
-```
+2. Install dependencies:
+    ```bash
+    composer install
+    npm install
+    ```
 
-4. Run migration and seeder to migrate database. Note this command will refresh your databse also.
-```bash
-docker compose exec php php artisan migrate:refresh --seed
-```
-If you dont wan't to refresh databse run
-```bash
-docker compose exec php php artisan migrate --seed
-```
-5. Once done, you can visit your website at http://localhost:8900/
+3. Create a copy of the `.env` file:
+    ```bash
+    cp .env.example .env
+    ```
+
+4. Generate application key:
+    ```bash
+    php artisan key:generate
+    ```
+
+5. Set up the database and configure the `.env` file with your database credentials.
+
+6. Run migrations and seed the database:
+    ```bash
+    php artisan migrate --seed
+    ```
+
+7. Serve the application:
+    ```bash
+    php artisan serve
+    ```
+
+## Usage
+
+1. Access the application at `http://localhost`.
+2. Log in with the provided credentials or create a new account.
+3. Navigate through the POS interface to add products, manage cart items, and complete sales.
+
+### Adding Items to Cart
+
+- Click on a product card to add the item to the cart.
+- If the item already exists in the cart, the quantity will be updated.
+
+### Removing Items from Cart
+
+- Click the red `X` icon next to the item to remove it from the cart.
+
+### Applying Discounts
+
+- Enter a percentage discount or a fixed discount amount in the respective input fields.
+- The total payable amount will be updated accordingly.
+
+## Configuration
+
+- Customize the product images, names, and prices in the `products` table.
+- Configure customer and store information in the respective tables.
+
+## Contributing
+
+We welcome contributions to improve this project! Here are some ways you can help:
+
+- Report bugs and issues
+- Suggest new features
+- Submit pull requests
+
+### Steps to Contribute
+
+1. Fork the repository.
+2. Create a new branch:
+    ```bash
+    git checkout -b feature-name
+    ```
+3. Make your changes.
+4. Commit your changes:
+    ```bash
+    git commit -m 'Add some feature'
+    ```
+5. Push to the branch:
+    ```bash
+    git push origin feature-name
+    ```
+6. Open a pull request.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
